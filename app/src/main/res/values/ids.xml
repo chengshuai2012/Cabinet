@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item name="emo_panel_image" type="id"/>
+	<item name="emo_panel_side_icon" type="id"/>
+	<item name="gd_action_bar" type="id"/>
+	<item name="gd_action_bar_host" type="id"/>
+	<item name="gd_action_bar_content_view" type="id"/>
+	<item name="add_photo" type="id"/>
+	<item name="photo_item" type="id" />
+	<item type="id" name="expandable_text"/>
+	<item type="id" name="expand_collapse"/>
+    <item name="video" type="id" />
+	<item name="camera" type="id" />
+	<item name="photo" type="id" />
+	<item name="text" type="id" />
+	<item name="date" type="id" />
+	<item name="datePlan" type="id" />
+    <item name="menu" type="id" />
+</resources> 
