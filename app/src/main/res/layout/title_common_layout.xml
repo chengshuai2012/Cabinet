@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/h128"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/w30"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/CommonText"
+            android:layout_width="@dimen/w177"
+            android:layout_height="@dimen/h39"
+            android:background="@drawable/border_red_gradient"
+            android:gravity="center"
+            android:textColor="@color/almost_white"
+            android:textSize="@dimen/w20"
+            tools:text="密码开柜"
+
+            />
+
+        <TextView
+            android:id="@+id/hintText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="@color/black"
+            android:textSize="@dimen/w32"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="阿斯顿发到沙发上的" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/finsh"
+        android:layout_width="@dimen/w84"
+        android:layout_height="@dimen/w84"
+        android:layout_marginRight="@dimen/w30"
+        android:background="@drawable/border_red_gradient_round"
+        android:gravity="center"
+        android:textColor="@color/almost_white"
+        android:textSize="@dimen/w20"
+        android:text="@string/back_home" />
+
+
+</LinearLayout>

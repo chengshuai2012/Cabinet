@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/h445"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/h105">
+
+        <TextView
+            android:layout_width="@dimen/h200"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/cancle_string"
+            android:textColor="@color/color_gray_999999"
+            android:textSize="@dimen/w24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/select_lock"
+            android:textColor="@color/color_black_333333"
+            android:textSize="@dimen/w24" />
+
+        <TextView
+            android:layout_width="@dimen/h200"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/ok_string"
+            android:textColor="@color/red"
+            android:textSize="@dimen/w24" />
+
+
+    </LinearLayout>
+
+    <View style="@style/DividerLineHorizontal"></View>
+
+
+
+</LinearLayout>

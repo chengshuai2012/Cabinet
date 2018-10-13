@@ -29,6 +29,17 @@
     <color name="windowBackground">#F0F0F0</color>
     <color name="text_register">#666666</color>
     <color name="color_f5f5f5">#F5F5F5</color>
+    <color name="color_FFD53347">#FFD53347</color>
+    <color name="color_FF9D1624">#FF9D1624</color>
+    <color name="color_009AC4">#009AC4</color>
+    <color name="color_4FD9DA">#4FD9DA</color>
+    <color name="color_C40024">#C40024</color>
+    <color name="color_FF2F4A">#FF2F4A</color>
+    <color name="color_4ED8D8">#4ED8D8</color>
+    <color name="color_E15900">#E15900</color>
+    <color name="color_FF922D">#FF922D</color>
+    <color name="common_bg">#ffefefef</color>
+
 
 
 </resources>
