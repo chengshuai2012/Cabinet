@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.widget.PublicTitleView;
@@ -64,7 +65,8 @@ public class RegularActivity extends AppBarActivity {
                 break;
             case R.id.passwordLayout:
                 Bundle bundle = new Bundle();
-                showActivity(PassWordOpenActivity.class, bundle);
+                bundle.putString(Constants.ActivityExtra.TYPE,getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
+                showActivity(OpenActivity.class, bundle);
                 break;
         }
     }

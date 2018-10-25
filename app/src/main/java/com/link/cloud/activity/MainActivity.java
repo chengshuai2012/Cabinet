@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.zitech.framework.utils.ViewUtils;
@@ -53,12 +54,15 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
         super.onClick(v);
+        Bundle bundle =new Bundle();
         switch (v.getId()) {
             case R.id.regularLayout:
-                showActivity(RegularActivity.class);
+                bundle.putString(Constants.ActivityExtra.TYPE,"REGULAR");
+                showActivity(RegularActivity.class,bundle);
                 break;
             case R.id.vipLayout:
-                showActivity(VipActivity.class);
+                bundle.putString(Constants.ActivityExtra.TYPE,"VIP");
+                showActivity(VipActivity.class,bundle);
                 break;
 
 

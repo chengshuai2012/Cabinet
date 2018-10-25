@@ -31,7 +31,7 @@ public class RegularOpenSuccessActivity extends AppBarActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_opensuccess;
+        return R.layout.activity_regularopensuccess;
     }
 
     private void initView() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.widget.PublicTitleView;
@@ -28,7 +29,6 @@ public class VipActivity extends AppBarActivity {
     @Override
     protected void initViews() {
         getToolbar().setBackground(getResources().getDrawable(R.drawable.ic_vip_banner));
-
         zhijingmaiLayout = (RelativeLayout) findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = (RelativeLayout) findViewById(R.id.xiaochengxuLayout);
         passwordLayout = (RelativeLayout) findViewById(R.id.passwordLayout);
@@ -39,8 +39,6 @@ public class VipActivity extends AppBarActivity {
                 finish();
             }
         });
-
-
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
@@ -65,7 +63,8 @@ public class VipActivity extends AppBarActivity {
                 break;
             case R.id.passwordLayout:
                 Bundle bundle = new Bundle();
-                showActivity(PassWordOpenActivity.class, bundle);
+                bundle.putString(Constants.ActivityExtra.TYPE,getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
+                showActivity(OpenActivity.class, bundle);
                 break;
         }
     }

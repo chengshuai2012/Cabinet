@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+
+    <com.link.cloud.widget.PublicTitleView
+        android:id="@+id/publicTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:finish_text_Background="@drawable/border_red_gradient_round"
+        app:finish_text_color="@color/color_black_333333"
+        app:hint_text="请使用以下方式开柜"
+        app:hint_text_color="@color/color_D4D4D4" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/h281"
+        android:layout_marginLeft="@dimen/w110"
+        android:layout_marginRight="@dimen/w110"
+        android:layout_marginTop="@dimen/h87"
+        android:background="@drawable/ic_regular_bg"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="@dimen/w151"
+            android:layout_height="@dimen/h53"
+            android:layout_marginLeft="@dimen/w37"
+            android:layout_marginTop="@dimen/h33"
+            android:src="@drawable/ic_regular_handy_logo" />
+
+        <TextView
+            android:id="@+id/nameText"
+            style="@style/CommonText"
+            android:layout_marginLeft="@dimen/w37"
+            android:layout_marginTop="@dimen/h101"
+            android:textColor="@color/color_1d1d1d"
+            android:textSize="@dimen/w21"
+            tools:text="sdafasdsdf" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/phoneText"
+                style="@style/CommonText"
+                android:layout_marginLeft="@dimen/w37"
+                android:layout_weight="1"
+                android:textColor="@color/color_1d1d1d"
+                android:textSize="@dimen/w21"
+                tools:text="sdafasdsdf" />
+
+
+            <TextView
+                android:id="@+id/cardNameText"
+                style="@style/CommonText"
+                android:layout_marginRight="@dimen/w46"
+                android:drawableLeft="@drawable/ic_reguarl_log"
+                android:gravity="right"
+                android:textColor="@color/white"
+                android:textSize="@dimen/w25"
+                tools:text="VIP学员" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/lockId"
+        style="@style/CommonText"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/h61"
+        android:gravity="center"
+        android:textSize="@dimen/w41"
+        android:textStyle="bold"
+        tools:text="B102  柜门已打开" />
+
+    <TextView
+        style="@style/CommonText"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/h19"
+        android:gravity="center"
+        android:text="@string/aready_open_string"
+        android:textSize="@dimen/w24" />
+
+
+    <TextView
+        android:id="@+id/sureButton"
+        style="@style/CommonText"
+        android:layout_width="@dimen/w302"
+        android:layout_height="@dimen/h55"
+        android:layout_marginTop="@dimen/h65"
+        android:background="@drawable/border_red_gradient"
+        android:gravity="center"
+        android:text="@string/sure_string"
+        android:textColor="@color/color_ff5a381b"
+        android:textSize="@dimen/w24" />
+
+
+</LinearLayout>

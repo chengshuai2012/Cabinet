@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.widget.BottomSelectDialog;
@@ -16,7 +17,7 @@ import com.zitech.framework.utils.ViewUtils;
  * 邮箱：zar.l@qq.com
  */
 @SuppressLint("Registered")
-public class PassWordOpenActivity extends AppBarActivity {
+public class OpenActivity extends AppBarActivity {
     private android.widget.LinearLayout lockLayout;
     private android.widget.TextView lockLocation;
     private android.widget.TextView lastButton;
@@ -45,7 +46,9 @@ public class PassWordOpenActivity extends AppBarActivity {
             }
         });
         ViewUtils.setOnClickListener(lockLayout, this);
-        ViewUtils.setOnClickListener(sureButton, this);
+//        ViewUtils.setOnClickListener(sureButton, this);
+
+        sureButton.setOnClickListener(this);
     }
 
     @Override
@@ -56,7 +59,11 @@ public class PassWordOpenActivity extends AppBarActivity {
                 showSelectDialog();
                 break;
             case R.id.sureButton:
-                showActivity(VipOpenSuccessActivity.class);
+                if (getIntent().getExtras().getString(Constants.ActivityExtra.TYPE).equals("VIP")) {
+                    showActivity(VipOpenSuccessActivity.class);
+                } else {
+                    showActivity(RegularOpenSuccessActivity.class);
+                }
                 break;
 
 
