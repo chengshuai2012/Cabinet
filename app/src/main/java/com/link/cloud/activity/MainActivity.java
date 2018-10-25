@@ -17,11 +17,14 @@ public class MainActivity extends BaseActivity {
     private TextClock textclock;
     private LinearLayout openLayout;
     private LinearLayout closeLayout;
+    private LinearLayout regularLayout;
+    private LinearLayout vipLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+
     }
 
     @Override
@@ -38,21 +41,24 @@ public class MainActivity extends BaseActivity {
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
         textclock = (TextClock) findViewById(R.id.textclock);
-        openLayout = (LinearLayout) findViewById(R.id.openLayout);
-        closeLayout = (LinearLayout) findViewById(R.id.closeLayout);
 
-        ViewUtils.setOnClickListener(openLayout,this);
-        ViewUtils.setOnClickListener(closeLayout,this);
+        regularLayout = (LinearLayout) findViewById(R.id.regularLayout);
+        vipLayout = (LinearLayout) findViewById(R.id.vipLayout);
+
+        ViewUtils.setOnClickListener(regularLayout, this);
+        ViewUtils.setOnClickListener(vipLayout, this);
+
     }
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()){
-            case R.id.openLayout:
-            case R.id.closeLayout:
-
-                showActivity(ChooseActivity.class);
+        switch (v.getId()) {
+            case R.id.regularLayout:
+                showActivity(RegularActivity.class);
+                break;
+            case R.id.vipLayout:
+                showActivity(VipActivity.class);
                 break;
 
 

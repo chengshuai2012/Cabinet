@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/h550"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_main_bg" />
+            android:src="@drawable/icon_main_bg" />
 
 
         <LinearLayout
@@ -73,6 +73,7 @@
         android:layout_marginLeft="@dimen/w31"
         android:text="@string/welcome_to_use_sweat_locker"
         android:textSize="@dimen/w20"
+        android:textColor="@color/color_black_333333"
         android:textStyle="bold" />
 
 
@@ -85,26 +86,24 @@
 
 
         <LinearLayout
-            android:id="@+id/openLayout"
+            android:id="@+id/regularLayout"
             android:layout_width="@dimen/w327"
+            android:layout_marginRight="@dimen/h10"
             android:layout_height="@dimen/h422"
-            android:background="@drawable/border_index_red_gradient_bg"
+            android:background="@drawable/ic_regular_bg"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/w55"
-                android:layout_marginTop="@dimen/h55"
-                android:src="@mipmap/ic_open" />
+                android:layout_width="@dimen/w120"
+                android:layout_height="@dimen/w120"
+                android:src="@drawable/ic_regular" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/w50"
-                android:layout_marginTop="@dimen/h100"
-                android:gravity="right"
-                android:text="@string/open_string"
+                android:text="@string/regular_member"
+                android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/w48"
                 android:textStyle="bold" />
@@ -112,49 +111,46 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/w50"
-                android:gravity="right"
-                android:text="@string/open_ark"
+                android:layout_marginTop="@dimen/h10"
+                android:gravity="center"
+                android:text="REGULAR MEMBERS"
                 android:textColor="@color/white"
-                android:textSize="@dimen/w20"
+                android:textSize="@dimen/w24"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/closeLayout"
+            android:id="@+id/vipLayout"
             android:layout_width="@dimen/w327"
             android:layout_height="@dimen/h422"
-            android:layout_marginLeft="@dimen/w40"
-            android:background="@drawable/border_index_green_gradient_bg"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/h10"
+            android:background="@drawable/ic_vip_bg"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/w55"
-                android:layout_marginTop="@dimen/h55"
-                android:src="@mipmap/ic_queit" />
+                android:layout_width="@dimen/w120"
+                android:layout_height="@dimen/w120"
+                android:src="@drawable/ic_vip" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/w50"
-                android:layout_marginTop="@dimen/h100"
-                android:gravity="right"
-                android:text="@string/queit_string"
-                android:textColor="@color/white"
+                android:text="@string/vip_member"
+                android:gravity="center"
+                android:textColor="@color/color_7E583C"
                 android:textSize="@dimen/w48"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/w50"
-                android:gravity="right"
-                android:text="@string/open_ark"
-                android:textColor="@color/white"
-                android:textSize="@dimen/w20"
+                android:layout_marginTop="@dimen/h10"
+                android:gravity="center"
+                android:text="VIP MEMBERS"
+                android:textColor="@color/color_7E583C"
+                android:textSize="@dimen/w24"
                 android:textStyle="bold" />
         </LinearLayout>
 

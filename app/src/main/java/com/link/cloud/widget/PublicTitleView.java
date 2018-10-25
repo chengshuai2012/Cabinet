@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,20 +18,27 @@ import com.zitech.framework.utils.ViewUtils;
 
 public class PublicTitleView extends LinearLayout {
 
-    private String titleText;
+    private String titleTextString;
     private float titleTextSize;
     private int titleTextColor;
-
+    private Integer titleTextBackground;
 
     private String hintTextString;
     private float hintextSize;
     private int hintTextColor;
 
 
+    private String finshTextString;
+    private float finshtextSize;
+    private int finshTextColor;
+    private Integer finishTextBackground;
+
+
     private TextView title;
     private TextView hintText;
     private TextView finsh;
     private Context context;
+
 
     private onItemClickListener itemClickListener;
 
@@ -51,13 +59,25 @@ public class PublicTitleView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.title_common_layout, this, true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PublicTitleView);
 
-        titleText = a.getString(R.styleable.PublicTitleView_title_text);
+        titleTextString = a.getString(R.styleable.PublicTitleView_title_text);
         titleTextSize = a.getDimension(R.styleable.PublicTitleView_title_text_size, ViewUtils.getDimen(R.dimen.w20));
         titleTextColor = a.getColor(R.styleable.PublicTitleView_title_text_color, res.getColor(R.color.red));
+        if (a.hasValue(R.styleable.PublicTitleView_finish_text_Background)) {
+            titleTextBackground = a.getResourceId(R.styleable.PublicTitleView_finish_text_Background, -1);
+        }
+
 
         hintTextString = a.getString(R.styleable.PublicTitleView_hint_text);
         hintextSize = a.getDimension(R.styleable.PublicTitleView_hint_text_size, ViewUtils.getDimen(R.dimen.w20));
         hintTextColor = a.getColor(R.styleable.PublicTitleView_hint_text_color, res.getColor(R.color.white));
+
+        finshTextString = a.getString(R.styleable.PublicTitleView_finish_text);
+        finshtextSize = a.getDimension(R.styleable.PublicTitleView_finish_text_size, ViewUtils.getDimen(R.dimen.w20));
+        finshTextColor = a.getColor(R.styleable.PublicTitleView_finish_text_color, res.getColor(R.color.almost_white));
+        if (a.hasValue(R.styleable.PublicTitleView_finish_text_Background)) {
+            finishTextBackground = a.getResourceId(R.styleable.PublicTitleView_finish_text_Background, -1);
+        }
+
 
     }
 
@@ -69,21 +89,35 @@ public class PublicTitleView extends LinearLayout {
         super.onFinishInflate();
         title = (TextView) findViewById(R.id.title);
         hintText = (TextView) findViewById(R.id.hintText);
+
+
         finsh = (TextView) findViewById(R.id.finsh);
+        finsh.setTextColor(finshTextColor);
+
+
+        if (hasValue(titleTextBackground)) {
+            finsh.setBackgroundResource(titleTextBackground);
+        }
+
 
         title.setTextColor(titleTextColor);
 
-        if (!TextUtils.isEmpty(titleText)) {
-            title.setVisibility(View.VISIBLE);
-            title.setText(titleText);
-        } else {
-            title.setVisibility(View.INVISIBLE);
-        }
 
+        if (!TextUtils.isEmpty(titleTextString)) {
+            title.setText(titleTextString);
+            title.setVisibility(View.VISIBLE);
+            title.setTextColor(titleTextColor);
+            if (hasValue(titleTextBackground)) {
+                title.setBackgroundResource(titleTextBackground);
+            }
+        } else {
+            title.setVisibility(View.GONE);
+        }
 
         if (!TextUtils.isEmpty(hintTextString)) {
             hintText.setText(hintTextString);
             hintText.setVisibility(View.VISIBLE);
+            hintText.setTextColor(hintTextColor);
         } else {
             hintText.setVisibility(View.GONE);
         }
@@ -95,6 +129,10 @@ public class PublicTitleView extends LinearLayout {
                 }
             }
         });
+    }
+
+    private boolean hasValue(Object value) {
+        return value != null;
     }
 
     /**

@@ -38,7 +38,6 @@
             style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_action_more"
             android:layout_gravity="center"
             android:textColor="@color/textColorPrimaryDark"
             android:textSize="17sp" />

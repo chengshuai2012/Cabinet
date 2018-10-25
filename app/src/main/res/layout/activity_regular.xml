@@ -15,6 +15,7 @@
         app:hint_text="请使用以下方式开柜"
         app:hint_text_color="@color/color_D4D4D4" />
 
+
     <RelativeLayout
         android:id="@+id/zhijingmaiLayout"
         android:layout_width="match_parent"
@@ -22,24 +23,17 @@
         android:layout_marginLeft="@dimen/w45"
         android:layout_marginRight="@dimen/w45"
         android:layout_marginTop="@dimen/h38"
-        android:background="@drawable/border_choose_one_gradient_bg"
+        android:background="@drawable/ic_regular_one"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="01"
-            android:textColor="@color/color_EDC588"
-            android:textSize="@dimen/w80" />
 
         <ImageView
             android:id="@+id/fingerImage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/w100"
+            android:layout_height="@dimen/w100"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/w30"
-            android:src="@mipmap/ic_zhijingmai" />
+            android:src="@drawable/ic_zhijingmai" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +46,7 @@
             <TextView
                 style="@style/CommonText"
                 android:text="@string/mode_one"
-                android:textColor="@color/white"
+                android:textColor="@color/color_black_333333"
                 android:textSize="@dimen/w24" />
 
             <TextView
@@ -61,7 +55,7 @@
                 android:layout_marginTop="@dimen/h17"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/mode_one_hint"
-                android:textColor="@color/white"
+                android:textColor="@color/color_454649"
                 android:textSize="@dimen/w16" />
 
 
@@ -77,27 +71,17 @@
         android:layout_height="@dimen/h219"
         android:layout_marginLeft="@dimen/w45"
         android:layout_marginRight="@dimen/w45"
-
         android:layout_marginTop="@dimen/h21"
-        android:background="@drawable/border_choose_one_gradient_bg"
+        android:background="@drawable/ic_regular_two"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="02"
-            android:textColor="@color/color_EDC588"
-            android:textSize="@dimen/w80" />
-
 
         <ImageView
             android:id="@+id/wechatImage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/w100"
+            android:layout_height="@dimen/w100"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/w30"
-            android:src="@mipmap/ic_xiaochengxu" />
+            android:src="@drawable/ic_xiaochengxu" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,7 +94,7 @@
             <TextView
                 style="@style/CommonText"
                 android:text="@string/mode_two"
-                android:textColor="@color/white"
+                android:textColor="@color/color_black_333333"
                 android:textSize="@dimen/w24" />
 
             <TextView
@@ -119,7 +103,7 @@
                 android:layout_marginTop="@dimen/h17"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/mode_two_hint"
-                android:textColor="@color/white"
+                android:textColor="@color/color_454649"
                 android:textSize="@dimen/w16" />
 
 
@@ -134,47 +118,39 @@
         android:layout_marginLeft="@dimen/w45"
         android:layout_marginRight="@dimen/w45"
         android:layout_marginTop="@dimen/h21"
-        android:background="@drawable/border_choose_one_gradient_bg"
+        android:background="@drawable/ic_regular_three"
         android:orientation="horizontal">
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="02"
-            android:textColor="@color/color_EDC588"
-            android:textSize="@dimen/w80" />
-
         <ImageView
-            android:layout_width="wrap_content"
             android:id="@+id/passwordImage"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/w100"
+            android:layout_height="@dimen/w100"
+
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/w30"
-            android:src="@mipmap/ic_password" />
+            android:src="@drawable/ic_password" />
 
         <LinearLayout
-            android:layout_toRightOf="@+id/passwordImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/w30"
+            android:layout_toRightOf="@+id/passwordImage"
             android:gravity="left|center"
             android:orientation="vertical">
 
             <TextView
                 style="@style/CommonText"
                 android:text="@string/mode_three"
-                android:textColor="@color/white"
+                android:textColor="@color/color_black_333333"
                 android:textSize="@dimen/w24" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/w80"
                 android:layout_marginTop="@dimen/h17"
+                android:paddingRight="@dimen/w80"
                 android:text="@string/mode_three_hint"
-                android:textColor="@color/white"
+                android:textColor="@color/color_454649"
                 android:textSize="@dimen/w16" />
 
 

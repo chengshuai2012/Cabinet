@@ -1,11 +1,11 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.widget.PublicTitleView;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -13,14 +13,14 @@ import com.link.cloud.base.AppBarActivity;
  * 打开成功
  */
 @SuppressLint("Registered")
-public class OpenSuccessActivity extends AppBarActivity {
+public class VipOpenSuccessActivity extends AppBarActivity {
 
 
-    private android.widget.TextView cardNameText;
-    private android.widget.TextView nameText;
-    private android.widget.TextView phoneText;
-    private android.widget.TextView lockId;
-    private android.widget.TextView sureButton;
+    private TextView cardNameText;
+    private TextView nameText;
+    private TextView phoneText;
+    private TextView lockId;
+    private TextView sureButton;
 
     @Override
     protected void initViews() {
@@ -32,7 +32,7 @@ public class OpenSuccessActivity extends AppBarActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_opensuccess;
+        return R.layout.activity_vipopensuccess;
     }
 
     private void initView() {
@@ -41,5 +41,12 @@ public class OpenSuccessActivity extends AppBarActivity {
         phoneText = (TextView) findViewById(R.id.phoneText);
         lockId = (TextView) findViewById(R.id.lockId);
         sureButton = (TextView) findViewById(R.id.sureButton);
+        PublicTitleView publicTitleView = (PublicTitleView) findViewById(R.id.publicTitle);
+        publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
+            @Override
+            public void itemClickListener() {
+                finish();
+            }
+        });
     }
 }

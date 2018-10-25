@@ -1,7 +1,6 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.link.cloud.R;
@@ -13,14 +12,14 @@ import com.link.cloud.base.AppBarActivity;
  * 打开成功
  */
 @SuppressLint("Registered")
-public class OpenSuccessActivity extends AppBarActivity {
+public class RegularOpenSuccessActivity extends AppBarActivity {
 
 
-    private android.widget.TextView cardNameText;
-    private android.widget.TextView nameText;
-    private android.widget.TextView phoneText;
-    private android.widget.TextView lockId;
-    private android.widget.TextView sureButton;
+    private TextView cardNameText;
+    private TextView nameText;
+    private TextView phoneText;
+    private TextView lockId;
+    private TextView sureButton;
 
     @Override
     protected void initViews() {

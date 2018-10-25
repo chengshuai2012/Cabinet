@@ -18,9 +18,9 @@
             style="@style/CommonText"
             android:layout_width="@dimen/w177"
             android:layout_height="@dimen/h39"
-            android:background="@drawable/border_red_gradient"
+            android:background="@drawable/border_write_gradient"
             android:gravity="center"
-            android:textColor="@color/almost_white"
+            android:textColor="@color/common_bg"
             android:textSize="@dimen/w20"
             tools:text="密码开柜"
 
@@ -31,10 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:textColor="@color/black"
+            android:textColor="@color/color_DAA254"
             android:textSize="@dimen/w32"
             android:textStyle="bold"
-            android:visibility="gone"
             tools:text="阿斯顿发到沙发上的" />
 
     </LinearLayout>
@@ -46,7 +45,7 @@
         android:layout_marginRight="@dimen/w30"
         android:background="@drawable/border_red_gradient_round"
         android:gravity="center"
-        android:textColor="@color/almost_white"
+        android:textColor="@color/black"
         android:textSize="@dimen/w20"
         android:text="@string/back_home" />
 

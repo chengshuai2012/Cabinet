@@ -31,10 +31,17 @@
         <attr name="title_text" format="string" />
         <attr name="title_text_size" format="integer" />
         <attr name="title_text_color" format="color" />
+        <attr name="title_text_Background" format="reference" /><!-- tag背景-->
+
 
         <attr name="hint_text" format="string" />
         <attr name="hint_text_size" format="integer" />
         <attr name="hint_text_color" format="color" />
+
+        <attr name="finish_text" format="string" />
+        <attr name="finish_text_size" format="integer" />
+        <attr name="finish_text_color" format="color" />
+        <attr name="finish_text_Background" format="reference" /><!-- tag背景-->
     </declare-styleable>
 
 

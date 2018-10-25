@@ -3,12 +3,11 @@ package com.link.cloud.activity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.widget.PublicTitleView;
 import com.zitech.framework.utils.ViewUtils;
 
 /**
@@ -17,31 +16,39 @@ import com.zitech.framework.utils.ViewUtils;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class ChooseActivity extends AppBarActivity {
+public class RegularActivity extends AppBarActivity {
 
 
-    private android.widget.RelativeLayout zhijingmaiLayout;
-    private android.widget.RelativeLayout xiaochengxuLayout;
-    private android.widget.RelativeLayout passwordLayout;
+    private RelativeLayout zhijingmaiLayout;
+    private RelativeLayout xiaochengxuLayout;
+    private RelativeLayout passwordLayout;
+
+    private PublicTitleView publicTitleView;
 
     @Override
     protected void initViews() {
-        getToolbar().setBackground(getResources().getDrawable(R.drawable.ic_appbar_image));
+        getToolbar().setBackground(getResources().getDrawable(R.drawable.ic_regular_banner));
 
         zhijingmaiLayout = (RelativeLayout) findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = (RelativeLayout) findViewById(R.id.xiaochengxuLayout);
         passwordLayout = (RelativeLayout) findViewById(R.id.passwordLayout);
+        publicTitleView = (PublicTitleView) findViewById(R.id.publicTitle);
 
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
-
+        publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
+            @Override
+            public void itemClickListener() {
+                finish();
+            }
+        });
 
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_choose;
+        return R.layout.activity_regular;
     }
 
 

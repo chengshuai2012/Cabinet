@@ -8,15 +8,15 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-
     <com.link.cloud.widget.PublicTitleView
         android:id="@+id/publicTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:finish_text_Background="@drawable/border_red_gradient_round"
+        app:finish_text_Background="@drawable/border_vip_gradient_round"
         app:finish_text_color="@color/color_black_333333"
-        app:hint_text="请使用以下方式开柜"
-        app:hint_text_color="@color/color_D4D4D4" />
+        app:hint_text="@string/use_vip_way"
+        app:hint_text_color="@color/color_C69F85" />
+
 
     <LinearLayout
         android:layout_width="match_parent"

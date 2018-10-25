@@ -22,4 +22,7 @@
     <string name="cancle_string">取消</string>
     <string name="select_lock">选择柜号</string>
     <string name="ok_string">完成</string>
+    <string name="vip_member">VIP会员</string>
+    <string name="regular_member">普通会员</string>
+    <string name="use_vip_way">请使用以下VIP方式开柜</string>
 </resources>
