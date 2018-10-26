@@ -62,11 +62,10 @@ public class PublicTitleView extends LinearLayout {
         titleTextString = a.getString(R.styleable.PublicTitleView_title_text);
         titleTextSize = a.getDimension(R.styleable.PublicTitleView_title_text_size, ViewUtils.getDimen(R.dimen.w20));
         titleTextColor = a.getColor(R.styleable.PublicTitleView_title_text_color, res.getColor(R.color.red));
+
         if (a.hasValue(R.styleable.PublicTitleView_finish_text_Background)) {
             titleTextBackground = a.getResourceId(R.styleable.PublicTitleView_finish_text_Background, -1);
         }
-
-
         hintTextString = a.getString(R.styleable.PublicTitleView_hint_text);
         hintextSize = a.getDimension(R.styleable.PublicTitleView_hint_text_size, ViewUtils.getDimen(R.dimen.w20));
         hintTextColor = a.getColor(R.styleable.PublicTitleView_hint_text_color, res.getColor(R.color.white));
@@ -77,8 +76,6 @@ public class PublicTitleView extends LinearLayout {
         if (a.hasValue(R.styleable.PublicTitleView_finish_text_Background)) {
             finishTextBackground = a.getResourceId(R.styleable.PublicTitleView_finish_text_Background, -1);
         }
-
-
     }
 
     /**

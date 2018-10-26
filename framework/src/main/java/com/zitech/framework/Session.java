@@ -151,7 +151,6 @@ public class Session extends Observable {
             appInfo = context.getPackageManager()
                     .getApplicationInfo(context.getPackageName(),
                             PackageManager.GET_META_DATA);
-            channel = appInfo.metaData.getString("UMENG_CHANNEL");
         } catch (Exception e) {
             e.printStackTrace();
         }

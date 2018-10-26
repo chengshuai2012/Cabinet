@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/w600"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="@dimen/w500"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="@dimen/w20"
+
+        android:layout_marginTop="@dimen/h30"
+        android:background="@drawable/bg_white_rectangle_corner_r20"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/h50">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/cheack_phone"
+                android:textColor="@color/color_black_333333"
+                android:textSize="@dimen/w24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:layout_marginRight="@dimen/w20"
+                android:text="@string/code_cheack"
+                android:textColor="@color/color_black_333333"
+                android:textSize="@dimen/w20" />
+
+
+        </FrameLayout>
+
+        <View style="@style/DividerLineHorizontal"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/w68"
+            android:layout_marginRight="@dimen/w68"
+            android:layout_marginTop="@dimen/h10"
+            android:background="@drawable/input_bg"
+            android:orientation="horizontal">
+
+
+            <View
+                style="@style/DividerLineVertical"
+                android:layout_marginBottom="@dimen/h10"
+                android:layout_marginLeft="@dimen/w30"
+                android:layout_marginTop="@dimen/h10"></View>
+
+            <EditText
+                android:id="@+id/phoneNum"
+                android:layout_width="@dimen/w418"
+                android:layout_height="@dimen/h53"
+                android:inputType="textPassword"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:hint="@string/please_input_password"
+                android:paddingLeft="@dimen/w32"
+                android:textColor="@color/color_black_333333"
+                android:textColorHint="@color/color_gray_999999"
+                android:textSize="@dimen/w24" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="@dimen/w500"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/h30"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:columnCount="3"
+                android:paddingLeft="@dimen/w68"
+                android:paddingRight="@dimen/w68"
+                android:paddingTop="@dimen/h11"
+                android:rowCount="6">
+
+                <Button
+                    android:id="@+id/bind_keypad_1"
+                    style="@style/input_Number_style"
+                    android:text="@string/digitKeyppad_one" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_2"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:text="@string/digitKeyppad_two" />
+
+                <Button
+                    android:id="@+id/bind_keypad_3"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:text="@string/digitKeyppad_three" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_4"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_four" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_5"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_five" />
+
+                <Button
+                    android:id="@+id/bind_keypad_6"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_six" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_7"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_seven" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_8"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_eight" />
+
+                <Button
+                    android:id="@+id/bind_keypad_9"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_nine" />
+
+                <Button
+                    android:id="@+id/deleteButton"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_delect" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_0"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_zero" />
+
+                <Button
+                    android:id="@+id/cleanButton"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_clear" />
+
+
+            </GridLayout>
+
+            <Button
+                android:id="@+id/sureButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/h60"
+                android:layout_marginBottom="@dimen/h30"
+                android:layout_marginLeft="@dimen/w80"
+                android:layout_marginRight="@dimen/w80"
+                android:layout_marginTop="@dimen/h30"
+                android:background="@drawable/ic_regural_btn_bg"
+                android:text="确认"
+                android:textSize="@dimen/w24" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="@dimen/h50"
+        android:layout_height="@dimen/h50"
+        android:src="@drawable/ic_close_icon" />
+
+</RelativeLayout>

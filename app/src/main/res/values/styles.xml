@@ -138,5 +138,13 @@
     </style>
 
 
+    <style name="input_Number_style">
+        <item name="android:layout_height">@dimen/w70</item>
+        <item name="android:layout_width">@dimen/w70</item>
+        <item name="android:background">@drawable/button_bt_bg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/input_number</item>
+        <item name="android:textSize">@dimen/w29</item>
+    </style>
 
 </resources>

@@ -63,6 +63,11 @@ public class Utils extends com.zitech.framework.utils.Utils {
     private static final int DEFAULT_AVATAR_NOTIFICATION_ICON_SIZE = ViewUtils.dip2px(48);
 
 
+    public static void setCanNotEditAndClick(View view) {
+        view.setFocusable(false);
+        view.setFocusableInTouchMode(false);
+    }
+
 
     public static String getVersionName(Context context) {
         PackageManager packageManager = context.getPackageManager();

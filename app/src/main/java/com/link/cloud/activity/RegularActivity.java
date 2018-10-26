@@ -8,7 +8,9 @@ import android.widget.RelativeLayout;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
+import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ViewUtils;
 
 /**
@@ -58,15 +60,17 @@ public class RegularActivity extends AppBarActivity {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.zhijingmaiLayout:
-
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.ActivityExtra.TYPE, getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
+                showActivity(OpenActivity.class, bundle);
                 break;
             case R.id.xiaochengxuLayout:
-
+                QRCodeDialog qrCodeDialog=new QRCodeDialog(this,"");
+                qrCodeDialog.show();
                 break;
             case R.id.passwordLayout:
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.ActivityExtra.TYPE,getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
-                showActivity(OpenActivity.class, bundle);
+                InputPassWordDialog inputPassWordDialog = new InputPassWordDialog(this,false);
+                inputPassWordDialog.show();
                 break;
         }
     }

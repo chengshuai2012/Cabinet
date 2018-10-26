@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.widget.PublicTitleView;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -20,6 +21,7 @@ public class RegularOpenSuccessActivity extends AppBarActivity {
     private TextView phoneText;
     private TextView lockId;
     private TextView sureButton;
+    private PublicTitleView publicTitle;
 
     @Override
     protected void initViews() {
@@ -40,5 +42,12 @@ public class RegularOpenSuccessActivity extends AppBarActivity {
         phoneText = (TextView) findViewById(R.id.phoneText);
         lockId = (TextView) findViewById(R.id.lockId);
         sureButton = (TextView) findViewById(R.id.sureButton);
+        publicTitle = (PublicTitleView) findViewById(R.id.publicTitle);
+        publicTitle.setItemClickListener(new PublicTitleView.onItemClickListener() {
+            @Override
+            public void itemClickListener() {
+                finish();
+            }
+        });
     }
 }

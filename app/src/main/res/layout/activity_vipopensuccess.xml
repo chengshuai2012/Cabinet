@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/w110"
         android:layout_marginRight="@dimen/w110"
         android:layout_marginTop="@dimen/h87"
-        android:background="@drawable/border_red_gradient_r10"
+        android:background="@drawable/ic_vip_card_bg"
         android:orientation="vertical">
 
 
