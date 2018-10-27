@@ -26,10 +26,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.link.cloud.CabinetApplication;
-import com.mozillaonline.providers.DownloadManager;
-import com.mozillaonline.providers.downloads.DownloadInfo;
-import com.mozillaonline.providers.downloads.Downloads;
-import com.zitech.framework.Session;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -246,25 +242,6 @@ public class Utils extends com.zitech.framework.utils.Utils {
         return packageNames.contains(packageName);
     }
 
-    public static String downloadAmr(String url) {
-        DownloadManager manager = Session.getInstance().getDownloadManager();
-        DownloadInfo info = manager.query(url);
-        String key = mappingAmrId(url);
-        if (info == null) {
-            String path = "/";
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-            request.setTitle(key);
-            request.setShowRunningNotification(false);
-            request.setMimeType(com.mozillaonline.providers.downloads.Constants.MIMETYPE_AMR);
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, path);
-            request.setUid(url);
-            manager.enqueue(request);
-            return null;
-        }
-
-        return Downloads.isStatusSuccess(info.mStatus) ? info.mFileName : null;
-    }
-
     private static String mappingAmrId(String path) {
         return Utils.md5(path) + ".amr";
     }
@@ -291,26 +268,7 @@ public class Utils extends com.zitech.framework.utils.Utils {
         return null;
     }
 
-    public static boolean needUpdate(String minVersion) {
-        String currentVersion = Session.getInstance().getVersionName();
-        if (!TextUtils.isEmpty(minVersion) && !TextUtils.isEmpty(currentVersion)) {
-            String currentVersions[] = currentVersion.split(".");
-            String minVersions[] = minVersion.split(".");
-            if (currentVersions.length == currentVersions.length) {
-                for (int i = 0; i < currentVersions.length; i++) {
-                    int current = Integer.parseInt(currentVersions[i]);
-                    int min = Integer.parseInt(minVersions[i]);
-                    if (current > min) {
-                        return false;
-                    } else if (current < min) {
-                        return true;
-                    }
-                }
 
-            }
-        }
-        return false;
-    }
 
     public static boolean isPhoneNum(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber)) {

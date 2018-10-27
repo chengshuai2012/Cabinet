@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zitech.framework.BaseApplication;
-import com.zitech.framework.Session;
 import com.zitech.framework.utils.NetworkUtil;
 import com.zitech.framework.utils.ViewUtils;
 
@@ -21,7 +20,6 @@ import com.zitech.framework.utils.ViewUtils;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
-    protected Session mSession;
     private BaseApplication mApplicationContext;
     private View mLayoutView;
     private boolean mCompleted = false;
@@ -31,7 +29,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApplicationContext = BaseApplication.getInstance();
-        mSession = mApplicationContext.getSession();
+
     }
 
     @Override
@@ -110,9 +108,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return NetworkUtil.isNetworkAvailable(getActivity());
     }
 
-    public final Session getSession() {
-        return mSession;
-    }
 
 
     protected void back() {

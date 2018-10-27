@@ -12,7 +12,7 @@ import java.io.File;
  */
 public abstract class BaseApplication extends MultiDexApplication {
     private static BaseApplication mInstance;
-    private Session mSession;
+
     private static final String DOWNLOAD_DIR_NAME = "common_cache";
     private static final String UPLOAD_DIR_NAME = "upload_dir";
 
@@ -24,7 +24,6 @@ public abstract class BaseApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        mSession = new Session(this);
     }
 
     public File getUploadCacheDir() {
@@ -34,10 +33,6 @@ public abstract class BaseApplication extends MultiDexApplication {
 
     public File getDownloadCacheDir() {
         return Utils.getExistCacheDir(DOWNLOAD_DIR_NAME);
-    }
-
-    public Session getSession() {
-        return mSession;
     }
 
 }

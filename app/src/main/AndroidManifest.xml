@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.link.cloud">
-
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".CabinetApplication"
         android:allowBackup="true"
@@ -17,8 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ChooseActivity" />
-        <activity android:name=".activity.OpenSuccessActivity" />
+        <!--<activity android:name=".activity.ChooseActivity" />-->
+        <!--<activity android:name=".activity.OpenSuccessActivity" />-->
         <activity android:name=".activity.RegularActivity" />
         <activity android:name=".activity.VipActivity" />
         <activity android:name=".activity.RegularOpenSuccessActivity" />

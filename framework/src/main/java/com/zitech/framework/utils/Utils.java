@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.zitech.framework.BaseApplication;
 import com.zitech.framework.R;
-import com.zitech.framework.data.network.exception.ApiException;
 
 import java.io.File;
 import java.io.IOException;
@@ -471,17 +470,6 @@ public class Utils {
         return (a == null) ? (b == null) : a.equals(b);
     }
 
-    public static String parseError(Throwable e) {
-        if (NetworkUtil.isNetworkAvailable()) {
-            if (e instanceof ApiException) {
-                return e.getMessage();
-            } else {
-                return BaseApplication.getInstance().getString(R.string.request_failed);
-            }
-        } else {
-            return BaseApplication.getInstance().getString(R.string.network_unavailable);
-        }
-    }
 
     private final static String PATTERN = "yyyyMMddHHmmss";    // 时间戳命名
 

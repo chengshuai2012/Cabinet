@@ -49,34 +49,19 @@ android {
         abortOnError false
 
     }
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '26.0.2'
 }
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
-
-//    implementation 'org.greenrobot:greendao:2.2.0'
-    //compile 'com.umeng.analytics:analytics:latest.integration'  //友盟
-
-    // Configuration 'compile' is obsolete and has been replaced with 'implementation' and 'api'.	retrofit2 + okhttp3
-    compile "com.squareup.retrofit2:retrofit:$retrifitVersion"
-    compile "com.squareup.retrofit2:adapter-rxjava:$retrifitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$retrifitVersion"
-    compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    compile "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
-
-    // rxjava
-    compile "io.reactivex:rxandroid:$rxjavaVersion"
-    compile "io.reactivex:rxjava:$rxjavaVersion"
-    //glide
     compile "com.github.bumptech.glide:glide:$glideVersion"
     compile 'com.android.support:multidex:1.0.2'
     api 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 
 
-    //XBanner
-    //
-//    compile 'com.alibaba:fastjson:1.2.11'
+
+
 }
