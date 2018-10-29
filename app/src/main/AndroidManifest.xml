@@ -17,8 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".activity.ChooseActivity" />-->
-        <!--<activity android:name=".activity.OpenSuccessActivity" />-->
         <activity android:name=".activity.RegularActivity" />
         <activity android:name=".activity.VipActivity" />
         <activity android:name=".activity.RegularOpenSuccessActivity" />
