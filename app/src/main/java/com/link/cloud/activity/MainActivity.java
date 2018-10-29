@@ -10,17 +10,27 @@ import android.widget.TextView;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.network.BaseEntity;
-import com.link.cloud.network.BaseObserver;
+import com.link.cloud.controller.MainController;
 import com.link.cloud.network.HttpConfig;
-import com.link.cloud.network.IOMainThread;
-import com.link.cloud.network.RetrofitFactory;
+import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.RequestBindFinger;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import io.realm.Realm;
+import io.realm.RealmList;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainController.MainControllerListener {
 
     private TextView member;
     private TextView manager;
@@ -29,52 +39,18 @@ public class MainActivity extends BaseActivity {
     private LinearLayout closeLayout;
     private LinearLayout regularLayout;
     private LinearLayout vipLayout;
-
+    private MainController mainController;
+    int pageNum,total;
+    Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        RetrofitFactory.getInstence().API()
-                .appLogin("CHINA00001","0D874A5A3B0C3AAB71E35EE325693762")
-                .compose(IOMainThread.<BaseEntity<String>>composeIO2main())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    protected void onSuccees(BaseEntity<String> t) throws Exception {
-                        Logger.e("success");
-                        HttpConfig.TOKEN=t.getData();
-                        RetrofitFactory.getInstence().API().sendVCode("18574107629").compose(IOMainThread.<BaseEntity>composeIO2main()).subscribe(new BaseObserver() {
-                            @Override
-                            public void onNext(Object o) {
+        pageNum=100;
+        realm =Realm.getDefaultInstance();
+        mainController = new MainController(this);
+        mainController.login("CHINA00001","0D874A5A3B0C3AAB71E35EE325693762");
 
-                            }
-
-                            @Override
-                            protected void onSuccees(BaseEntity t) throws Exception {
-
-                            }
-
-                            @Override
-                            protected void onCodeError(String msg) throws Exception {
-
-                            }
-
-                            @Override
-                            protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    protected void onCodeError(String msg) throws Exception {
-                        Log.e("onCodeError: ",msg );
-                    }
-
-                    @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-                        Logger.e("success");
-                    }
-                });
     }
 
     @Override
@@ -116,5 +92,73 @@ public class MainActivity extends BaseActivity {
 
 
         }
+    }
+
+    @Override
+    public void onLoginSuccess(String token) {
+        HttpConfig.TOKEN =token;
+        mainController.getUser(pageNum,1);
+        mainController.temCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
+        mainController.useCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
+        mainController.returnCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
+        mainController.getCabinetInfo();
+    }
+
+    @Override
+    public void onMainErrorCode(String msg) {
+
+    }
+
+    @Override
+    public void onMainFail(Throwable e, boolean isNetWork) {
+
+    }
+
+    @Override
+    public void getUserSuccess(final BindUser data) {
+        Logger.e(data.getData().get(0).getUuid());
+        int totalPage = total / pageNum + 1;
+        ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
+        List<Future<Boolean>> futures = new ArrayList();
+        if (totalPage >= 2) {
+            for (int i = 2; i < totalPage; i++) {
+                final int finalI = i;
+                Callable<Boolean> task = new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        mainController.getUser(pageNum,finalI);
+                        return true;
+                    }
+                };
+
+                futures.add(executorService.submit(task));
+            }
+            for (Future<Boolean> future : futures) {
+                try {
+                    future.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            executorService.shutdown();
+        }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(data.getData());
+            }
+        });
+    }
+
+    @Override
+    public void onCabinetInfoSuccess(final RealmList<CabinetInfo> data) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(data);
+            }
+        });
     }
 }

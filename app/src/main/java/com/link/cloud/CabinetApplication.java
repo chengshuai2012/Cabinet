@@ -5,6 +5,9 @@ import android.os.Looper;
 
 import com.zitech.framework.BaseApplication;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class CabinetApplication extends BaseApplication {
 
     private Handler mainThreadHandler;
@@ -13,6 +16,12 @@ public class CabinetApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         mainThreadHandler = new Handler(Looper.getMainLooper());
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration.Builder()
+                .name("cabinet.realm")
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(configuration);
     }
 
     public void post(Runnable r) {
