@@ -22,7 +22,7 @@ public class QRCodeDialog extends ValidDialog implements View.OnClickListener {
     private String imageUrl;
 
     public QRCodeDialog(Context context,String imageUrl) {
-        super(context);
+        super(context, R.style.CommonDialog);
         setContentView(R.layout.dialog_qrcode);
         initView();
     }

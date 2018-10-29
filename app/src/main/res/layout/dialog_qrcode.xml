@@ -7,7 +7,7 @@
 
 
     <LinearLayout
-        android:layout_width="@dimen/w500"
+        android:layout_width="@dimen/w600"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/w20"
         android:layout_marginTop="@dimen/h30"
@@ -45,7 +45,7 @@
 
 
         <LinearLayout
-            android:layout_width="@dimen/w500"
+            android:layout_width="@dimen/w600"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/h30"
             android:gravity="center"
