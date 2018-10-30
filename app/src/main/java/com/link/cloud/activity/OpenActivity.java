@@ -46,9 +46,7 @@ public class OpenActivity extends AppBarActivity {
             }
         });
         ViewUtils.setOnClickListener(lockLayout, this);
-//        ViewUtils.setOnClickListener(sureButton, this);
-
-        sureButton.setOnClickListener(this);
+        ViewUtils.setOnClickListener(sureButton, this);
     }
 
     @Override
@@ -73,5 +71,10 @@ public class OpenActivity extends AppBarActivity {
     private void showSelectDialog() {
         BottomSelectDialog bottomSelectDialog = new BottomSelectDialog(this);
         bottomSelectDialog.show();
+    }
+
+    @Override
+    public void modelMsg(int state, String msg) {
+
     }
 }

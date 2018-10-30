@@ -49,4 +49,9 @@ public class VipOpenSuccessActivity extends AppBarActivity {
             }
         });
     }
+
+    @Override
+    public void modelMsg(int state, String msg) {
+
+    }
 }

@@ -53,4 +53,9 @@
     <string name="bind_again">请重新验证已绑定手指。</string>
 
 
+
+    <string name="move_finger">请移开手指,再次放置</string>
+    <string name="finger_success">手指验证成功</string>
+    <string name="again_finger">请移开手指,再次放置...</string>
+    <string name="same_finger">验证错误，请放置同一根手指</string>
 </resources>

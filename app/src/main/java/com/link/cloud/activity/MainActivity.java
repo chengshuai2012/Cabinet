@@ -161,4 +161,9 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
             }
         });
     }
+
+    @Override
+    public void modelMsg(int state, String msg) {
+
+    }
 }

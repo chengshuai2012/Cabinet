@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.link.cloud.CabinetApplication;
 import com.link.cloud.R;
 import com.link.cloud.utils.Utils;
+import com.link.cloud.utils.Venueutils;
 import com.link.cloud.widget.SimpleStyleDialog;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zitech.framework.utils.ViewUtils;
@@ -26,7 +28,7 @@ import rx.functions.Action1;
  * Created by OFX002 on 2018/9/20.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener{
+public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener , Venueutils.VenueCallBack{
 
     private SimpleStyleDialog denyDialog;
 
@@ -35,6 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         this.setContentView(this.getLayoutId());
+        CabinetApplication.getVenueUtils().initVenue(this, this, false);
         initViews();
     }
 
@@ -42,10 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     protected abstract int getLayoutId();
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -60,6 +59,18 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         super.onPause();
 
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            CabinetApplication.getVenueUtils().unBindService();
+        } catch (Exception e) {
+
+        }
+    }
+
 
     /**
      * @param cls 目标activity
@@ -104,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public void showActivity(Class<?> cls) {
         Intent intent = new Intent();
 
-        
+
         intent.setClass(this, cls);
         super.startActivity(intent);
         ViewUtils.anima(ViewUtils.RIGHT_IN, this);

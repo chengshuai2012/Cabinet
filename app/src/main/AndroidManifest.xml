@@ -22,6 +22,9 @@
         <activity android:name=".activity.RegularOpenSuccessActivity" />
         <activity android:name=".activity.VipOpenSuccessActivity" />
         <activity android:name=".activity.OpenActivity" />
+
+        <service android:name=".veune.MdUsbService"/>
+
     </application>
 
 </manifest>
