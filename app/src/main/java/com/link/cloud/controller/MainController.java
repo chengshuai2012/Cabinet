@@ -1,11 +1,9 @@
 package com.link.cloud.controller;
 
-import android.util.Log;
 
 import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.BaseObserver;
 import com.link.cloud.network.BaseService;
-import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
@@ -13,6 +11,7 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.orhanobut.logger.Logger;
+import com.zitech.framework.utils.ToastMaster;
 
 import java.util.ArrayList;
 
@@ -54,7 +53,6 @@ public class MainController {
                     @Override
                     protected void onSuccees(BaseEntity<String> t) throws Exception {
                         listener.onLoginSuccess(t.getData());
-
                     }
 
                     @Override
@@ -193,12 +191,12 @@ public class MainController {
 
                                @Override
                                protected void onCodeError(String msg) throws Exception {
-listener.onMainErrorCode(msg);
+                                   listener.onMainErrorCode(msg);
                                }
 
                                @Override
                                protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-listener.onMainFail(e,isNetWorkError);
+                                   listener.onMainFail(e, isNetWorkError);
                                }
                            }
                 );

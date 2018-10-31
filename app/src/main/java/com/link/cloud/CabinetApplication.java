@@ -21,7 +21,7 @@ public class CabinetApplication extends BaseApplication {
     public SerialPort serialPortOne=null;
     public SerialPort serialPortTwo=null;
     public SerialPort serialPortThree=null;
-
+    private User user;
 
 
 
@@ -39,6 +39,7 @@ public class CabinetApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        user = new User();
         mainThreadHandler = new Handler(Looper.getMainLooper());
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder()
@@ -48,6 +49,13 @@ public class CabinetApplication extends BaseApplication {
         Realm.setDefaultConfiguration(configuration);
 
         intSerialPort();
+    }
+
+
+
+
+    public User getUser() {
+        return user;
     }
 
     private void intSerialPort() {

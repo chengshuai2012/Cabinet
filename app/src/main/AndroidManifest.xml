@@ -10,18 +10,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+
+
+
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+
+
         <activity android:name=".activity.RegularActivity" />
         <activity android:name=".activity.VipActivity" />
         <activity android:name=".activity.RegularOpenSuccessActivity" />
         <activity android:name=".activity.VipOpenSuccessActivity" />
         <activity android:name=".activity.OpenActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.MainActivity" />
 
         <service android:name=".veune.MdUsbService"/>
 

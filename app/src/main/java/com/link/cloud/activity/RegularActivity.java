@@ -46,7 +46,6 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
     private RelativeLayout zhijingmaiLayout;
     private RelativeLayout xiaochengxuLayout;
     private RelativeLayout passwordLayout;
-
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
     Realm realm;
@@ -55,7 +54,6 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
     @Override
     protected void initViews() {
         getToolbar().setBackground(getResources().getDrawable(R.drawable.ic_regular_banner));
-
         realm = Realm.getDefaultInstance();
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
@@ -88,13 +86,13 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
                     String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                     if (null != uid && !TextUtils.isEmpty(uid)) {
                         unlocking(uid);
-                        rxTimerUtil.cancel();
+
                     } else {
                         ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
                     }
                 }
                 if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.move_finger));
+                    ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
                 }
                 if (state != 4 && state != 3) {
                 }
@@ -174,6 +172,9 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
 
     @Override
     public void temCabinetSuccess(BaseEntity baseEntity) {
+        rxTimerUtil.cancel();
+
+
 //        try {
 //            if (Integer.parseInt(data) <= 10) {
 //                activity.serialpprt_wk1.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate), nuberlock));

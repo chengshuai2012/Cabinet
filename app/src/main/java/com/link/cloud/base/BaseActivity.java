@@ -22,6 +22,7 @@ import com.link.cloud.widget.SimpleStyleDialog;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zitech.framework.utils.ViewUtils;
 
+import io.realm.Realm;
 import rx.functions.Action1;
 
 /**
@@ -32,11 +33,14 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     private SimpleStyleDialog denyDialog;
 
+    public Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         this.setContentView(this.getLayoutId());
+        realm= Realm.getDefaultInstance();
         CabinetApplication.getVenueUtils().initVenue(this, this, false);
         initViews();
     }
@@ -64,10 +68,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        realm.close();
         try {
             CabinetApplication.getVenueUtils().unBindService();
         } catch (Exception e) {
-
         }
     }
 

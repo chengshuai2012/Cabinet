@@ -8,7 +8,7 @@ package com.link.cloud.network;
 public class ApiConstants {
 
     //APP登录
-    public static final String APPLOGIN = "{deviceCode}/{password}";
+    public static final String APPLOGIN = "/{deviceCode}/{password}";
 
     //获取验证码
     public static final String SENDVCODE = "sendVCode/{phone}";

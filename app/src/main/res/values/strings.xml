@@ -58,4 +58,16 @@
     <string name="finger_success">手指验证成功</string>
     <string name="again_finger">请移开手指,再次放置...</string>
     <string name="same_finger">验证错误，请放置同一根手指</string>
+
+    <string name="device_id">设备ID:</string>
+    <string name="device_psw">设备密码</string>
+    <string name="please_device_psw">请输入设备密码</string>
+    <string name="confirm">确定</string>
+    <string name="back_system_main">返回系统主界面</string>
+    <string name="restart">重启APP</string>
+    <string name="back_app">返回程序主页</string>
+    <string name="back_system">返回系统设置</string>
+    <string name="close_door">门禁关闭</string>
+    <string name="open_door">门禁开启</string>
+    <string name="save_success">保存成功</string>
 </resources>
