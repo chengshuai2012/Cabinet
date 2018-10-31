@@ -6,6 +6,10 @@ import android.os.Looper;
 import com.link.cloud.utils.Venueutils;
 import com.zitech.framework.BaseApplication;
 
+import java.io.File;
+import java.io.IOException;
+
+import android_serialport_api.SerialPort;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -13,6 +17,12 @@ public class CabinetApplication extends BaseApplication {
 
     private Handler mainThreadHandler;
     public static Venueutils venueUtils;
+
+    public SerialPort serialPortOne=null;
+    public SerialPort serialPortTwo=null;
+    public SerialPort serialPortThree=null;
+
+
 
 
     public static Venueutils getVenueUtils() {
@@ -36,6 +46,39 @@ public class CabinetApplication extends BaseApplication {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
+
+        intSerialPort();
+    }
+
+    private void intSerialPort() {
+
+        try {
+            serialPortOne=new SerialPort(new File("/dev/ttysWK1"),9600,0);
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            serialPortTwo=new SerialPort(new File("/dev/ttysWK2"),9600,0);
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            serialPortThree=new SerialPort(new File("/dev/ttysWK3"),9600,0);
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void post(Runnable r) {

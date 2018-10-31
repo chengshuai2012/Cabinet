@@ -6,6 +6,7 @@ package com.link.cloud.network;
  * 邮箱：zar.l@qq.com
  */
 public class ApiConstants {
+
     //APP登录
     public static final String APPLOGIN = "{deviceCode}/{password}";
 

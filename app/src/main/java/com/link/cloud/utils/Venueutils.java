@@ -97,6 +97,10 @@ public class Venueutils {
     }
 
     List<AllUser> subListPeople = new ArrayList<>();
+
+
+
+
     public String identifyNewImg(final List<AllUser> peoples) {
         final int nThreads=peoples.size()/1000+1;
         ExecutorService executorService = Executors.newFixedThreadPool(nThreads);

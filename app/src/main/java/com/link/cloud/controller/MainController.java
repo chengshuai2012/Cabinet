@@ -35,6 +35,9 @@ public class MainController {
         void getUserSuccess(BindUser data);
 
         void onCabinetInfoSuccess(RealmList<CabinetInfo> data);
+
+        void temCabinetSuccess(BaseEntity baseEntity);
+
     }
 
     private BaseService api;
@@ -109,12 +112,12 @@ public class MainController {
 
                     @Override
                     protected void onCodeError(String msg) throws Exception {
-
+                        listener.onMainErrorCode(msg);
                     }
 
                     @Override
                     protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-
+                        listener.onMainFail(e, isNetWorkError);
                     }
                 });
     }
@@ -133,17 +136,17 @@ public class MainController {
 
                     @Override
                     protected void onSuccees(BaseEntity t) throws Exception {
-
+                        listener.temCabinetSuccess(t);
                     }
 
                     @Override
                     protected void onCodeError(String msg) throws Exception {
-
+                        listener.onMainErrorCode(msg);
                     }
 
                     @Override
                     protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-
+                        listener.onMainFail(e, isNetWorkError);
                     }
                 });
     }

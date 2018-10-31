@@ -36,7 +36,7 @@ public interface BaseService {
     @POST(ApiConstants.USECABINET)
     Observable<BaseEntity> useCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
-    /**退柜*/
+    /**临时柜*/
     @POST(ApiConstants.TEMCABINET)
     Observable<BaseEntity> temCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 

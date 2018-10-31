@@ -11,10 +11,13 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.MainController;
+import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.HttpConfig;
+import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
+import com.link.cloud.utils.NettyClientBootstrap;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
@@ -28,6 +31,7 @@ import java.util.concurrent.Future;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 
 public class MainActivity extends BaseActivity implements MainController.MainControllerListener {
@@ -40,16 +44,18 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
     private LinearLayout regularLayout;
     private LinearLayout vipLayout;
     private MainController mainController;
-    int pageNum,total;
+    int pageNum, total;
     Realm realm;
+    private NettyClientBootstrap nettyClientBootstrap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        pageNum=100;
-        realm =Realm.getDefaultInstance();
+        pageNum = 100;
+        realm = Realm.getDefaultInstance();
         mainController = new MainController(this);
-        mainController.login("CHINA00001","0D874A5A3B0C3AAB71E35EE325693762");
+        mainController.login("CHINA00001", "0D874A5A3B0C3AAB71E35EE325693762");
 
     }
 
@@ -79,15 +85,15 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        Bundle bundle =new Bundle();
+        Bundle bundle = new Bundle();
         switch (v.getId()) {
             case R.id.regularLayout:
-                bundle.putString(Constants.ActivityExtra.TYPE,"REGULAR");
-                showActivity(RegularActivity.class,bundle);
+                bundle.putString(Constants.ActivityExtra.TYPE, "REGULAR");
+                showActivity(RegularActivity.class, bundle);
                 break;
             case R.id.vipLayout:
-                bundle.putString(Constants.ActivityExtra.TYPE,"VIP");
-                showActivity(VipActivity.class,bundle);
+                bundle.putString(Constants.ActivityExtra.TYPE, "VIP");
+                showActivity(VipActivity.class, bundle);
                 break;
 
 
@@ -96,8 +102,8 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
 
     @Override
     public void onLoginSuccess(String token) {
-        HttpConfig.TOKEN =token;
-        mainController.getUser(pageNum,1);
+        HttpConfig.TOKEN = token;
+        mainController.getUser(pageNum, 1);
         mainController.temCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
         mainController.useCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
         mainController.returnCabinet("c2ef5a5e995e48b08b7650f0648b52b2");
@@ -126,7 +132,7 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
                 Callable<Boolean> task = new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        mainController.getUser(pageNum,finalI);
+                        mainController.getUser(pageNum, finalI);
                         return true;
                     }
                 };
@@ -147,6 +153,7 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                realm.where(AllUser.class).findAll().deleteAllFromRealm();
                 realm.copyToRealm(data.getData());
             }
         });
@@ -154,12 +161,19 @@ public class MainActivity extends BaseActivity implements MainController.MainCon
 
     @Override
     public void onCabinetInfoSuccess(final RealmList<CabinetInfo> data) {
+        final RealmResults<CabinetInfo> cabinetInfoRealmList = realm.where(CabinetInfo.class).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                cabinetInfoRealmList.deleteAllFromRealm();
                 realm.copyToRealm(data);
             }
         });
+    }
+
+    @Override
+    public void temCabinetSuccess(BaseEntity baseEntity) {
+
     }
 
     @Override

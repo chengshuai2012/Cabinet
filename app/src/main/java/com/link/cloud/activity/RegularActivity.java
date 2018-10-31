@@ -5,6 +5,7 @@ import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -12,7 +13,11 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.controller.MainController;
+import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
@@ -20,9 +25,13 @@ import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
+import android_serialport_api.SerialPort;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -31,7 +40,7 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends AppBarActivity {
+public class RegularActivity extends AppBarActivity implements MainController.MainControllerListener {
 
 
     private RelativeLayout zhijingmaiLayout;
@@ -41,6 +50,7 @@ public class RegularActivity extends AppBarActivity {
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
     Realm realm;
+    private MainController mainController;
 
     @Override
     protected void initViews() {
@@ -51,6 +61,7 @@ public class RegularActivity extends AppBarActivity {
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
         publicTitleView = findViewById(R.id.publicTitle);
+        mainController = new MainController(this);
 
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
@@ -72,11 +83,14 @@ public class RegularActivity extends AppBarActivity {
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {
                     RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                    if (null != CabinetApplication.getVenueUtils().identifyNewImg(users)) {
+                    List<AllUser> peoples=new ArrayList<>();
+                    peoples.addAll(realm.copyFromRealm(users));
+                    String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                    if (null != uid && !TextUtils.isEmpty(uid)) {
+                        unlocking(uid);
                         rxTimerUtil.cancel();
                     } else {
                         ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
-
                     }
                 }
                 if (state == 4) {
@@ -87,6 +101,11 @@ public class RegularActivity extends AppBarActivity {
             }
         });
     }
+
+    private void unlocking(String uid) {
+        mainController.temCabinet(uid);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -125,5 +144,48 @@ public class RegularActivity extends AppBarActivity {
     @Override
     public void modelMsg(int state, String msg) {
 
+    }
+
+    @Override
+    public void onLoginSuccess(String token) {
+
+    }
+
+    @Override
+    public void onMainErrorCode(String msg) {
+
+    }
+
+    @Override
+    public void onMainFail(Throwable e, boolean isNetWork) {
+
+    }
+
+    @Override
+    public void getUserSuccess(BindUser data) {
+
+    }
+
+    @Override
+    public void onCabinetInfoSuccess(RealmList<CabinetInfo> data) {
+
+
+    }
+
+    @Override
+    public void temCabinetSuccess(BaseEntity baseEntity) {
+//        try {
+//            if (Integer.parseInt(data) <= 10) {
+//                activity.serialpprt_wk1.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate), nuberlock));
+//                com.orhanobut.logger.Logger.e("FirstFragment===1" + Integer.parseInt(lockplate) + "====" + nuberlock);
+//            } else if (Integer.parseInt(lockplate) > 10 && Integer.parseInt(lockplate) <= 20) {
+//                activity.serialpprt_wk2.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate) % 10, nuberlock));
+//                com.orhanobut.logger.Logger.e("FirstFragment===2" + Integer.parseInt(lockplate) + "====" + nuberlock);
+//            } else if (Integer.parseInt(lockplate) > 20 && Integer.parseInt(lockplate) <= 30) {
+//                activity.serialpprt_wk3.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate) % 10, nuberlock));
+//                com.orhanobut.logger.Logger.e("FirstFragment===3" + Integer.parseInt(lockplate) + "====" + nuberlock);
+//            }
+//        } catch (Exception e) {
+//        }
     }
 }

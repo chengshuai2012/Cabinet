@@ -15,7 +15,7 @@ android {
         }
 
         ndk {
-            abiFilters  "armeabi-v7a"
+            abiFilters "armeabi-v7a", "arm"
         }
     }
     buildTypes {
@@ -24,6 +24,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
