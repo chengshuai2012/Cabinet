@@ -7,12 +7,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
+import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.bean.AllUser;
@@ -40,30 +44,38 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends AppBarActivity implements MainController.MainControllerListener {
+public class RegularActivity extends BaseActivity implements MainController.MainControllerListener {
 
 
-    private RelativeLayout zhijingmaiLayout;
-    private RelativeLayout xiaochengxuLayout;
-    private RelativeLayout passwordLayout;
+    private LinearLayout zhijingmaiLayout;
+    private LinearLayout xiaochengxuLayout;
+    private TextView passwordLayout;
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
     Realm realm;
     private MainController mainController;
+    private String uuid;
+    private LinearLayout setLayout;
+    private TextView member;
+    private TextView manager;
+
 
     @Override
     protected void initViews() {
-        getToolbar().setBackground(getResources().getDrawable(R.drawable.ic_regular_banner));
         realm = Realm.getDefaultInstance();
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
         publicTitleView = findViewById(R.id.publicTitle);
-        mainController = new MainController(this);
+        setLayout = (LinearLayout) findViewById(R.id.setLayout);
+        member = (TextView) findViewById(R.id.member);
+        manager = (TextView) findViewById(R.id.manager);
 
+        mainController = new MainController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
+        ViewUtils.setOnClickListener(manager, this);
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
             public void itemClickListener() {
@@ -72,6 +84,10 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
         });
         rxTimerUtil = new RxTimerUtil();
         finger();
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
+            setLayout.setVisibility(View.GONE);
+        }
+
     }
 
     private void finger() {
@@ -81,7 +97,7 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {
                     RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                    List<AllUser> peoples=new ArrayList<>();
+                    List<AllUser> peoples = new ArrayList<>();
                     peoples.addAll(realm.copyFromRealm(users));
                     String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                     if (null != uid && !TextUtils.isEmpty(uid)) {
@@ -101,6 +117,7 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
     }
 
     private void unlocking(String uid) {
+        uuid = uid;
         mainController.temCabinet(uid);
     }
 
@@ -126,15 +143,19 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
             case R.id.zhijingmaiLayout:
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.ActivityExtra.TYPE, getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
-                showActivity(OpenActivity.class, bundle);
+                showActivity(RegularOpenActivity.class, bundle);
                 break;
             case R.id.xiaochengxuLayout:
-                QRCodeDialog qrCodeDialog = new QRCodeDialog(this, "");
-                qrCodeDialog.show();
+
                 break;
             case R.id.passwordLayout:
-                InputPassWordDialog inputPassWordDialog = new InputPassWordDialog(this, false);
-                inputPassWordDialog.show();
+                Bundle bundle1 = new Bundle();
+                bundle1.putString(Constants.ActivityExtra.TYPE, "PASSWORD");
+                showActivity(RegularOpenSuccessActivity.class, bundle1);
+                break;
+
+            case R.id.manager:
+                skipActivity(SettingActivity.class);
                 break;
         }
     }
@@ -151,12 +172,16 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
 
     @Override
     public void onMainErrorCode(String msg) {
-
+        if (TextUtils.isEmpty(uuid) && msg.equals("400000500026")) {
+            mainController.returnCabinet(uuid);
+        }
     }
 
     @Override
     public void onMainFail(Throwable e, boolean isNetWork) {
-
+        if (TextUtils.isEmpty(uuid)) {
+            mainController.returnCabinet(uuid);
+        }
     }
 
     @Override
@@ -173,8 +198,6 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
     @Override
     public void temCabinetSuccess(BaseEntity baseEntity) {
         rxTimerUtil.cancel();
-
-
 //        try {
 //            if (Integer.parseInt(data) <= 10) {
 //                activity.serialpprt_wk1.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate), nuberlock));
@@ -189,4 +212,5 @@ public class RegularActivity extends AppBarActivity implements MainController.Ma
 //        } catch (Exception e) {
 //        }
     }
+
 }

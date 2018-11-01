@@ -8,6 +8,8 @@ import com.google.gson.JsonParser;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -32,10 +34,13 @@ public class InterceptorUtil {
         return new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
-                if(message.contains("http://")||message.contains("data")){
-                    Logger.e(TAG+message);
+                try {
+                    String text = URLDecoder.decode(message, "utf-8");
+                    Log.e("OKHttp-----", text);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    Log.e("OKHttp-----", message);
                 }
-
             }
         }).setLevel(HttpLoggingInterceptor.Level.BODY);
     }

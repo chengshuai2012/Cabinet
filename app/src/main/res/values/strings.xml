@@ -9,11 +9,12 @@
     <string name="queit_string">退柜</string>
     <string name="back_home">返回首页</string>
     <string name="mode_one">方式1.指静脉验证开柜</string>
-    <string name="mode_one_hint">请点击界面扫描二维码或输入手机号后，将手指 正确放置模块上方完成验证，切勿用力按压听到 “验证成功”设备开柜</string>
+    <string name="mode_one_hint">请将手指正确放置模块上方完成验证，切勿用力按压听到“验证成功”设备开柜</string>
     <string name="mode_two">方式2.小程序二维码开柜</string>
-    <string name="mode_two_hint">请将小程序二维码在扫描枪扫描完成验证， 听到“验证成功”设备开柜</string>
+    <string name="mode_two_hint">请将小程序二维码在扫描枪扫描完成验证，听到“验证成功”设备开柜</string>
     <string name="mode_three">方式3.密码口令开柜</string>
     <string name="mode_three_hint">请点击界面选择已使用的柜号，输入自己的手机 后4位进行验证，听到“验证成功”设备开柜</string>
+    <string name="finger_string">请将手指正确放置模块上方完成验证，切勿用力按压听到“验证成功”设备开柜</string>
     <string name="sure_string">确认</string>
     <string name="aready_open_string">请取走您的物品关好柜门</string>
     <string name="password_open">密码开柜</string>
@@ -29,7 +30,7 @@
 
     <string name="vuene_login">指静脉登陆</string>
     <string name="please_input_tel">请输入手机号</string>
-    <string name="please_input_password">请输入密码</string>
+    <string name="please_input_password">请输入你的密码</string>
     <string name="digitKeyppad_clear">清空</string>
     <string name="digitKeyppad_delect">退格</string>
     <string name="digitKeyppad_zero">0</string>
@@ -42,6 +43,12 @@
     <string name="digitKeyppad_three">3</string>
     <string name="digitKeyppad_two">2</string>
     <string name="digitKeyppad_one">1</string>
+
+
+    <string name="input_cabinet_nu">请输入你的柜号</string>
+
+
+
 
     <string name="back">返回</string>
     <string name="next">下一步</string>

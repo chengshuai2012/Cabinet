@@ -9,105 +9,398 @@
     android:orientation="vertical">
 
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/h334"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_regular_title_bg" />
+
+
+        <ImageView
+            android:layout_width="@dimen/w244"
+            android:layout_height="@dimen/h86"
+            android:layout_marginLeft="@dimen/h41"
+            android:layout_marginTop="@dimen/h28"
+            android:src="@drawable/ic_write_handy_log" />
+
+    </FrameLayout>
+
+
     <com.link.cloud.widget.PublicTitleView
         android:id="@+id/publicTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:finish_text_Background="@drawable/border_red_gradient_round"
         app:finish_text_color="@color/color_black_333333"
-        app:hint_text="请使用以下方式开柜"
-        app:hint_text_color="@color/color_D4D4D4" />
+        app:hint_text="@string/welcome_to_use_sweat_locker"
+        app:hint_text_color="@color/color_ABB6C8"
+        app:hint_text_size="@dimen/w20"
+        app:title_text="@string/well_use_string"
+        app:title_text_Background="@null"
+        app:title_text_color="@color/color_ABB6C8" />
 
-    <LinearLayout
+    <View
+        style="@style/DividerLineHorizontal"
+        android:layout_marginLeft="@dimen/w150"
+        android:layout_marginRight="@dimen/w150"
+        android:layout_marginTop="@dimen/h50"
+        android:background="@color/dark_gray"></View>
+
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/h281"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/w110"
         android:layout_marginRight="@dimen/w110"
-        android:layout_marginTop="@dimen/h87"
-        android:background="@drawable/ic_regural_card_bg"
-        android:orientation="vertical">
+        android:layout_marginTop="-1dp">
 
-
-        <ImageView
-            android:layout_width="@dimen/w151"
-            android:layout_height="@dimen/h53"
-            android:layout_marginLeft="@dimen/w37"
-            android:layout_marginTop="@dimen/h33"
-            android:src="@drawable/ic_regular_handy_logo" />
 
         <TextView
-            android:id="@+id/nameText"
-            style="@style/CommonText"
-            android:layout_marginLeft="@dimen/w37"
-            android:layout_marginTop="@dimen/h101"
-            android:textColor="@color/color_1d1d1d"
-            android:textSize="@dimen/w21"
-            tools:text="sdafasdsdf" />
+            android:layout_width="@dimen/w120"
+            android:layout_height="@dimen/h60"
+            android:layout_gravity="left"
+            android:background="@drawable/border_gray_gradient"
+            android:gravity="center"
+            android:text="开柜成功"
+            android:textColor="@color/black"
+            android:textSize="@dimen/w18"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/openWay"
+            android:layout_width="@dimen/w120"
+            android:layout_height="@dimen/h60"
+            android:layout_gravity="right"
+            android:background="@null"
+            android:gravity="center"
+            android:text="开柜成功"
+            android:textColor="@color/color_FFABB6C8"
+            android:textSize="@dimen/w18"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/openSuccessLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/h281"
+            android:layout_marginLeft="@dimen/w110"
+            android:layout_marginRight="@dimen/w110"
+            android:layout_marginTop="@dimen/h87"
+            android:background="@drawable/ic_regural_card_bg"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/w151"
+                android:layout_height="@dimen/h53"
+                android:layout_marginLeft="@dimen/w37"
+                android:layout_marginTop="@dimen/h33"
+                android:src="@drawable/ic_write_handy_log" />
 
             <TextView
-                android:id="@+id/phoneText"
+                android:id="@+id/nameText"
                 style="@style/CommonText"
                 android:layout_marginLeft="@dimen/w37"
-                android:layout_weight="1"
+                android:layout_marginTop="@dimen/h101"
                 android:textColor="@color/color_1d1d1d"
                 android:textSize="@dimen/w21"
                 tools:text="sdafasdsdf" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/cardNameText"
-                style="@style/CommonText"
-                android:layout_marginRight="@dimen/w46"
-                android:drawableLeft="@drawable/ic_reguarl_log"
-                android:gravity="right"
-                android:textColor="@color/white"
-                android:textSize="@dimen/w25"
-                tools:text="VIP学员" />
+                <TextView
+                    android:id="@+id/phoneText"
+                    style="@style/CommonText"
+                    android:layout_marginLeft="@dimen/w37"
+                    android:layout_weight="1"
+                    android:textColor="@color/color_1d1d1d"
+                    android:textSize="@dimen/w21"
+                    tools:text="sdafasdsdf" />
+
+                <TextView
+                    android:id="@+id/cardNameText"
+                    style="@style/CommonText"
+                    android:layout_marginRight="@dimen/w46"
+                    android:drawableLeft="@drawable/ic_reguarl_log"
+                    android:gravity="right"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/w25"
+                    tools:text="VIP学员" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lockId"
+            style="@style/CommonText"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/h61"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/w41"
+            android:textStyle="bold"
+            tools:text="B102  柜门已打开" />
+
+        <TextView
+            style="@style/CommonText"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/h19"
+            android:gravity="center"
+            android:text="@string/aready_open_string"
+            android:textColor="@color/white"
+            android:textSize="@dimen/w24" />
+
+        <TextView
+            android:id="@+id/finishDealButton"
+            style="@style/CommonText"
+            android:layout_width="@dimen/w302"
+            android:layout_height="@dimen/h55"
+            android:layout_marginTop="@dimen/h65"
+            android:background="@drawable/ic_regural_btn_bg"
+            android:gravity="center"
+            android:text="@string/sure_string"
+            android:textColor="@color/color_ff5a381b"
+            android:textSize="@dimen/w24" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/passwordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/h60"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="@dimen/w500"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_bg"
+                android:orientation="horizontal">
+
+
+                <View
+                    style="@style/DividerLineVertical"
+                    android:layout_marginBottom="@dimen/h10"
+                    android:layout_marginLeft="@dimen/w30"
+                    android:layout_marginTop="@dimen/h10"></View>
+
+                <EditText
+                    android:id="@+id/containerNo"
+                    android:layout_width="@dimen/w418"
+                    android:layout_height="@dimen/h53"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:hint="@string/input_cabinet_nu"
+                    android:inputType="textPassword"
+                    android:paddingLeft="@dimen/w32"
+                    android:textColor="@color/color_black_333333"
+                    android:textColorHint="@color/color_gray_999999"
+                    android:textSize="@dimen/w24" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_bg"
+                android:orientation="horizontal">
+
+
+                <View
+                    style="@style/DividerLineVertical"
+                    android:layout_marginBottom="@dimen/h10"
+                    android:layout_marginLeft="@dimen/w30"
+                    android:layout_marginTop="@dimen/h10"></View>
+
+                <EditText
+                    android:id="@+id/inputPassword"
+                    android:layout_width="@dimen/w418"
+                    android:layout_height="@dimen/h53"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:hint="@string/please_input_password"
+                    android:inputType="textPassword"
+                    android:paddingLeft="@dimen/w32"
+                    android:textColor="@color/color_black_333333"
+                    android:textColorHint="@color/color_gray_999999"
+                    android:textSize="@dimen/w24" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="@dimen/w500"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/h20"
+            android:background="@drawable/input_borad_bg"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/h10"
+                android:columnCount="3"
+                android:paddingLeft="@dimen/w68"
+                android:paddingRight="@dimen/w68"
+                android:paddingTop="@dimen/h11"
+                android:rowCount="6">
+
+                <Button
+                    android:id="@+id/bind_keypad_1"
+                    style="@style/input_Number_style"
+                    android:text="@string/digitKeyppad_one" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_2"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:text="@string/digitKeyppad_two" />
+
+                <Button
+                    android:id="@+id/bind_keypad_3"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:text="@string/digitKeyppad_three" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_4"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_four" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_5"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_five" />
+
+                <Button
+                    android:id="@+id/bind_keypad_6"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_six" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_7"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_seven" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_8"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_eight" />
+
+                <Button
+                    android:id="@+id/bind_keypad_9"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_nine" />
+
+
+                <Button
+                    android:id="@+id/cleanButton"
+                    style="@style/input_Number_style"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_clear" />
+
+
+                <Button
+                    android:id="@+id/bind_keypad_0"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_zero" />
+
+
+                <Button
+                    android:id="@+id/deleteButton"
+                    style="@style/input_Number_style"
+                    android:layout_marginLeft="@dimen/w60"
+                    android:layout_marginTop="@dimen/h11"
+                    android:text="@string/digitKeyppad_delect" />
+
+
+            </GridLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/h60"
+                android:layout_marginBottom="@dimen/h40"
+                android:layout_marginTop="@dimen/h40"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/backButton"
+                    android:layout_width="@dimen/w160"
+                    android:layout_height="@dimen/h60"
+                    android:background="@drawable/border_lesson_gra"
+                    android:text="@string/back"
+                    android:textColor="@color/color_ABB6C8"
+                    android:textSize="@dimen/w26"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/sureButton"
+                    android:layout_width="@dimen/w160"
+                    android:layout_height="@dimen/h60"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="@dimen/w20"
+                    android:background="@drawable/border_gray_gradient"
+                    android:text="@string/sure_string"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/w26"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
 
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/lockId"
-        style="@style/CommonText"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/h61"
-        android:gravity="center"
-        android:textSize="@dimen/w41"
-        android:textStyle="bold"
-        tools:text="B102  柜门已打开" />
-
-    <TextView
-        style="@style/CommonText"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/h19"
-        android:gravity="center"
-        android:text="@string/aready_open_string"
-        android:textSize="@dimen/w24" />
-
-
-    <TextView
-        android:id="@+id/sureButton"
-        style="@style/CommonText"
-        android:layout_width="@dimen/w302"
-        android:layout_height="@dimen/h55"
-        android:layout_marginTop="@dimen/h65"
-        android:background="@drawable/ic_regural_btn_bg"
-        android:gravity="center"
-        android:text="@string/sure_string"
-        android:textColor="@color/color_ff5a381b"
-        android:textSize="@dimen/w24" />
 
 
 </LinearLayout>

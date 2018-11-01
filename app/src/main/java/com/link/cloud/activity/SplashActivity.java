@@ -53,17 +53,9 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (TextUtils.isEmpty(User.get().getPassWord())) {
             skipActivity(SettingActivity.class);
         } else {
-//            getToken();
+
         }
-        rootLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getToken();
-            }
-        });
     }
-
-
     private void getToken() {
         RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
         if (!all.isEmpty() && all.size() >= 0) {
@@ -73,13 +65,6 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
             skipActivity(SettingActivity.class);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
-    }
-
 
     @Override
     protected int getLayoutId() {
@@ -96,9 +81,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         HttpConfig.TOKEN = token;
         User.get().setToken(token);
         mainController.getUser(pageNum, 1);
-
     }
-
     @Override
     public void onMainErrorCode(String msg) {
     }
@@ -107,7 +90,6 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     public void onMainFail(Throwable e, boolean isNetWork) {
 
     }
-
     @Override
     public void getUserSuccess(final BindUser data) {
         Logger.e(data.getData().get(0).getUuid());

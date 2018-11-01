@@ -120,7 +120,7 @@ public class MainController {
                 });
     }
 
-    public void temCabinet(String uuid) {
+    public void temCabinet(final String uuid) {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setUuid(uuid);
         api.temCabinet(retrunCabinetRequest)
@@ -128,8 +128,13 @@ public class MainController {
                 .subscribe(new BaseObserver() {
 
                     @Override
-                    public void onNext(Object o) {
+                    public void onNext(BaseEntity baseEntity) {
 
+                        if (baseEntity.getCode().equals("400000500026")) {
+                            returnCabinet(uuid);
+                        } else {
+
+                        }
                     }
 
                     @Override

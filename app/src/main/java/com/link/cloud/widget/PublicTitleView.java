@@ -91,7 +91,7 @@ public class PublicTitleView extends LinearLayout {
         finsh = (TextView) findViewById(R.id.finsh);
         finsh.setTextColor(finshTextColor);
 
-
+//
         if (hasValue(titleTextBackground)) {
             finsh.setBackgroundResource(titleTextBackground);
         }
@@ -104,9 +104,6 @@ public class PublicTitleView extends LinearLayout {
             title.setText(titleTextString);
             title.setVisibility(View.VISIBLE);
             title.setTextColor(titleTextColor);
-            if (hasValue(titleTextBackground)) {
-                title.setBackgroundResource(titleTextBackground);
-            }
         } else {
             title.setVisibility(View.GONE);
         }

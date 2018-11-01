@@ -16,25 +16,23 @@
         <TextView
             android:id="@+id/title"
             style="@style/CommonText"
-            android:layout_width="@dimen/w177"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/h39"
-            android:background="@drawable/border_write_gradient"
             android:gravity="center"
-            android:textColor="@color/common_bg"
-            android:textSize="@dimen/w20"
-            tools:text="密码开柜"
-
-            />
+            android:text="@string/well_use_string"
+            android:textColor="@color/color_ABB6C8"
+            android:textSize="@dimen/w32"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/hintText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:textColor="@color/color_DAA254"
-            android:textSize="@dimen/w32"
-            android:textStyle="bold"
-            tools:text="阿斯顿发到沙发上的" />
+            android:text="@string/welcome_to_use_sweat_locker"
+            android:textColor="@color/color_ABB6C8"
+            android:textSize="@dimen/w20"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -45,9 +43,10 @@
         android:layout_marginRight="@dimen/w30"
         android:background="@drawable/border_red_gradient_round"
         android:gravity="center"
+        android:text="@string/back_home"
         android:textColor="@color/black"
         android:textSize="@dimen/w20"
-        android:text="@string/back_home" />
+        android:textStyle="bold" />
 
 
 </LinearLayout>
