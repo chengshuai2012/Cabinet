@@ -1,6 +1,5 @@
 package com.link.cloud.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
@@ -8,10 +7,8 @@ import android.widget.TextClock;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.zitech.framework.utils.ViewUtils;
 
@@ -109,7 +106,7 @@ public class RegularOpenActivity extends BaseActivity implements MainController.
     }
 
     @Override
-    public void temCabinetSuccess(CabinetBean cabinetBean) {
+    public void temCabinetSuccess(CabinetInfo cabinetBean) {
         //开柜子
     }
 
