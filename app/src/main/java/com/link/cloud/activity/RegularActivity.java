@@ -52,6 +52,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     private TextView member;
     private TextView manager;
     private EditText editText;
+    private String mType;
 
 
     @Override
@@ -66,6 +67,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
         editText = findViewById(R.id.infoId);
+        if (getIntent() != null)
+            mType = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
+
+        if (!TextUtils.isEmpty(mType)) {
+            publicTitleView.setFinsh(View.GONE);
+        }
 
         mainController = new MainController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
@@ -119,7 +126,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                     }
                 }
                 if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
+                    ToastMaster.shortToast(getResources().getString(R.string.please_move_finger));
                 }
                 if (state != 4 && state != 3) {
                 }
@@ -132,7 +139,9 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
         showActivity(RegularOpenActivity.class, bundle);
-        finish();
+        if (TextUtils.isEmpty(mType)) {
+            finish();
+        }
     }
 
 
@@ -182,6 +191,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
 
     }
+
     @Override
     public void onMainErrorCode(String msg) {
     }

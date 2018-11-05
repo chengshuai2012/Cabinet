@@ -1,5 +1,6 @@
 package com.link.cloud.activity;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.link.cloud.Constants;
@@ -36,7 +37,6 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     int pageNum, total;
     private MainController mainController;
     Realm realm;
-    private CabnetDeviceInfoBean cabnetDeviceInfoBean;
 
 
     @Override
@@ -47,7 +47,11 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (TextUtils.isEmpty(User.get().getPassWord())) {
             skipActivity(SettingActivity.class);
         } else {
-            getToken();
+            if (TextUtils.isEmpty(User.get().getToken())) {
+                getToken();
+            } else {
+                showNextActivity();
+            }
         }
     }
 
@@ -75,7 +79,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
         HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
         User.get().setToken(cabnetDeviceInfoBean.getToken());
-        this.cabnetDeviceInfoBean = cabnetDeviceInfoBean;
+        User.get().setCabinetType(cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId());
         mainController.getUser(pageNum, 1);
     }
 
@@ -125,16 +129,19 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                 realm.copyToRealm(data.getData());
             }
         });
-        if (cabnetDeviceInfoBean != null) {
-//
-//            1003 临时柜
-//            1004 月租柜
-//            1005 混合柜
-            if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.REGULAR_CABINET) {
-                skipActivity(RegularActivity.class);
-            } else if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.VIP_CABINET) {
-                skipActivity(VipActivity.class);
-            } else if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.VIP_REGULAR_CABINET) {
+       showNextActivity();
+    }
+
+    private void showNextActivity() {
+        if (User.get().getCabinetType() >= 0) {
+            Bundle bundle = new Bundle();
+            if (User.get().getCabinetType() == Constants.REGULAR_CABINET) {
+                bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
+                skipActivity(RegularActivity.class, bundle);
+            } else if (User.get().getCabinetType() == Constants.VIP_CABINET) {
+                bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
+                skipActivity(VipActivity.class, bundle);
+            } else if (User.get().getCabinetType()== Constants.VIP_REGULAR_CABINET) {
                 skipActivity(MainActivity.class);
             }
         }

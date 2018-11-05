@@ -50,7 +50,7 @@ public class CabinetApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         user = new User();
-        HttpConfig.TOKEN="";
+        HttpConfig.TOKEN=user.getToken();
         mainThreadHandler = new Handler(Looper.getMainLooper());
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder()
