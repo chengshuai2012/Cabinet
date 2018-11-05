@@ -36,7 +36,7 @@ import md.com.sdk.MicroFingerVein;
 
 public class Venueutils {
     public MdUsbService.MyBinder mdDeviceBinder;
-    private byte[] img;
+    public byte[] img;
     Context context;
     VenueCallBack callBack;
     private boolean bOpen = false;//设备是否打开

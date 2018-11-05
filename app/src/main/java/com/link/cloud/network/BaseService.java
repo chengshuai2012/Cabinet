@@ -46,4 +46,8 @@ public interface BaseService {
     /**获取柜子配置信息*/
     @GET(ApiConstants.GETCABINETINFO)
     Observable<BaseEntity<RealmList<CabinetInfo>>> getCabinetInfo();
+
+    /**Vip开柜*/
+    @POST(ApiConstants.VIPCABINET)
+    Observable<BaseEntity> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 }

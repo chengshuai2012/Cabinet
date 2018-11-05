@@ -9,14 +9,29 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.controller.MainController;
+import com.link.cloud.controller.VipController;
+import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.utils.HexUtil;
+import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
 import com.link.cloud.widget.QRCodeDialog;
+import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -24,7 +39,7 @@ import com.zitech.framework.utils.ViewUtils;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class VipActivity extends BaseActivity {
+public class VipActivity extends BaseActivity implements VipController.VipControllerListener {
 
 
     private LinearLayout zhijingmaiLayout;
@@ -35,6 +50,8 @@ public class VipActivity extends BaseActivity {
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
+    private VipController vipController;
+    private String uid;
 
     @Override
     protected void initViews() {
@@ -51,7 +68,7 @@ public class VipActivity extends BaseActivity {
                 finish();
             }
         });
-
+        rxTimerUtil = new RxTimerUtil();
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
@@ -59,15 +76,54 @@ public class VipActivity extends BaseActivity {
         if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))){
             setLayout.setVisibility(View.GONE);
         }
-
+        vipController = new VipController(this);
     }
-
+    private RxTimerUtil rxTimerUtil;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_vip;
     }
+    private void finger() {
+        rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
+            @Override
+            public void doNext(long number) {
+                int state = CabinetApplication.getVenueUtils().getState();
+                if (state == 3) {
+                    RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
+                    List<AllUser> peoples = new ArrayList<>();
+                    peoples.addAll(realm.copyFromRealm(users));
+                    uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                    CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
+
+                    if (uuid!=null) {
+                        unlocking(uid, Constants.ActivityExtra.FINGER);
+                    } else {
+                        if(uid!=null){
+                            vipController.OpenVipCabinet("",uid);
+                        }else {
+                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+                            vipController.OpenVipCabinet(finger,"");
+                        }
 
 
+                        ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
+                    }
+                }
+                if (state == 4) {
+                    ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
+                }
+                if (state != 4 && state != 3) {
+                }
+            }
+        });
+    }
+    private void unlocking(String uid, String type) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ActivityExtra.TYPE, type);
+        bundle.putString(Constants.ActivityExtra.UUID, uid);
+        showActivity(RegularOpenActivity.class, bundle);
+        finish();
+    }
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -91,4 +147,28 @@ public class VipActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onVipErrorCode(String msg) {
+
+    }
+
+    @Override
+    public void onVipFail(Throwable e, boolean isNetWork) {
+
+    }
+
+    @Override
+    public void getUserSuccess(BindUser data) {
+
+    }
+
+    @Override
+    public void onCabinetInfoSuccess(RealmList<CabinetInfo> data) {
+
+    }
+
+    @Override
+    public void temCabinetSuccess(CabinetInfo cabinetBean) {
+
+    }
 }
