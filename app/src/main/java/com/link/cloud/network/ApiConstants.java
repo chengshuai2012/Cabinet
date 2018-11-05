@@ -28,6 +28,9 @@ public class ApiConstants {
     //获取柜子配置信息
     public static final String GETCABINETINFO = "cabinetInfo";
 
+    //VIP开柜
+    public static final String VIPCABINET = "userCabinetVip";
+
 
 
 
