@@ -7,13 +7,11 @@ import com.link.cloud.network.BaseService;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
-import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ToastMaster;
-
-import java.util.ArrayList;
 
 import io.realm.RealmList;
 
@@ -35,7 +33,7 @@ public class MainController {
 
         void onCabinetInfoSuccess(RealmList<CabinetInfo> data);
 
-        void temCabinetSuccess(BaseEntity baseEntity);
+        void temCabinetSuccess(CabinetBean cabinetBean);
 
     }
 
@@ -51,17 +49,17 @@ public class MainController {
                 .compose(IOMainThread.<BaseEntity<String>>composeIO2main())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onSuccees(BaseEntity<String> t) throws Exception {
+                    protected void onSuccees(BaseEntity<String> t)  {
                         listener.onLoginSuccess(t.getData());
                     }
 
                     @Override
-                    protected void onCodeError(String msg) throws Exception {
+                    protected void onCodeError(String msg) {
                         listener.onMainErrorCode(msg);
                     }
 
                     @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
+                    protected void onFailure(Throwable e, boolean isNetWorkError)  {
                         listener.onMainFail(e, isNetWorkError);
                     }
                 });
@@ -74,17 +72,17 @@ public class MainController {
         requestBindFinger.setPageSize(pageNume);
         api.getUser(requestBindFinger).compose(IOMainThread.<BaseEntity<BindUser>>composeIO2main()).subscribe(new BaseObserver<BindUser>() {
             @Override
-            protected void onSuccees(BaseEntity<BindUser> t) throws Exception {
+            protected void onSuccees(BaseEntity<BindUser> t)  {
                 listener.getUserSuccess(t.getData());
             }
 
             @Override
-            protected void onCodeError(String msg) throws Exception {
+            protected void onCodeError(String msg)  {
                 listener.onMainErrorCode(msg);
             }
 
             @Override
-            protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
                 listener.onMainFail(e, isNetWorkError);
             }
         });
@@ -95,27 +93,22 @@ public class MainController {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setUuid(uuid);
         api.returnCabinet(retrunCabinetRequest)
-                .compose(IOMainThread.<BaseEntity>composeIO2main())
-                .subscribe(new BaseObserver() {
+                .compose(IOMainThread.<BaseEntity<CabinetBean>>composeIO2main())
+                .subscribe(new BaseObserver<CabinetBean>() {
 
                     @Override
-                    public void onNext(Object o) {
-
+                    protected void onSuccees(BaseEntity<CabinetBean> t) {
+                        ToastMaster.shortToast(t.getSecondMessage());
                     }
 
                     @Override
-                    protected void onSuccees(BaseEntity t) throws Exception {
-
+                    protected void onCodeError(String msg) {
+                        ToastMaster.shortToast(msg);
                     }
 
                     @Override
-                    protected void onCodeError(String msg) throws Exception {
-                        listener.onMainErrorCode(msg);
-                    }
-
-                    @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-                        listener.onMainFail(e, isNetWorkError);
+                    protected void onFailure(Throwable e, boolean isNetWorkError) {
+                        ToastMaster.shortToast(e.getMessage());
                     }
                 });
     }
@@ -123,35 +116,25 @@ public class MainController {
     public void temCabinet(final String uuid) {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setUuid(uuid);
-        api.temCabinet(retrunCabinetRequest)
-                .compose(IOMainThread.<BaseEntity>composeIO2main())
-                .subscribe(new BaseObserver() {
 
-                    @Override
-                    public void onNext(BaseEntity baseEntity) {
+        api.temCabinet(retrunCabinetRequest).compose(IOMainThread.<BaseEntity<CabinetBean>>composeIO2main()).subscribe(new BaseObserver<CabinetBean>() {
 
-                        if (baseEntity.getCode().equals("400000500026")) {
-                            returnCabinet(uuid);
-                        } else {
+            @Override
+            protected void onSuccees(BaseEntity<CabinetBean> t) {
+                listener.temCabinetSuccess(t.getData());
+            }
 
-                        }
-                    }
+            @Override
+            protected void onCodeError(String msg)  {
+              ToastMaster.shortToast(msg);
+            }
 
-                    @Override
-                    protected void onSuccees(BaseEntity t) throws Exception {
-                        listener.temCabinetSuccess(t);
-                    }
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError)  {
+                listener.onMainFail(e, isNetWorkError);
+            }
+        });
 
-                    @Override
-                    protected void onCodeError(String msg) throws Exception {
-                        listener.onMainErrorCode(msg);
-                    }
-
-                    @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
-                        listener.onMainFail(e, isNetWorkError);
-                    }
-                });
     }
 
     public void useCabinet(String uuid) {
@@ -167,17 +150,17 @@ public class MainController {
                     }
 
                     @Override
-                    protected void onSuccees(BaseEntity t) throws Exception {
+                    protected void onSuccees(BaseEntity t) {
 
                     }
 
                     @Override
-                    protected void onCodeError(String msg) throws Exception {
+                    protected void onCodeError(String msg) {
 
                     }
 
                     @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
+                    protected void onFailure(Throwable e, boolean isNetWorkError)  {
 
                     }
                 });
@@ -190,17 +173,17 @@ public class MainController {
 
 
                                @Override
-                               protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t) throws Exception {
+                               protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t)  {
                                    listener.onCabinetInfoSuccess(t.getData());
                                }
 
                                @Override
-                               protected void onCodeError(String msg) throws Exception {
+                               protected void onCodeError(String msg) {
                                    listener.onMainErrorCode(msg);
                                }
 
                                @Override
-                               protected void onFailure(Throwable e, boolean isNetWorkError) throws Exception {
+                               protected void onFailure(Throwable e, boolean isNetWorkError) {
                                    listener.onMainFail(e, isNetWorkError);
                                }
                            }

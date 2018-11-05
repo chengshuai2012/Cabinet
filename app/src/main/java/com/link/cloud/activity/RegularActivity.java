@@ -5,8 +5,12 @@ import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,6 +25,7 @@ import com.link.cloud.controller.MainController;
 import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.InputPassWordDialog;
@@ -54,15 +59,16 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     private RxTimerUtil rxTimerUtil;
     Realm realm;
     private MainController mainController;
-    private String uuid;
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
+    private EditText editText;
 
 
     @Override
     protected void initViews() {
         realm = Realm.getDefaultInstance();
+        rxTimerUtil = new RxTimerUtil();
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
@@ -70,23 +76,38 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         setLayout = (LinearLayout) findViewById(R.id.setLayout);
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
+        editText = findViewById(R.id.infoId);
 
         mainController = new MainController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(manager, this);
+        finger();
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
             public void itemClickListener() {
                 finish();
             }
         });
-        rxTimerUtil = new RxTimerUtil();
-        finger();
         if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
             setLayout.setVisibility(View.GONE);
         }
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.e("输入过程中执行该方法", "文字变化:" + editText.getText().toString());
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e("输入前确认执行该方法", "开始输入:" + editText.getText().toString());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e("输入结束执行该方法", "输入结束:" + editText.getText().toString());
+
+            }
+        });
 
     }
 
@@ -101,8 +122,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                     peoples.addAll(realm.copyFromRealm(users));
                     String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                     if (null != uid && !TextUtils.isEmpty(uid)) {
-                        unlocking(uid);
-
+                        unlocking(uid, Constants.ActivityExtra.FINGER);
                     } else {
                         ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
                     }
@@ -116,9 +136,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         });
     }
 
-    private void unlocking(String uid) {
-        uuid = uid;
-        mainController.temCabinet(uid);
+    private void unlocking(String uid, String type) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ActivityExtra.TYPE, type);
+        bundle.putString(Constants.ActivityExtra.UUID, uid);
+        showActivity(RegularOpenActivity.class, bundle);
+        finish();
     }
 
 
@@ -141,9 +164,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         super.onClick(v);
         switch (v.getId()) {
             case R.id.zhijingmaiLayout:
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.ActivityExtra.TYPE, getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
-                showActivity(RegularOpenActivity.class, bundle);
+
                 break;
             case R.id.xiaochengxuLayout:
 
@@ -172,16 +193,11 @@ public class RegularActivity extends BaseActivity implements MainController.Main
 
     @Override
     public void onMainErrorCode(String msg) {
-        if (TextUtils.isEmpty(uuid) && msg.equals("400000500026")) {
-            mainController.returnCabinet(uuid);
-        }
     }
 
     @Override
     public void onMainFail(Throwable e, boolean isNetWork) {
-        if (TextUtils.isEmpty(uuid)) {
-            mainController.returnCabinet(uuid);
-        }
+
     }
 
     @Override
@@ -196,21 +212,9 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     }
 
     @Override
-    public void temCabinetSuccess(BaseEntity baseEntity) {
-        rxTimerUtil.cancel();
-//        try {
-//            if (Integer.parseInt(data) <= 10) {
-//                activity.serialpprt_wk1.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate), nuberlock));
-//                com.orhanobut.logger.Logger.e("FirstFragment===1" + Integer.parseInt(lockplate) + "====" + nuberlock);
-//            } else if (Integer.parseInt(lockplate) > 10 && Integer.parseInt(lockplate) <= 20) {
-//                activity.serialpprt_wk2.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate) % 10, nuberlock));
-//                com.orhanobut.logger.Logger.e("FirstFragment===2" + Integer.parseInt(lockplate) + "====" + nuberlock);
-//            } else if (Integer.parseInt(lockplate) > 20 && Integer.parseInt(lockplate) <= 30) {
-//                activity.serialpprt_wk3.getOutputStream().write(openDoorUtil.openOneDoor(Integer.parseInt(lockplate) % 10, nuberlock));
-//                com.orhanobut.logger.Logger.e("FirstFragment===3" + Integer.parseInt(lockplate) + "====" + nuberlock);
-//            }
-//        } catch (Exception e) {
-//        }
+    public void temCabinetSuccess(CabinetBean cabinetBean) {
+
+
     }
 
 }

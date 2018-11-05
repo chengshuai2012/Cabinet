@@ -34,27 +34,16 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
     @Override
     public void onNext(BaseEntity<T> tBaseEntity) {
         if (tBaseEntity.isSuccess()) {
-            try {
-                onSuccees(tBaseEntity);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            onSuccees(tBaseEntity);
         } else {
-            try {
-                onCodeError(tBaseEntity.getMsg());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            onCodeError(tBaseEntity.getSecondMessage());
         }
     }
 
     @Override
     public void onError(Throwable e) {
         try {
-            if (e instanceof ConnectException
-                    || e instanceof TimeoutException
-                    || e instanceof NetworkErrorException
-                    || e instanceof UnknownHostException) {
+            if (e instanceof ConnectException || e instanceof TimeoutException || e instanceof NetworkErrorException || e instanceof UnknownHostException) {
                 onFailure(e, true);
             } else {
                 onFailure(e, false);
@@ -75,15 +64,15 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param t
      * @throws Exception
      */
-    protected abstract void onSuccees(BaseEntity<T> t) throws Exception;
+    protected abstract void onSuccees(BaseEntity<T> t) ;
 
     /**
      * 返回成功了,但是code错误
      *
-     * @param t
+     * @param
      * @throws Exception
      */
-    protected abstract void onCodeError(String msg) throws Exception;
+    protected abstract void onCodeError(String msg) ;
 
     /**
      * 返回失败
@@ -92,7 +81,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param isNetWorkError 是否是网络错误
      * @throws Exception
      */
-    protected abstract void onFailure(Throwable e, boolean isNetWorkError) throws Exception;
+    protected abstract void onFailure(Throwable e, boolean isNetWorkError);
 
     protected void onRequestStart() {
 

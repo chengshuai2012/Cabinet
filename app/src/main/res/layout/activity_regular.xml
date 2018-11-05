@@ -66,27 +66,28 @@
         android:id="@+id/zhijingmaiLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/h170"
-
         android:layout_marginLeft="@dimen/w45"
         android:layout_marginRight="@dimen/w45"
         android:layout_marginTop="@dimen/h38"
+        android:background="@drawable/border_gray_corn__sele_gradient"
         android:gravity="center_vertical"
-        android:background="@drawable/ic_regular_way_bg"
         android:orientation="horizontal">
+
         <TextView
-            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/w40"
             android:text="01"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="@dimen/w62"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/fingerImage"
-            android:layout_width="@dimen/w100"
-            android:layout_height="@dimen/w100"
+            android:layout_width="@dimen/w136"
+            android:layout_height="@dimen/w136"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w30"
+            android:layout_marginLeft="@dimen/w12"
             android:src="@drawable/ic_zhijingmai" />
 
         <LinearLayout
@@ -100,14 +101,14 @@
             <TextView
                 style="@style/CommonText"
                 android:text="@string/mode_one"
-
                 android:textColor="@color/white"
                 android:textSize="@dimen/w24" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/h17"
+                android:layout_marginTop="@dimen/h14"
+                android:lineSpacingExtra="@dimen/w10"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/finger_string"
                 android:textColor="@color/white"
@@ -127,25 +128,26 @@
         android:layout_marginLeft="@dimen/w45"
         android:layout_marginRight="@dimen/w45"
         android:layout_marginTop="@dimen/h21"
+        android:background="@drawable/border_gray_corn__sele_gradient"
         android:gravity="center_vertical"
-        android:background="@drawable/ic_regular_way_bg"
         android:orientation="horizontal">
 
         <TextView
-            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/w40"
             android:text="02"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="@dimen/w62"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/wechatImage"
-            android:layout_width="@dimen/w100"
-            android:layout_height="@dimen/w100"
+            android:layout_width="@dimen/w136"
+            android:layout_height="@dimen/w136"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w30"
+            android:layout_marginLeft="@dimen/w12"
+
             android:src="@drawable/ic_xiaochengxu" />
 
         <LinearLayout
@@ -165,7 +167,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/h17"
+                android:layout_marginTop="@dimen/h14"
+                android:lineSpacingExtra="@dimen/w10"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/mode_two_hint"
                 android:textColor="@color/white"
@@ -174,8 +177,18 @@
 
         </LinearLayout>
 
+
     </LinearLayout>
 
+
+    <EditText
+        android:id="@+id/infoId"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/h200"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/w24" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -188,13 +201,13 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="@dimen/h60"
             android:layout_marginLeft="@dimen/w45"
-            android:textSize="@dimen/w24"
             android:layout_marginRight="@dimen/w45"
             android:layout_marginTop="@dimen/h21"
             android:background="@drawable/border_gray_corn_gradient"
             android:gravity="center"
             android:text="@string/password_open"
             android:textColor="@color/black"
+            android:textSize="@dimen/w24"
             android:textStyle="bold" />
     </FrameLayout>
 

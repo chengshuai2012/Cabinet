@@ -77,17 +77,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/w40"
-            android:text="02"
+            android:text="01"
             android:textColor="@color/color_FFD9B499"
             android:textSize="@dimen/w62"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/fingerImage"
-            android:layout_width="@dimen/w100"
-            android:layout_height="@dimen/w100"
+            android:layout_width="@dimen/w136"
+            android:layout_height="@dimen/w136"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w30"
+            android:layout_marginLeft="@dimen/w12"
             android:src="@drawable/ic_vip_zhijingmai" />
 
         <LinearLayout
@@ -108,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/h17"
+                android:lineSpacingExtra="@dimen/w10"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/mode_one_hint"
                 android:textColor="@color/color_FFD9B499"
@@ -143,10 +144,10 @@
 
         <ImageView
             android:id="@+id/wechatImage"
-            android:layout_width="@dimen/w100"
-            android:layout_height="@dimen/w100"
+            android:layout_width="@dimen/w138"
+            android:layout_height="@dimen/w138"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w30"
+            android:layout_marginLeft="@dimen/w12"
             android:src="@drawable/ic_vip_xiaochengxu" />
 
         <LinearLayout
@@ -167,6 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/h17"
+                android:lineSpacingExtra="@dimen/w10"
                 android:paddingRight="@dimen/w80"
                 android:text="@string/mode_two_hint"
                 android:textColor="@color/color_FFD9B499"

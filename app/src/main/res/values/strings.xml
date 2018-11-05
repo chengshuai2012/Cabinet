@@ -9,12 +9,12 @@
     <string name="queit_string">退柜</string>
     <string name="back_home">返回首页</string>
     <string name="mode_one">方式1.指静脉验证开柜</string>
-    <string name="mode_one_hint">请将手指正确放置模块上方完成验证，切勿用力按压听到“验证成功”设备开柜</string>
+    <string name="mode_one_hint">请将手指正确放置模块上方完成验证，听到“验证成功”设备开柜</string>
     <string name="mode_two">方式2.小程序二维码开柜</string>
     <string name="mode_two_hint">请将小程序二维码在扫描枪扫描完成验证，听到“验证成功”设备开柜</string>
     <string name="mode_three">方式3.密码口令开柜</string>
     <string name="mode_three_hint">请点击界面选择已使用的柜号，输入自己的手机 后4位进行验证，听到“验证成功”设备开柜</string>
-    <string name="finger_string">请将手指正确放置模块上方完成验证，切勿用力按压听到“验证成功”设备开柜</string>
+    <string name="finger_string">请将手指正确放置模块上方完成验证，听到“验证成功”设备开柜</string>
     <string name="sure_string">确认</string>
     <string name="aready_open_string">请取走您的物品关好柜门</string>
     <string name="password_open">密码开柜</string>
@@ -23,8 +23,8 @@
     <string name="cancle_string">取消</string>
     <string name="select_lock">选择柜号</string>
     <string name="ok_string">完成</string>
-    <string name="vip_member">VIP会员</string>
-    <string name="regular_member">普通会员</string>
+    <string name="vip_member">VIP租柜</string>
+    <string name="regular_member">临时柜</string>
     <string name="use_vip_way">请使用以下VIP方式开柜</string>
 
 

@@ -73,9 +73,7 @@ public class VipActivity extends BaseActivity {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.zhijingmaiLayout:
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.ActivityExtra.TYPE, getIntent().getStringExtra(Constants.ActivityExtra.TYPE));
-                showActivity(VipOpenActivity.class, bundle);
+
                 break;
             case R.id.xiaochengxuLayout:
 

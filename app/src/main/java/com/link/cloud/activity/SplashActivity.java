@@ -14,6 +14,7 @@ import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.Utils;
 import com.orhanobut.logger.Logger;
@@ -49,11 +50,10 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         pageNum = 100;
         realm = Realm.getDefaultInstance();
         mainController = new MainController(this);
-        getToken();
         if (TextUtils.isEmpty(User.get().getPassWord())) {
             skipActivity(SettingActivity.class);
         } else {
-
+            getToken();
         }
     }
     private void getToken() {
@@ -144,7 +144,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     @Override
-    public void temCabinetSuccess(BaseEntity baseEntity) {
+    public void temCabinetSuccess(CabinetBean cabinetBean) {
 
     }
 

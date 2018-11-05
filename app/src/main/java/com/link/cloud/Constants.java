@@ -14,6 +14,9 @@ public class Constants {
     public interface ActivityExtra {
 
         String TYPE="TYPE";
+        String ENTITY="ENTITY";
+        String UUID="UUID";
+        String FINGER="FINGER";
     }
 
     public interface FragmentExtra {
