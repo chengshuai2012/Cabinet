@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -173,6 +172,17 @@ public class PublicTitleView extends LinearLayout {
     public void setFinshText(String text) {
         finsh.setText(text);
     }
+
+
+    /**
+     * 设置标题可见
+     *
+     * @param
+     */
+    public void setFinsh(int visi) {
+        finsh.setVisibility(visi);
+    }
+
 
     /**
      * 设置文字颜色

@@ -10,12 +10,14 @@ public class User {
 
     private static final String TOKEN = "token";
     private static final String PASSWORD="passWord";
+    private static final  String CABINETTYPE="cabinetType";
 
     private SP sp;
 
     private String token;
     private int position;
     private String passWord;
+    private int cabinetType;
 
 
     public static User get() {
@@ -27,8 +29,18 @@ public class User {
         sp = new SP("USER_DATA");
         token = sp.getString(TOKEN, "");
         passWord=sp.getString(PASSWORD,"");
+        cabinetType=sp.getInt(CABINETTYPE,-1);
     }
 
+
+    public int getCabinetType() {
+        return cabinetType;
+    }
+
+    public void setCabinetType(int cabinetType) {
+        this.cabinetType = cabinetType;
+        sp.putInt(CABINETTYPE,cabinetType);
+    }
 
     public String getPassWord() {
         return passWord;
