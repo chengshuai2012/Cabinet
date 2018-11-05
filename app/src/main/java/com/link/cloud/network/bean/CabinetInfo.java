@@ -1,12 +1,14 @@
 package com.link.cloud.network.bean;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 
 /**
  * Created by 49488 on 2018/10/28.
  */
 
-public class CabinetInfo extends RealmObject{
+public class CabinetInfo extends RealmObject implements Serializable{
 
     /**
      * id : 101
@@ -20,7 +22,10 @@ public class CabinetInfo extends RealmObject{
      * endTime : null
      * vip : false
      * lockNo : 1
+     * passwd :
      */
+
+
 
     private int id;
     private int lockId;
@@ -33,6 +38,15 @@ public class CabinetInfo extends RealmObject{
     private String endTime;
     private boolean vip;
     private int lockNo;
+    private String passwd;
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
 
     public int getId() {
         return id;

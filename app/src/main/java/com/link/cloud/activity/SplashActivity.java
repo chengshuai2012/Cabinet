@@ -2,7 +2,6 @@ package com.link.cloud.activity;
 
 import android.content.Intent;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import com.link.cloud.R;
@@ -10,15 +9,11 @@ import com.link.cloud.User;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
-import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
-import com.link.cloud.utils.Utils;
 import com.orhanobut.logger.Logger;
-import com.zitech.framework.utils.ToastMaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +139,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     @Override
-    public void temCabinetSuccess(CabinetBean cabinetBean) {
+    public void temCabinetSuccess(CabinetInfo cabinetBean) {
 
     }
 

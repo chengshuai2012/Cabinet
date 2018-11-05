@@ -1,44 +1,32 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
-import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.MainController;
-import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.RxTimerUtil;
-import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
-import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import android_serialport_api.SerialPort;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -98,10 +86,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.e("输入过程中执行该方法", "文字变化:" + editText.getText().toString());
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.e("输入前确认执行该方法", "开始输入:" + editText.getText().toString());
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 Log.e("输入结束执行该方法", "输入结束:" + editText.getText().toString());
@@ -212,7 +202,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     }
 
     @Override
-    public void temCabinetSuccess(CabinetBean cabinetBean) {
+    public void temCabinetSuccess(CabinetInfo cabinetBean) {
 
 
     }

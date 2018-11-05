@@ -8,6 +8,7 @@ import android.widget.TextClock;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetBean;
@@ -15,6 +16,7 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.zitech.framework.utils.ViewUtils;
 
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * 作者：qianlu on 2018/11/1 15:14
@@ -28,8 +30,8 @@ public class RegularOpenActivity extends BaseActivity implements MainController.
     private android.widget.LinearLayout returnLayout;
     private String type;
     private String uuid;
-
     private MainController mainController;
+    private boolean hasUuid = false;
 
     @Override
     protected void initViews() {
@@ -53,7 +55,19 @@ public class RegularOpenActivity extends BaseActivity implements MainController.
                 mainController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
-                mainController.temCabinet(uuid);
+                final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
+                for (CabinetInfo info : all) {
+                    if (info.getUuid().equals(uuid)) {
+                        hasUuid = true;
+                        break;
+                    }
+                }
+                if (!hasUuid){
+                    mainController.temCabinet(uuid);
+                }else {
+
+                }
+
                 break;
 
         }
@@ -97,7 +111,9 @@ public class RegularOpenActivity extends BaseActivity implements MainController.
     @Override
     public void temCabinetSuccess(CabinetBean cabinetBean) {
         //开柜子
-
-
     }
+
+
+
+
 }

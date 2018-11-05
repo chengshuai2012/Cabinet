@@ -1,7 +1,6 @@
 package com.link.cloud.network;
 
 import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
@@ -31,7 +30,7 @@ public interface BaseService {
 
     /**退柜*/
     @POST(ApiConstants.RETURNCABINET)
-    Observable<BaseEntity<CabinetBean>> returnCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
+    Observable<BaseEntity<CabinetInfo>> returnCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
     /**续柜*/
     @POST(ApiConstants.USECABINET)
@@ -39,7 +38,7 @@ public interface BaseService {
 
     /**临时柜*/
     @POST(ApiConstants.TEMCABINET)
-    Observable<BaseEntity<CabinetBean>> temCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
+    Observable<BaseEntity<CabinetInfo>> temCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
     /**获取用户*/
     @POST(ApiConstants.GETUSERS)

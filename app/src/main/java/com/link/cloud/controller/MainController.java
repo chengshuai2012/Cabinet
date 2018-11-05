@@ -7,7 +7,6 @@ import com.link.cloud.network.BaseService;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
@@ -33,7 +32,7 @@ public class MainController {
 
         void onCabinetInfoSuccess(RealmList<CabinetInfo> data);
 
-        void temCabinetSuccess(CabinetBean cabinetBean);
+        void temCabinetSuccess(CabinetInfo cabinetBean);
 
     }
 
@@ -93,11 +92,11 @@ public class MainController {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setUuid(uuid);
         api.returnCabinet(retrunCabinetRequest)
-                .compose(IOMainThread.<BaseEntity<CabinetBean>>composeIO2main())
-                .subscribe(new BaseObserver<CabinetBean>() {
+                .compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main())
+                .subscribe(new BaseObserver<CabinetInfo>() {
 
                     @Override
-                    protected void onSuccees(BaseEntity<CabinetBean> t) {
+                    protected void onSuccees(BaseEntity<CabinetInfo> t) {
                         ToastMaster.shortToast(t.getSecondMessage());
                     }
 
@@ -117,10 +116,10 @@ public class MainController {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setUuid(uuid);
 
-        api.temCabinet(retrunCabinetRequest).compose(IOMainThread.<BaseEntity<CabinetBean>>composeIO2main()).subscribe(new BaseObserver<CabinetBean>() {
+        api.temCabinet(retrunCabinetRequest).compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main()).subscribe(new BaseObserver<CabinetInfo>() {
 
             @Override
-            protected void onSuccees(BaseEntity<CabinetBean> t) {
+            protected void onSuccees(BaseEntity<CabinetInfo> t) {
                 listener.temCabinetSuccess(t.getData());
             }
 

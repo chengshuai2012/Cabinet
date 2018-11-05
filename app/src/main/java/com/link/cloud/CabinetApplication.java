@@ -51,9 +51,6 @@ public class CabinetApplication extends BaseApplication {
         intSerialPort();
     }
 
-
-
-
     public User getUser() {
         return user;
     }
@@ -92,7 +89,9 @@ public class CabinetApplication extends BaseApplication {
     public void post(Runnable r) {
         mainThreadHandler.post(r);
     }
+
     public static CabinetApplication getInstance() {
         return (CabinetApplication) BaseApplication.getInstance();
     }
+
 }
