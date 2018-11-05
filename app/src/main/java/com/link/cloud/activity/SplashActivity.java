@@ -1,9 +1,8 @@
 package com.link.cloud.activity;
 
-import android.content.Intent;
 import android.text.TextUtils;
-import android.widget.LinearLayout;
 
+import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.User;
 import com.link.cloud.base.BaseActivity;
@@ -13,6 +12,7 @@ import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -36,12 +36,11 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     int pageNum, total;
     private MainController mainController;
     Realm realm;
-    private LinearLayout rootLayout;
+    private CabnetDeviceInfoBean cabnetDeviceInfoBean;
 
 
     @Override
     protected void initViews() {
-        rootLayout = findViewById(R.id.rootLayout);
         pageNum = 100;
         realm = Realm.getDefaultInstance();
         mainController = new MainController(this);
@@ -51,6 +50,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
             getToken();
         }
     }
+
     private void getToken() {
         RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
         if (!all.isEmpty() && all.size() >= 0) {
@@ -72,11 +72,13 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     @Override
-    public void onLoginSuccess(String token) {
-        HttpConfig.TOKEN = token;
-        User.get().setToken(token);
+    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
+        HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
+        User.get().setToken(cabnetDeviceInfoBean.getToken());
+        this.cabnetDeviceInfoBean = cabnetDeviceInfoBean;
         mainController.getUser(pageNum, 1);
     }
+
     @Override
     public void onMainErrorCode(String msg) {
     }
@@ -85,6 +87,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     public void onMainFail(Throwable e, boolean isNetWork) {
 
     }
+
     @Override
     public void getUserSuccess(final BindUser data) {
         Logger.e(data.getData().get(0).getUuid());
@@ -122,7 +125,19 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                 realm.copyToRealm(data.getData());
             }
         });
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        if (cabnetDeviceInfoBean != null) {
+//
+//            1003 临时柜
+//            1004 月租柜
+//            1005 混合柜
+            if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.REGULAR_CABINET) {
+                skipActivity(RegularActivity.class);
+            } else if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.VIP_CABINET) {
+                skipActivity(VipActivity.class);
+            } else if (cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId() == Constants.VIP_REGULAR_CABINET) {
+                skipActivity(MainActivity.class);
+            }
+        }
         finish();
     }
 

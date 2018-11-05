@@ -8,6 +8,7 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.zitech.framework.utils.ToastMaster;
@@ -22,7 +23,7 @@ public class MainController {
     MainControllerListener listener;
 
     public interface MainControllerListener {
-        void onLoginSuccess(String token);
+        void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean);
 
         void onMainErrorCode(String msg);
 
@@ -45,10 +46,10 @@ public class MainController {
 
     public void login(String userNmae, String password) {
         api.appLogin(userNmae, password)
-                .compose(IOMainThread.<BaseEntity<String>>composeIO2main())
-                .subscribe(new BaseObserver<String>() {
+                .compose(IOMainThread.<BaseEntity<CabnetDeviceInfoBean>>composeIO2main())
+                .subscribe(new BaseObserver<CabnetDeviceInfoBean>() {
                     @Override
-                    protected void onSuccees(BaseEntity<String> t)  {
+                    protected void onSuccees(BaseEntity<CabnetDeviceInfoBean> t)  {
                         listener.onLoginSuccess(t.getData());
                     }
 

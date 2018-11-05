@@ -26,6 +26,8 @@
     <string name="vip_member">VIP租柜</string>
     <string name="regular_member">临时柜</string>
     <string name="use_vip_way">请使用以下VIP方式开柜</string>
+    <string name="initialization_successful">初始化成功</string>
+    <string name="mTts_stating_error">语言功能初始化失败</string>
 
 
     <string name="vuene_login">指静脉登陆</string>

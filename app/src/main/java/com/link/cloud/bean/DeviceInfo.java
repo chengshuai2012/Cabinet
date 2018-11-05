@@ -9,6 +9,16 @@ import io.realm.RealmObject;
 public class DeviceInfo extends RealmObject {
     String deviceId;
     String psw;
+    String token;
+    String deviceTypeId;
+
+    public String getDeviceTypeId() {
+        return deviceTypeId;
+    }
+
+    public void setDeviceTypeId(String deviceTypeId) {
+        this.deviceTypeId = deviceTypeId;
+    }
 
     public String getDeviceId() {
         return deviceId;
@@ -34,5 +44,5 @@ public class DeviceInfo extends RealmObject {
         this.token = token;
     }
 
-    String token;
+
 }

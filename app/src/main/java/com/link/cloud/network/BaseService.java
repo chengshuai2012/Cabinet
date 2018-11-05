@@ -2,10 +2,9 @@ package com.link.cloud.network;
 
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
-
-import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.realm.RealmList;
@@ -22,7 +21,7 @@ public interface BaseService {
     /**登陆接口*/
 
     @POST(ApiConstants.APPLOGIN)
-    Observable<BaseEntity<String>> appLogin(@Path("deviceCode") String deviceCode, @Path("password") String password);
+    Observable<BaseEntity<CabnetDeviceInfoBean>> appLogin(@Path("deviceCode") String deviceCode, @Path("password") String password);
 
     /**获取验证码*/
     @GET(ApiConstants.SENDVCODE)

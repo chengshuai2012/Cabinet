@@ -19,6 +19,7 @@ import com.link.cloud.controller.MainController;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.PublicTitleView;
 import com.zitech.framework.utils.ToastMaster;
@@ -176,11 +177,11 @@ public class RegularActivity extends BaseActivity implements MainController.Main
 
     }
 
+
     @Override
-    public void onLoginSuccess(String token) {
+    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
 
     }
-
     @Override
     public void onMainErrorCode(String msg) {
     }
