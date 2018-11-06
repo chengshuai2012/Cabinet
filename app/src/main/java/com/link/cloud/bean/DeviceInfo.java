@@ -10,13 +10,13 @@ public class DeviceInfo extends RealmObject {
     String deviceId;
     String psw;
     String token;
-    String deviceTypeId;
+    int deviceTypeId;
 
-    public String getDeviceTypeId() {
+    public int getDeviceTypeId() {
         return deviceTypeId;
     }
 
-    public void setDeviceTypeId(String deviceTypeId) {
+    public void setDeviceTypeId(int deviceTypeId) {
         this.deviceTypeId = deviceTypeId;
     }
 

@@ -36,30 +36,43 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     int pageNum, total;
     private MainController mainController;
-    Realm realm;
+    private DeviceInfo deviceInfo;
 
 
     @Override
     protected void initViews() {
         pageNum = 100;
-        realm = Realm.getDefaultInstance();
         mainController = new MainController(this);
-        if (TextUtils.isEmpty(User.get().getPassWord())) {
-            skipActivity(SettingActivity.class);
-        } else {
-            if (TextUtils.isEmpty(User.get().getToken())) {
-                getToken();
-            } else {
+        getDeviceInfo();
+        showDate();
+
+    }
+
+    private void showDate() {
+        if (deviceInfo != null && deviceInfo.getPsw() != null && !TextUtils.isEmpty(deviceInfo.getPsw())) {
+            if (deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
                 showNextActivity();
+            } else {
+                getToken();
             }
+        } else {
+            skipActivity(SettingActivity.class);
         }
     }
 
+    private void getDeviceInfo() {
+        final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
+        if (!all.isEmpty()) {
+            deviceInfo = all.get(0);
+        }
+    }
+
+
     private void getToken() {
         RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
-        if (!all.isEmpty() && all.size() >= 0) {
+        if (!all.isEmpty() && deviceInfo.getDeviceId() != null && !TextUtils.isEmpty(deviceInfo.getDeviceId()) && deviceInfo.getPsw() != null && !TextUtils.isEmpty(deviceInfo.getPsw())) {
             DeviceInfo deviceInfo = all.get(0);
-            mainController.login(deviceInfo.getDeviceId().trim(), User.get().getPassWord());
+            mainController.login(deviceInfo.getDeviceId().trim(), deviceInfo.getPsw());
         } else {
             skipActivity(SettingActivity.class);
         }
@@ -76,15 +89,27 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     @Override
-    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
+    public void onLoginSuccess(final CabnetDeviceInfoBean cabnetDeviceInfoBean) {
+        final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DeviceInfo device = all.get(0);
+                device.setToken(cabnetDeviceInfoBean.getToken());
+                device.setDeviceTypeId(cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId());
+                deviceInfo = device;
+            }
+        });
         HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
         User.get().setToken(cabnetDeviceInfoBean.getToken());
-        User.get().setCabinetType(cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId());
         mainController.getUser(pageNum, 1);
     }
 
     @Override
     public void onMainErrorCode(String msg) {
+        if (msg.equals("400000100000")){
+            skipActivity(SettingActivity.class);
+        }
     }
 
     @Override
@@ -129,21 +154,23 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                 realm.copyToRealm(data.getData());
             }
         });
-       showNextActivity();
+        showNextActivity();
     }
 
     private void showNextActivity() {
-        if (User.get().getCabinetType() >= 0) {
+        if (deviceInfo.getDeviceTypeId() >= 0) {
             Bundle bundle = new Bundle();
-            if (User.get().getCabinetType() == Constants.REGULAR_CABINET) {
+            if (deviceInfo.getDeviceTypeId()  == Constants.REGULAR_CABINET) {
                 bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
                 skipActivity(RegularActivity.class, bundle);
-            } else if (User.get().getCabinetType() == Constants.VIP_CABINET) {
+            } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_CABINET) {
                 bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
                 skipActivity(VipActivity.class, bundle);
-            } else if (User.get().getCabinetType()== Constants.VIP_REGULAR_CABINET) {
+            } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_REGULAR_CABINET) {
                 skipActivity(MainActivity.class);
             }
+        }else {
+            skipActivity(SettingActivity.class);
         }
         finish();
     }
