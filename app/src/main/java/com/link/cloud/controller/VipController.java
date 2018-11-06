@@ -52,8 +52,8 @@ public class VipController {
             }
 
             @Override
-            protected void onCodeError(String msg)  {
-                listener.onVipErrorCode(msg);
+            protected void onCodeError(String msg, String codeErrorr) {
+
             }
 
             @Override
@@ -83,9 +83,10 @@ public class VipController {
                     }
 
                     @Override
-                    protected void onCodeError(String msg) {
+                    protected void onCodeError(String msg, String codeErrorr) {
 
                     }
+
 
                     @Override
                     protected void onFailure(Throwable e, boolean isNetWorkError) {
@@ -104,12 +105,13 @@ public class VipController {
                                    listener.onCabinetInfoSuccess(t.getData());
                                }
 
-                               @Override
-                               protected void onCodeError(String msg) {
-                                   listener.onVipErrorCode(msg);
-                               }
+                    @Override
+                    protected void onCodeError(String msg, String codeErrorr) {
 
-                               @Override
+                    }
+
+
+                    @Override
                                protected void onFailure(Throwable e, boolean isNetWorkError) {
                                    listener.onVipFail(e, isNetWorkError);
                                }

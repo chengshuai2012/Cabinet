@@ -55,8 +55,8 @@ public class InterceptorUtil {
                 }else {
                     HttpUrl url = mRequest.url();
                     String[] split = url.toString().split("/");
-                    HttpConfig.LOGIN_URL=HttpConfig.LOGIN_URL+split[split.length-2]+"/"+split[split.length-1];
-                    HttpUrl newBaseUrl = HttpUrl.parse(HttpConfig.LOGIN_URL);
+                    String newUrl="http://www.deviceplatform.linkgooo.com/pub/appLogin/"+split[split.length-2]+"/"+split[split.length-1];
+                    HttpUrl newBaseUrl = HttpUrl.parse(newUrl);
                     build = mRequest.newBuilder().url(newBaseUrl).build();
                 }
                 return chain.proceed(build);

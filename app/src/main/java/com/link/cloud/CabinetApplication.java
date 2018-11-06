@@ -30,7 +30,6 @@ public class CabinetApplication extends BaseApplication {
     public SerialPort serialPortTwo = null;
     public SerialPort serialPortThree = null;
     public SpeechSynthesizer mTts;
-    private User user;
     public static String voicerLocal="xiaoyan";
 
     public static Venueutils getVenueUtils() {
@@ -46,8 +45,6 @@ public class CabinetApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        user = new User();
-        HttpConfig.TOKEN=user.getToken();
         mainThreadHandler = new Handler(Looper.getMainLooper());
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder()
@@ -61,9 +58,6 @@ public class CabinetApplication extends BaseApplication {
     }
 
 
-    public User getUser() {
-        return user;
-    }
 
 
     private void intSpeak(){

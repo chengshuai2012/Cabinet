@@ -2,6 +2,8 @@ package com.link.cloud.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.link.cloud.Constants;
 import com.link.cloud.R;
@@ -51,7 +53,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     private void showDate() {
         if (deviceInfo != null && deviceInfo.getPsw() != null && !TextUtils.isEmpty(deviceInfo.getPsw())) {
             if (deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
-                showNextActivity();
+                HttpConfig.TOKEN = deviceInfo.getToken();
+                getData();
             } else {
                 getToken();
             }
@@ -69,13 +72,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
 
     private void getToken() {
-        RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
-        if (!all.isEmpty() && deviceInfo.getDeviceId() != null && !TextUtils.isEmpty(deviceInfo.getDeviceId()) && deviceInfo.getPsw() != null && !TextUtils.isEmpty(deviceInfo.getPsw())) {
-            DeviceInfo deviceInfo = all.get(0);
             mainController.login(deviceInfo.getDeviceId().trim(), deviceInfo.getPsw());
-        } else {
-            skipActivity(SettingActivity.class);
-        }
     }
 
     @Override
@@ -101,8 +98,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
             }
         });
         HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
-        User.get().setToken(cabnetDeviceInfoBean.getToken());
-        mainController.getUser(pageNum, 1);
+        getData();
     }
 
     @Override
@@ -116,63 +112,85 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     public void onMainFail(Throwable e, boolean isNetWork) {
 
     }
-
+    boolean isDeleteAll =false;
     @Override
     public void getUserSuccess(final BindUser data) {
-        Logger.e(data.getData().get(0).getUuid());
-        int totalPage = total / pageNum + 1;
-        ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
-        List<Future<Boolean>> futures = new ArrayList();
-        if (totalPage >= 2) {
-            for (int i = 2; i < totalPage; i++) {
-                final int finalI = i;
-                Callable<Boolean> task = new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        mainController.getUser(pageNum, finalI);
-                        return true;
-                    }
-                };
+        final RealmResults<AllUser> all = realm.where(AllUser.class).findAll();
+        total =data.getTotal();
+        if(all.size()!=data.getTotal()){
+            if(!isDeleteAll){
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    all.deleteAllFromRealm();
+                    isDeleteAll=true;
 
-                futures.add(executorService.submit(task));
-            }
-            for (Future<Boolean> future : futures) {
-                try {
-                    future.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
-            }
-            executorService.shutdown();
-        }
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.where(AllUser.class).findAll().deleteAllFromRealm();
-                realm.copyToRealm(data.getData());
-            }
-        });
-        showNextActivity();
-    }
+            });
+                int totalPage = total / pageNum + 1;
+                ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
+                List<Future<Boolean>> futures = new ArrayList();
+                if (totalPage >= 2) {
+                    for (int i = 2; i <= totalPage; i++) {
+                        final int finalI = i;
+                        Callable<Boolean> task = new Callable<Boolean>() {
+                            @Override
+                            public Boolean call() throws Exception {
+                                mainController.getUser(pageNum, finalI);
+                                return true;
+                            }
+                        };
 
-    private void showNextActivity() {
-        if (deviceInfo.getDeviceTypeId() >= 0) {
-            Bundle bundle = new Bundle();
-            if (deviceInfo.getDeviceTypeId()  == Constants.REGULAR_CABINET) {
-                bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
-                skipActivity(RegularActivity.class, bundle);
-            } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_CABINET) {
-                bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
-                skipActivity(VipActivity.class, bundle);
-            } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_REGULAR_CABINET) {
-                skipActivity(MainActivity.class);
+                        futures.add(executorService.submit(task));
+                    }
+                    for (Future<Boolean> future : futures) {
+                        try {
+                            future.get();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    executorService.shutdown();}
             }
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealm(data.getData());
+                }
+            });
+            Logger.e(data.getData().get(0).getUuid());
+
+
+            showNext();
         }else {
-            skipActivity(SettingActivity.class);
+            showNext();
         }
-        finish();
+
+    }
+    public void showNext(){
+        Bundle bundle = new Bundle();
+        if (deviceInfo.getDeviceTypeId()  == Constants.REGULAR_CABINET) {
+            bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
+            skipActivity(RegularActivity.class, bundle);
+            finish();
+        } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_CABINET) {
+            bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
+            skipActivity(VipActivity.class, bundle);
+            finish();
+        } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_REGULAR_CABINET) {
+            skipActivity(MainActivity.class);
+            finish();
+        } else {
+            skipActivity(SettingActivity.class);
+            finish();
+            HttpConfig.TOKEN = "";
+            Toast.makeText(this,getString(R.string.error_type),Toast.LENGTH_LONG).show();
+        }
+    }
+    private void getData() {
+        mainController.getCabinetInfo();
     }
 
     @Override
@@ -185,8 +203,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                 realm.copyToRealm(data);
             }
         });
+        mainController.getUser(pageNum, 1);
     }
-
     @Override
     public void temCabinetSuccess(CabinetInfo cabinetBean) {
 

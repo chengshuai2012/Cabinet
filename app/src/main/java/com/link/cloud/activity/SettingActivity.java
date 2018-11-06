@@ -15,6 +15,7 @@ import com.link.cloud.base.BaseActivity;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.BaseEntity;
+import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.Utils;
@@ -82,6 +83,7 @@ public class SettingActivity extends BaseActivity {
                         public void execute(Realm realm) {
                             DeviceInfo deviceInfo = all.get(0);
                             deviceInfo.setPsw(second);
+                            deviceInfo.setToken("");
                         }
                     });
                 } else {

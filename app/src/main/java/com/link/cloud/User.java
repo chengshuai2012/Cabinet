@@ -20,10 +20,6 @@ public class User {
     private int cabinetType;
 
 
-    public static User get() {
-        return CabinetApplication.getInstance().getUser();
-    }
-
     public User() {
         super();
         sp = new SP("USER_DATA");
