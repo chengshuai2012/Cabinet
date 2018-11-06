@@ -25,9 +25,12 @@ import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
 import com.link.cloud.widget.QRCodeDialog;
+import com.zitech.framework.utils.StringUtils;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +62,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
-        publicTitleView =  findViewById(R.id.publicTitle);
+        publicTitleView = findViewById(R.id.publicTitle);
         setLayout = (LinearLayout) findViewById(R.id.setLayout);
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
@@ -74,17 +77,35 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(setLayout, this);
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))){
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
             setLayout.setVisibility(View.GONE);
         }
         vipController = new VipController(this);
         finger();
     }
+
     private RxTimerUtil rxTimerUtil;
+    public  String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    public  long convert2long(String date, String format) {
+        try {
+            if (TextUtils.isEmpty(date)) {
+                if (TextUtils.isEmpty(format))
+                    format = TIME_FORMAT;
+                SimpleDateFormat sf = new SimpleDateFormat(format);
+                return sf.parse(date).getTime();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0l;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_vip;
     }
+
     private void finger() {
         rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
@@ -96,14 +117,22 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     peoples.addAll(realm.copyFromRealm(users));
                     uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                     CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
-                    if (uuid!=null) {
-                        unlocking(uid, Constants.ActivityExtra.FINGER);
-                    } else {
-                        if(uid!=null){
-                            vipController.OpenVipCabinet("",uid);
+                    if (uuid != null) {
+                        String endTime = uuid.getEndTime();
+                        long endTimeLong = convert2long(endTime, TIME_FORMAT);
+                        long now =System.currentTimeMillis();
+                        if(endTimeLong>now){
+                            unlocking(uid, Constants.ActivityExtra.FINGER);
                         }else {
+                            vipController.OpenVipCabinet("", uid);
+                        }
+
+                    } else {
+                        if (uid != null) {
+                            vipController.OpenVipCabinet("", uid);
+                        } else {
                             String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
-                            vipController.OpenVipCabinet(finger,"");
+                            vipController.OpenVipCabinet(finger, "");
                         }
 
                     }
@@ -117,6 +146,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             }
         });
     }
+
     private void unlocking(String uid, String type) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
@@ -124,6 +154,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         showActivity(VipOpenSuccessActivity.class, bundle);
         finish();
     }
+
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -149,9 +180,9 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
 
     @Override
     public void onVipErrorCode(String msg) {
-            if("您没有租用储物柜".equals(msg)){
-                Toast.makeText(this,getString(R.string.sorry_for_is_not_vip),Toast.LENGTH_LONG).show();
-            }
+        if ("您没有租用储物柜".equals(msg)) {
+            Toast.makeText(this, getString(R.string.sorry_for_is_not_vip), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
