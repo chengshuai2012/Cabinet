@@ -28,7 +28,10 @@ import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -88,10 +91,45 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         return R.layout.activity_vip;
     }
 
+
+        public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+
+        public static long convert2long(String date, String format) {
+
+            try {
+
+                if (TextUtils.isEmpty(date)) {
+
+                    if (TextUtils.isEmpty(format))
+
+                        format = TIME_FORMAT;
+
+                    SimpleDateFormat sf = new SimpleDateFormat(format);
+
+                    return sf.parse(date).getTime();
+
+                }
+
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+
+            }
+
+            return 0l;
+
+        }
+
+
+
+
+
     private void finger() {
         rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
+                if(isScanning){
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {
                     RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
@@ -125,7 +163,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 if (state != 4 && state != 3) {
 
                 }
-            }
+            }}
         });
     }
     private void unlocking(String uid, String type) {
