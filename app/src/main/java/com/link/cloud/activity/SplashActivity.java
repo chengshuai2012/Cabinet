@@ -2,12 +2,10 @@ package com.link.cloud.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.link.cloud.Constants;
 import com.link.cloud.R;
-import com.link.cloud.User;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
