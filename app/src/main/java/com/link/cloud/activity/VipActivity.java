@@ -4,34 +4,27 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
-import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.controller.MainController;
 import com.link.cloud.controller.VipController;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
-import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
-import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -129,6 +122,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
+                System.out.println(String.valueOf(number));
                 if(isScanning){
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {

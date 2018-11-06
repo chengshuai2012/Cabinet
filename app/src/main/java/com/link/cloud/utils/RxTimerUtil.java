@@ -1,9 +1,6 @@
 package com.link.cloud.utils;
 
-import android.util.Log;
-
 import java.util.concurrent.TimeUnit;
-
 
 import io.reactivex.annotations.NonNull;
 import rx.Observable;
@@ -58,7 +55,7 @@ public class RxTimerUtil {
      * @param milliseconds
      * @param next
      */
-    public void interval(long milliseconds, final IRxNext next) {
+    public void interval(final long milliseconds, final IRxNext next) {
         mDisposable = Observable.interval(milliseconds, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Long>() {
@@ -76,7 +73,8 @@ public class RxTimerUtil {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-
+                        System.out.println(e.getMessage());
+                        interval(milliseconds, next);
                     }
 
                 });
