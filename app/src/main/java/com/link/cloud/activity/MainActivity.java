@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.link.cloud.Constants;
 import com.link.cloud.R;
-import com.link.cloud.User;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.utils.NettyClientBootstrap;
 import com.zitech.framework.utils.ViewUtils;
+
+import io.realm.RealmResults;
 
 
 @SuppressLint("Registered")
@@ -30,6 +32,7 @@ public class MainActivity extends BaseActivity {
     private MainController mainController;
 
     private NettyClientBootstrap nettyClientBootstrap;
+    private DeviceInfo deviceInfo;
 
 
     @Override
@@ -40,11 +43,19 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
-        if (!TextUtils.isEmpty(User.get().getToken())) {
-            nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + User.get().getToken() + "\"}");
+        getDeviceInfo();
+        if (deviceInfo != null && deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
+            nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
             nettyClientBootstrap.start();
         } else {
             skipActivity(SettingActivity.class);
+        }
+    }
+
+    private void getDeviceInfo() {
+        final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
+        if (!all.isEmpty()) {
+            deviceInfo = all.get(0);
         }
     }
 

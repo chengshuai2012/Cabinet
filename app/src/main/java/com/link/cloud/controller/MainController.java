@@ -54,8 +54,8 @@ public class MainController {
                     }
 
                     @Override
-                    protected void onCodeError(String msg) {
-                        listener.onMainErrorCode(msg);
+                    protected void onCodeError(String msg,String codeErrorr) {
+                        listener.onMainErrorCode(codeErrorr);
                     }
 
                     @Override
@@ -77,7 +77,8 @@ public class MainController {
             }
 
             @Override
-            protected void onCodeError(String msg)  {
+            protected void onCodeError(String msg,String codeErrorr)  {
+                ToastMaster.shortToast(msg);
                 listener.onMainErrorCode(msg);
             }
 
@@ -102,7 +103,7 @@ public class MainController {
                     }
 
                     @Override
-                    protected void onCodeError(String msg) {
+                    protected void onCodeError(String msg,String codeErrorr) {
                         ToastMaster.shortToast(msg);
                     }
 
@@ -125,7 +126,7 @@ public class MainController {
             }
 
             @Override
-            protected void onCodeError(String msg)  {
+            protected void onCodeError(String msg,String codeErrorr)  {
               ToastMaster.shortToast(msg);
             }
 
@@ -155,7 +156,7 @@ public class MainController {
                     }
 
                     @Override
-                    protected void onCodeError(String msg) {
+                    protected void onCodeError(String msg,String codeErrorr) {
 
                     }
 
@@ -178,7 +179,7 @@ public class MainController {
                                }
 
                                @Override
-                               protected void onCodeError(String msg) {
+                               protected void onCodeError(String msg,String codeErrorr) {
                                    listener.onMainErrorCode(msg);
                                }
 

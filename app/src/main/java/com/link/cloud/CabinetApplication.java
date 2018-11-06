@@ -1,6 +1,5 @@
 package com.link.cloud;
 
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,9 +7,7 @@ import android.os.Looper;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
-import com.iflytek.cloud.SynthesizerListener;
 import com.iflytek.cloud.util.ResourceUtil;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.utils.Venueutils;
@@ -70,92 +67,17 @@ public class CabinetApplication extends BaseApplication {
 
 
     private void intSpeak(){
-        // 初始化合成对象
+
         mTts = SpeechSynthesizer.createSynthesizer(this, new InitListener() {
             @Override
-            public void onInit(int i) {
-                ToastMaster.shortToast(String.valueOf(i));
-                if (i != ErrorCode.SUCCESS) {
-                    ToastMaster.shortToast(R.string.mTts_stating_error);
-                }else {
-                    setParam();
-                    mTts.startSpeaking("哈哈", new SynthesizerListener() {
-                        @Override
-                        public void onSpeakBegin() {
+            public void onInit(int code) {
+                if (code != ErrorCode.SUCCESS) {
+                    ToastMaster.shortToast(getResources().getString(R.string.initialization_successful));
 
-                        }
-
-                        @Override
-                        public void onBufferProgress(int i, int i1, int i2, String s) {
-
-                        }
-
-                        @Override
-                        public void onSpeakPaused() {
-
-                        }
-
-                        @Override
-                        public void onSpeakResumed() {
-
-                        }
-
-                        @Override
-                        public void onSpeakProgress(int i, int i1, int i2) {
-
-                        }
-
-                        @Override
-                        public void onCompleted(SpeechError speechError) {
-
-                        }
-
-                        @Override
-                        public void onEvent(int i, int i1, int i2, Bundle bundle) {
-
-                        }
-                    });
                 }
             }
         });
-//
-//
-//        mTts.startSpeaking(getResources().getString(R.string.initialization_successful), new SynthesizerListener() {
-//            @Override
-//            public void onSpeakBegin() {
-//
-//            }
-//
-//            @Override
-//            public void onBufferProgress(int i, int i1, int i2, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onSpeakPaused() {
-//
-//            }
-//
-//            @Override
-//            public void onSpeakResumed() {
-//
-//            }
-//
-//            @Override
-//            public void onSpeakProgress(int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onCompleted(SpeechError speechError) {
-//
-//            }
-//
-//            @Override
-//            public void onEvent(int i, int i1, int i2, Bundle bundle) {
-//
-//            }
-//        });
+
     }
 
     private void setParam(){

@@ -36,7 +36,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
         if (tBaseEntity.isSuccess()) {
             onSuccees(tBaseEntity);
         } else {
-            onCodeError(tBaseEntity.getSecondMessage());
+            onCodeError(tBaseEntity.getSecondMessage()+tBaseEntity.getMsg(),tBaseEntity.getCode());
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param
      * @throws Exception
      */
-    protected abstract void onCodeError(String msg) ;
+    protected abstract void onCodeError(String msg,String codeErrorr) ;
 
     /**
      * 返回失败

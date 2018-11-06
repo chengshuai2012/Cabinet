@@ -95,9 +95,6 @@ public class SettingActivity extends BaseActivity {
                         }
                     });
                 }
-
-
-                User.get().setPassWord(second);
                 Toast.makeText(this, getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
 
 
