@@ -9,6 +9,7 @@ import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
+import com.link.cloud.network.bean.VIPCabinetUser;
 import com.zitech.framework.utils.ToastMaster;
 
 import io.realm.RealmList;
@@ -53,7 +54,7 @@ public class VipController {
 
             @Override
             protected void onCodeError(String msg, String codeErrorr) {
-
+                listener.onVipErrorCode(msg);
             }
 
             @Override
@@ -68,30 +69,24 @@ public class VipController {
         retrunCabinetRequest.setFingerprint(finger);
         retrunCabinetRequest.setUuid(uuid);
         api.VIPCabinet(retrunCabinetRequest)
-                .compose(IOMainThread.<BaseEntity>composeIO2main())
-                .subscribe(new BaseObserver() {
-
-
+                .compose(IOMainThread.<BaseEntity<VIPCabinetUser>>composeIO2main())
+                .subscribe(new BaseObserver<VIPCabinetUser>() {
                     @Override
-                    public void onNext(Object o) {
-
-                    }
-
-                    @Override
-                    protected void onSuccees(BaseEntity t) {
+                    protected void onSuccees(BaseEntity<VIPCabinetUser> t) {
 
                     }
 
                     @Override
                     protected void onCodeError(String msg, String codeErrorr) {
-
+                        listener.onVipErrorCode(msg);
                     }
 
 
                     @Override
                     protected void onFailure(Throwable e, boolean isNetWorkError) {
-
+                        listener.onVipFail(e,isNetWorkError);
                     }
+
                 });
     }
     public void getCabinetInfo() {

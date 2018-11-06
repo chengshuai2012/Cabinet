@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
@@ -77,6 +78,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             setLayout.setVisibility(View.GONE);
         }
         vipController = new VipController(this);
+        finger();
     }
     private RxTimerUtil rxTimerUtil;
     @Override
@@ -84,7 +86,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         return R.layout.activity_vip;
     }
     private void finger() {
-        rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
+        rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
                 int state = CabinetApplication.getVenueUtils().getState();
@@ -94,7 +96,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     peoples.addAll(realm.copyFromRealm(users));
                     uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                     CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
-
                     if (uuid!=null) {
                         unlocking(uid, Constants.ActivityExtra.FINGER);
                     } else {
@@ -105,14 +106,13 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                             vipController.OpenVipCabinet(finger,"");
                         }
 
-
-                        ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
                     }
                 }
                 if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
+                    ToastMaster.shortToast(getResources().getString(R.string.again_finger));
                 }
                 if (state != 4 && state != 3) {
+
                 }
             }
         });
@@ -121,7 +121,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
-        showActivity(RegularOpenActivity.class, bundle);
+        showActivity(VipOpenSuccessActivity.class, bundle);
         finish();
     }
     @Override
@@ -149,7 +149,9 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
 
     @Override
     public void onVipErrorCode(String msg) {
-
+            if("您没有租用储物柜".equals(msg)){
+                Toast.makeText(this,getString(R.string.sorry_for_is_not_vip),Toast.LENGTH_LONG).show();
+            }
     }
 
     @Override

@@ -29,7 +29,7 @@ public class ApiConstants {
     public static final String GETCABINETINFO = "cabinetInfo";
 
     //VIP开柜
-    public static final String VIPCABINET = "userCabinetVip";
+    public static final String VIPCABINET = "useCabinetVip";
 
 
 

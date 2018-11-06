@@ -5,6 +5,7 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
+import com.link.cloud.network.bean.VIPCabinetUser;
 
 import io.reactivex.Observable;
 import io.realm.RealmList;
@@ -49,5 +50,5 @@ public interface BaseService {
 
     /**Vip开柜*/
     @POST(ApiConstants.VIPCABINET)
-    Observable<BaseEntity> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
+    Observable<BaseEntity<VIPCabinetUser>> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 }

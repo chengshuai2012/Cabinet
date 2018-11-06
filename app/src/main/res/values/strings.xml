@@ -80,4 +80,5 @@
     <string name="close_door">门禁关闭</string>
     <string name="open_door">门禁开启</string>
     <string name="save_success">保存成功</string>
+    <string name="sorry_for_is_not_vip">抱歉，您非VIP柜子用户</string>
 </resources>

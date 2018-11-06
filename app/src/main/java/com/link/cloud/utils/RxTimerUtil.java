@@ -1,5 +1,7 @@
 package com.link.cloud.utils;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 
