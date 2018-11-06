@@ -4,27 +4,21 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
-import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.controller.MainController;
 import com.link.cloud.controller.VipController;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
-import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
-import com.link.cloud.widget.QRCodeDialog;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
@@ -53,6 +47,8 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     private TextView manager;
     private VipController vipController;
     private String uid;
+    private boolean isScanning = false;
+    private RxTimerUtil rxTimerUtil;
 
     @Override
     protected void initViews() {
@@ -80,7 +76,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         vipController = new VipController(this);
         finger();
     }
-    private RxTimerUtil rxTimerUtil;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_vip;
@@ -89,31 +85,32 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
-                int state = CabinetApplication.getVenueUtils().getState();
-                if (state == 3) {
-                    RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                    List<AllUser> peoples = new ArrayList<>();
-                    peoples.addAll(realm.copyFromRealm(users));
-                    uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
-                    CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
-                    if (uuid!=null) {
-                        unlocking(uid, Constants.ActivityExtra.FINGER);
-                    } else {
-                        if(uid!=null){
-                            vipController.OpenVipCabinet("",uid);
-                        }else {
-                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
-                            vipController.OpenVipCabinet(finger,"");
+                if (isScanning){
+                    int state = CabinetApplication.getVenueUtils().getState();
+                    if (state == 3) {
+                        RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
+                        List<AllUser> peoples = new ArrayList<>();
+                        peoples.addAll(realm.copyFromRealm(users));
+                        uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                        CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
+                        if (uuid!=null) {
+                            unlocking(uid, Constants.ActivityExtra.FINGER);
+                        } else {
+                            if(uid!=null){
+                                vipController.OpenVipCabinet("",uid);
+                            }else {
+                                String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+                                vipController.OpenVipCabinet(finger,"");
+                            }
+
                         }
-
                     }
-                }
-                if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.again_finger));
-                }
-                if (state != 4 && state != 3) {
+                    if (state == 4) {
+                        ToastMaster.shortToast(getResources().getString(R.string.again_finger));
+                    }
+                    if (state != 4 && state != 3) {
 
-                }
+                    }}
             }
         });
     }
@@ -142,6 +139,20 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isScanning = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isScanning = true;
+    }
+
+
     @Override
     public void modelMsg(int state, String msg) {
 
@@ -157,6 +168,12 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     @Override
     public void onVipFail(Throwable e, boolean isNetWork) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        rxTimerUtil.cancel();
     }
 
     @Override

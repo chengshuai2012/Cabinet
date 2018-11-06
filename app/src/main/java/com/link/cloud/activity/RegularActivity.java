@@ -21,14 +21,13 @@ import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.utils.RxTimerUtil;
+import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
-import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -46,18 +45,16 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     private TextView passwordLayout;
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
-    Realm realm;
     private MainController mainController;
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
     private EditText editText;
     private String mType;
-
+    private boolean isScanning = false;
 
     @Override
     protected void initViews() {
-        realm = Realm.getDefaultInstance();
         rxTimerUtil = new RxTimerUtil();
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
@@ -113,28 +110,30 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
-                int state = CabinetApplication.getVenueUtils().getState();
-                if (state == 3) {
-                    RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                    List<AllUser> peoples = new ArrayList<>();
-                    peoples.addAll(realm.copyFromRealm(users));
-                    String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
-                    if (null != uid && !TextUtils.isEmpty(uid)) {
-                        unlocking(uid, Constants.ActivityExtra.FINGER);
-                    } else {
-                        ToastMaster.shortToast(getResources().getString(R.string.cheack_fail));
+                System.out.println(String.valueOf(number));
+                if (isScanning){
+                    int state = CabinetApplication.getVenueUtils().getState();
+                    if (state == 3) {
+                        RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
+                        List<AllUser> peoples = new ArrayList<>();
+                        peoples.addAll(realm.copyFromRealm(users));
+                        String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                        if (null != uid && !TextUtils.isEmpty(uid)) {
+                            unlocking(uid, Constants.ActivityExtra.FINGER);
+                        } else {
+                            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
+                        }
                     }
-                }
-                if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.please_move_finger));
-                }
-                if (state != 4 && state != 3) {
+                    if (state == 4) {
+                        TTSUtils.getInstance().speak(getResources().getString(R.string.please_move_finger));
+                    }
                 }
             }
         });
     }
 
     private void unlocking(String uid, String type) {
+        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
@@ -144,11 +143,21 @@ public class RegularActivity extends BaseActivity implements MainController.Main
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isScanning = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isScanning = true;
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
         rxTimerUtil.cancel();
     }
 
