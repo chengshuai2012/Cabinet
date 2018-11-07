@@ -70,7 +70,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
 
     private void getToken() {
-            mainController.login(deviceInfo.getDeviceId().trim(), deviceInfo.getPsw());
+        mainController.login(deviceInfo.getDeviceId().trim(), deviceInfo.getPsw());
     }
 
     @Override
@@ -101,30 +101,35 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     @Override
     public void onMainErrorCode(String msg) {
-        if (msg.equals("400000100000")){
+        if (msg.equals("400000100000") || msg.equals("400000999102")) {
+            DeleteDeviceInfo();
             skipActivity(SettingActivity.class);
         }
+
+
     }
 
     @Override
     public void onMainFail(Throwable e, boolean isNetWork) {
 
     }
-    boolean isDeleteAll =false;
+
+    boolean isDeleteAll = false;
+
     @Override
     public void getUserSuccess(final BindUser data) {
         final RealmResults<AllUser> all = realm.where(AllUser.class).findAll();
-        total =data.getTotal();
-        if(all.size()!=data.getTotal()){
-            if(!isDeleteAll){
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    all.deleteAllFromRealm();
-                    isDeleteAll=true;
+        total = data.getTotal();
+        if (all.size() != data.getTotal()) {
+            if (!isDeleteAll) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        all.deleteAllFromRealm();
+                        isDeleteAll = true;
 
-                }
-            });
+                    }
+                });
                 int totalPage = total / pageNum + 1;
                 ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
                 List<Future<Boolean>> futures = new ArrayList();
@@ -150,7 +155,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                             e.printStackTrace();
                         }
                     }
-                    executorService.shutdown();}
+                    executorService.shutdown();
+                }
             }
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -159,34 +165,34 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                 }
             });
             Logger.e(data.getData().get(0).getUuid());
-
-
             showNext();
-        }else {
+        } else {
             showNext();
         }
 
     }
-    public void showNext(){
+
+    public void showNext() {
         Bundle bundle = new Bundle();
-        if (deviceInfo.getDeviceTypeId()  == Constants.REGULAR_CABINET) {
+        if (deviceInfo.getDeviceTypeId() == Constants.REGULAR_CABINET) {
             bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
             skipActivity(RegularActivity.class, bundle);
             finish();
-        } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_CABINET) {
+        } else if (deviceInfo.getDeviceTypeId() == Constants.VIP_CABINET) {
             bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
             skipActivity(VipActivity.class, bundle);
             finish();
-        } else if (deviceInfo.getDeviceTypeId()  == Constants.VIP_REGULAR_CABINET) {
+        } else if (deviceInfo.getDeviceTypeId() == Constants.VIP_REGULAR_CABINET) {
             skipActivity(MainActivity.class);
             finish();
         } else {
             skipActivity(SettingActivity.class);
             finish();
             HttpConfig.TOKEN = "";
-            Toast.makeText(this,getString(R.string.error_type),Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_type), Toast.LENGTH_LONG).show();
         }
     }
+
     private void getData() {
         mainController.getCabinetInfo();
     }
@@ -203,6 +209,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         });
         mainController.getUser(pageNum, 1);
     }
+
     @Override
     public void temCabinetSuccess(CabinetInfo cabinetBean) {
 

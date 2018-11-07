@@ -80,6 +80,7 @@ public class MainController {
             protected void onCodeError(String msg,String codeErrorr)  {
                 ToastMaster.shortToast(msg);
                 listener.onMainErrorCode(msg);
+
             }
 
             @Override
@@ -171,16 +172,15 @@ public class MainController {
         api.getCabinetInfo()
                 .compose(IOMainThread.<BaseEntity<RealmList<CabinetInfo>>>composeIO2main())
                 .subscribe(new BaseObserver<RealmList<CabinetInfo>>() {
-
-
                                @Override
                                protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t)  {
                                    listener.onCabinetInfoSuccess(t.getData());
+                                   ToastMaster.shortToast(t.getMsg()+t.getCode());
                                }
 
                                @Override
                                protected void onCodeError(String msg,String codeErrorr) {
-                                   listener.onMainErrorCode(msg);
+
                                }
 
                                @Override

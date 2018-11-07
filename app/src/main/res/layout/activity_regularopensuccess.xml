@@ -57,10 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/w110"
         android:layout_marginRight="@dimen/w110"
-        android:layout_marginTop="-2dp">
+        android:layout_marginTop="-3dp">
 
 
         <TextView
+            android:id="@+id/openWay"
             android:layout_width="@dimen/w120"
             android:layout_height="@dimen/h60"
             android:layout_gravity="left"
@@ -72,7 +73,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/openWay"
+            android:id="@+id/openSuccessText"
             android:layout_width="@dimen/w120"
             android:layout_height="@dimen/h60"
             android:layout_gravity="right"
@@ -89,11 +90,11 @@
         android:id="@+id/openSuccessLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/h281"
             android:layout_marginLeft="@dimen/w110"
@@ -114,7 +115,7 @@
                 style="@style/CommonText"
                 android:layout_marginLeft="@dimen/w37"
                 android:layout_marginTop="@dimen/h101"
-                android:textColor="@color/color_1d1d1d"
+                android:textColor="@color/white"
                 android:textSize="@dimen/w21"
                 tools:text="sdafasdsdf" />
 
@@ -129,7 +130,7 @@
                     style="@style/CommonText"
                     android:layout_marginLeft="@dimen/w37"
                     android:layout_weight="1"
-                    android:textColor="@color/color_1d1d1d"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/w21"
                     tools:text="sdafasdsdf" />
 
@@ -161,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/h19"
             android:gravity="center"
-            android:text="@string/aready_open_string"
+            android:text="@string/lock_open_success"
             android:textColor="@color/white"
             android:textSize="@dimen/w24" />
 
@@ -171,10 +172,10 @@
             android:layout_width="@dimen/w302"
             android:layout_height="@dimen/h55"
             android:layout_marginTop="@dimen/h65"
-            android:background="@drawable/ic_regural_btn_bg"
+            android:background="@drawable/border_gray_corn_gradient"
             android:gravity="center"
             android:text="@string/sure_string"
-            android:textColor="@color/color_ff5a381b"
+            android:textColor="@color/black"
             android:textSize="@dimen/w24" />
     </LinearLayout>
 

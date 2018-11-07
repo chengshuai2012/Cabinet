@@ -4,28 +4,25 @@ import java.io.Serializable;
 
 import io.realm.RealmObject;
 
-/**
- * Created by 49488 on 2018/10/28.
- */
 
-public class CabinetInfo extends RealmObject implements Serializable{
 
+public class CabinetInfo extends RealmObject implements Serializable {
     /**
-     * id : 101
-     * lockId : 48
-     * deviceId : 3
-     * lineNo : 1
-     * cabinetNo : 1
+     * id : 152
+     * lockId : 53
+     * deviceId : 5
+     * lineNo : 2
+     * cabinetNo : 2
      * locked : false
      * uuid :
+     * nickname :
+     * phone :
      * startTime : null
      * endTime : null
      * vip : false
      * lockNo : 1
-     * passwd :
+     * passwd : null
      */
-
-
 
     private int id;
     private int lockId;
@@ -34,18 +31,22 @@ public class CabinetInfo extends RealmObject implements Serializable{
     private String cabinetNo;
     private boolean locked;
     private String uuid;
+    private String nickname;
+    private String phone;
     private String startTime;
     private String endTime;
     private boolean vip;
     private int lockNo;
     private String passwd;
+    private String openWay;
 
-    public String getPasswd() {
-        return passwd;
+
+    public String getOpenWay() {
+        return openWay;
     }
 
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    public void setOpenWay(String openWay) {
+        this.openWay = openWay;
     }
 
     public int getId() {
@@ -104,6 +105,22 @@ public class CabinetInfo extends RealmObject implements Serializable{
         this.uuid = uuid;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getStartTime() {
         return startTime;
     }
@@ -135,4 +152,14 @@ public class CabinetInfo extends RealmObject implements Serializable{
     public void setLockNo(int lockNo) {
         this.lockNo = lockNo;
     }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+
+
 }

@@ -15,11 +15,9 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.controller.MainController;
+import com.link.cloud.controller.RegularController;
 import com.link.cloud.network.bean.AllUser;
-import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetInfo;
-import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
@@ -28,7 +26,7 @@ import com.zitech.framework.utils.ViewUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -37,7 +35,7 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends BaseActivity implements MainController.MainControllerListener {
+public class RegularActivity extends BaseActivity implements RegularController.RegularControllerListener {
 
 
     private LinearLayout zhijingmaiLayout;
@@ -45,7 +43,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     private TextView passwordLayout;
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
-    private MainController mainController;
+    private RegularController regularController;
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
@@ -71,11 +69,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
             publicTitleView.setFinsh(View.GONE);
         }
 
-        mainController = new MainController(this);
+        regularController = new RegularController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(manager, this);
+        ViewUtils.setOnClickListener(setLayout, this);
         finger();
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
@@ -83,7 +82,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                 finish();
             }
         });
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))&&getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
             setLayout.setVisibility(View.GONE);
         }
         editText.addTextChangedListener(new TextWatcher() {
@@ -107,11 +106,11 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     }
 
     private void finger() {
-        rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
+        rxTimerUtil.interval(1500, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
                 System.out.println(String.valueOf(number));
-                if (isScanning){
+                if (isScanning) {
                     int state = CabinetApplication.getVenueUtils().getState();
                     if (state == 3) {
                         RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
@@ -121,7 +120,8 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                         if (null != uid && !TextUtils.isEmpty(uid)) {
                             unlocking(uid, Constants.ActivityExtra.FINGER);
                         } else {
-                            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
+                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+                            regularController.findUser(finger);
                         }
                     }
                     if (state == 4) {
@@ -197,34 +197,30 @@ public class RegularActivity extends BaseActivity implements MainController.Main
 
 
     @Override
-    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
-
+    public void successful(final AllUser allUser) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insert(allUser);
+            }
+        });
+        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.FINGER);
+        bundle.putString(Constants.ActivityExtra.UUID, allUser.getUuid());
+        showActivity(RegularOpenActivity.class, bundle);
+        if (TextUtils.isEmpty(mType)) {
+            finish();
+        }
     }
 
     @Override
-    public void onMainErrorCode(String msg) {
+    public void faild(String message) {
+        TTSUtils.getInstance().speak(message);
     }
 
     @Override
-    public void onMainFail(Throwable e, boolean isNetWork) {
+    public void onRegularFail(Throwable e, boolean isNetWork) {
 
     }
-
-    @Override
-    public void getUserSuccess(BindUser data) {
-
-    }
-
-    @Override
-    public void onCabinetInfoSuccess(RealmList<CabinetInfo> data) {
-
-
-    }
-
-    @Override
-    public void temCabinetSuccess(CabinetInfo cabinetBean) {
-
-
-    }
-
 }

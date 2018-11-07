@@ -1,5 +1,6 @@
 package com.link.cloud.network;
 
+import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
@@ -19,36 +20,61 @@ import retrofit2.http.Path;
  */
 
 public interface BaseService {
-    /**登陆接口*/
+    /**
+     * 登陆接口
+     */
 
     @POST(ApiConstants.APPLOGIN)
     Observable<BaseEntity<CabnetDeviceInfoBean>> appLogin(@Path("deviceCode") String deviceCode, @Path("password") String password);
 
-    /**获取验证码*/
+    /**
+     * 获取验证码
+     */
     @GET(ApiConstants.SENDVCODE)
-    Observable<BaseEntity> sendVCode( @Path("phone") String phone);
+    Observable<BaseEntity> sendVCode(@Path("phone") String phone);
 
-    /**退柜*/
+    /**
+     * 退柜
+     */
     @POST(ApiConstants.RETURNCABINET)
     Observable<BaseEntity<CabinetInfo>> returnCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
-    /**续柜*/
+    /**
+     * 续柜
+     */
     @POST(ApiConstants.USECABINET)
     Observable<BaseEntity> useCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
-    /**临时柜*/
+    /**
+     * 临时柜
+     */
     @POST(ApiConstants.TEMCABINET)
     Observable<BaseEntity<CabinetInfo>> temCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 
-    /**获取用户*/
+    /**
+     * 获取用户
+     */
     @POST(ApiConstants.GETUSERS)
     Observable<BaseEntity<BindUser>> getUser(@Body RequestBindFinger requestBindFinger);
 
-    /**获取柜子配置信息*/
+    /**
+     * 获取柜子配置信息
+     */
     @GET(ApiConstants.GETCABINETINFO)
     Observable<BaseEntity<RealmList<CabinetInfo>>> getCabinetInfo();
 
-    /**Vip开柜*/
+    /**
+     * Vip开柜
+     */
     @POST(ApiConstants.VIPCABINET)
     Observable<BaseEntity<VIPCabinetUser>> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
+
+    /**
+     * 获取单个用户信息
+     */
+    @POST(ApiConstants.VALIDATEFINGERPRINTS)
+    Observable<BaseEntity<AllUser>> findUser(@Body RetrunCabinetRequest retrunCabinetRequest);
+
+
+
 }

@@ -1,6 +1,5 @@
 package com.link.cloud.network.bean;
 
-import java.util.List;
 
 import io.realm.RealmList;
 

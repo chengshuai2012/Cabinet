@@ -31,8 +31,8 @@ public class ApiConstants {
     //VIP开柜
     public static final String VIPCABINET = "useCabinetVip";
 
-
-
+    //验证指纹信息
+    public static final String VALIDATEFINGERPRINTS = "/app/validateFingerprints";
 
 
 }

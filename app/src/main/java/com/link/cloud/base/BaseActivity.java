@@ -8,28 +8,28 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.link.cloud.CabinetApplication;
-import com.link.cloud.R;
-import com.link.cloud.utils.Utils;
+import com.link.cloud.bean.DeviceInfo;
+import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Venueutils;
 import com.link.cloud.widget.SimpleStyleDialog;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zitech.framework.utils.ViewUtils;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import rx.functions.Action1;
 
 /**
  * Created by OFX002 on 2018/9/20.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener , Venueutils.VenueCallBack{
+public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener, Venueutils.VenueCallBack {
 
     private SimpleStyleDialog denyDialog;
 
@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         this.setContentView(this.getLayoutId());
-        realm= Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         CabinetApplication.getVenueUtils().initVenue(this, this, false);
         initViews();
     }
@@ -64,6 +64,19 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    public void speak(String message) {
+        TTSUtils.getInstance().speak(message);
+    }
+
+    public void DeleteDeviceInfo() {
+        final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                all.deleteAllFromRealm();
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {

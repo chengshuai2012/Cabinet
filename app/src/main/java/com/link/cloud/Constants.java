@@ -23,6 +23,7 @@ public class Constants {
         String ENTITY="ENTITY";
         String UUID="UUID";
         String FINGER="FINGER";
+        String XIAOCHENGXU="XIAOCHENGXU";
     }
 
     public interface FragmentExtra {

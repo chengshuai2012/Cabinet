@@ -16,7 +16,7 @@
     <string name="mode_three_hint">请点击界面选择已使用的柜号，输入自己的手机 后4位进行验证，听到“验证成功”设备开柜</string>
     <string name="finger_string">请将手指正确放置模块上方完成验证，听到“验证成功”设备开柜</string>
     <string name="sure_string">确认</string>
-    <string name="aready_open_string">请取走您的物品关好柜门</string>
+    <string name="aready_open_string">号柜门已打开</string>
     <string name="password_open">密码开柜</string>
     <string name="lock_location">柜号位置</string>
     <string name="last_string">上一步</string>
@@ -81,4 +81,15 @@
     <string name="open_door">门禁开启</string>
     <string name="save_success">保存成功</string>
     <string name="sorry_for_is_not_vip">抱歉，您非VIP柜子用户</string>
+
+    <string name="remove_leave">号已退柜，请您带走所有随身物品并关好柜门</string>
+    <string name="name">姓名  </string>
+    <string name="phone">电话  </string>
+    <string name="open_finger">指静脉开柜</string>
+    <string name="open_xiaochengxu">二维码开柜</string>
+    <string name="open_code">二维码开柜</string>
+    <string name="open_nun">  号柜门已打开</string>
+    <string name="lock_open_success">请取走您的物品关好柜门</string>
+
+
 </resources>
