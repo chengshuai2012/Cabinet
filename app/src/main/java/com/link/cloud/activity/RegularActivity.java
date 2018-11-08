@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,19 +15,20 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.controller.RegularController;
+import com.link.cloud.controller.MainController;
 import com.link.cloud.network.bean.AllUser;
-import com.link.cloud.utils.HexUtil;
+import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
-import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -35,7 +37,7 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends BaseActivity implements RegularController.RegularControllerListener {
+public class RegularActivity extends BaseActivity implements MainController.MainControllerListener {
 
 
     private LinearLayout zhijingmaiLayout;
@@ -43,15 +45,13 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     private TextView passwordLayout;
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
-    private RegularController regularController;
+    private MainController mainController;
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
     private EditText editText;
     private String mType;
     private boolean isScanning = false;
-    private boolean canGetCode;
-
 
     @Override
     protected void initViews() {
@@ -71,12 +71,11 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             publicTitleView.setFinsh(View.GONE);
         }
 
-        regularController = new RegularController(this);
+        mainController = new MainController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(manager, this);
-        ViewUtils.setOnClickListener(setLayout, this);
         finger();
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
@@ -84,39 +83,35 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 finish();
             }
         });
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE)) && getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
             setLayout.setVisibility(View.GONE);
         }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                Log.e("输入过程中执行该方法", "文字变化:" + editText.getText().toString());
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ToastMaster.shortToast("1" + "start=" + start + "before=" + before + "count=" + count);
+                Log.e("输入前确认执行该方法", "开始输入:" + editText.getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                rxTimerUtil.timer(1000, new RxTimerUtil.IRxNext() {
-                    @Override
-                    public void doNext(long number) {
-                        unlocking(editText.getText().toString(), Constants.ActivityExtra.XIAOCHENGXU);
-                    }
-                });
+                Log.e("输入结束执行该方法", "输入结束:" + editText.getText().toString());
+
             }
         });
 
     }
 
     private void finger() {
-        rxTimerUtil.interval(1500, new RxTimerUtil.IRxNext() {
+        rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
                 System.out.println(String.valueOf(number));
-                if (isScanning) {
+                if (isScanning){
                     int state = CabinetApplication.getVenueUtils().getState();
                     if (state == 3) {
                         RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
@@ -126,8 +121,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                         if (null != uid && !TextUtils.isEmpty(uid)) {
                             unlocking(uid, Constants.ActivityExtra.FINGER);
                         } else {
-                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
-                            regularController.findUser(finger);
+                            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
                         }
                     }
                     if (state == 4) {
@@ -139,13 +133,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     }
 
     private void unlocking(String uid, String type) {
-        if (type.equals(Constants.ActivityExtra.FINGER)) {
-            speak(getResources().getString(R.string.finger_success));
-        } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
-            speak(getResources().getString(R.string.code_success));
-        } else {
-            speak(getResources().getString(R.string.password_success));
-        }
+        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
@@ -209,30 +197,34 @@ public class RegularActivity extends BaseActivity implements RegularController.R
 
 
     @Override
-    public void successful(final AllUser allUser) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insert(allUser);
-            }
-        });
-        speak(getResources().getString(R.string.finger_success));
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.FINGER);
-        bundle.putString(Constants.ActivityExtra.UUID, allUser.getUuid());
-        showActivity(RegularOpenActivity.class, bundle);
-        if (TextUtils.isEmpty(mType)) {
-            finish();
-        }
+    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
+
     }
 
     @Override
-    public void faild(String message) {
-        speak(message);
+    public void onMainErrorCode(String msg) {
     }
 
     @Override
-    public void onRegularFail(Throwable e, boolean isNetWork) {
+    public void onMainFail(Throwable e, boolean isNetWork) {
 
     }
+
+    @Override
+    public void getUserSuccess(BindUser data) {
+
+    }
+
+    @Override
+    public void onCabinetInfoSuccess(RealmList<CabinetInfo>  data) {
+
+
+    }
+
+    @Override
+    public void temCabinetSuccess(CabinetInfo cabinetBean) {
+
+
+    }
+
 }

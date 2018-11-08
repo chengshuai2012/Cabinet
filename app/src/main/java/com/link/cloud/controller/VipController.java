@@ -9,8 +9,6 @@ import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
-import com.link.cloud.network.bean.VIPCabinetUser;
-import com.zitech.framework.utils.ToastMaster;
 
 import io.realm.RealmList;
 
@@ -28,9 +26,7 @@ public class VipController {
 
         void getUserSuccess(BindUser data);
 
-        void onCabinetInfoSuccess(RealmList<CabinetInfo> data);
-
-        void temCabinetSuccess(CabinetInfo cabinetBean);
+        void VipCabinetSuccess(CabinetInfo vipCabinetUser);
 
     }
 
@@ -48,7 +44,7 @@ public class VipController {
         requestBindFinger.setPageSize(pageNume);
         api.getUser(requestBindFinger).compose(IOMainThread.<BaseEntity<BindUser>>composeIO2main()).subscribe(new BaseObserver<BindUser>() {
             @Override
-            protected void onSuccees(BaseEntity<BindUser> t)  {
+            protected void onSuccees(BaseEntity<BindUser> t) {
                 listener.getUserSuccess(t.getData());
             }
 
@@ -64,16 +60,17 @@ public class VipController {
         });
 
     }
-    public void OpenVipCabinet(String finger,String uuid){
+
+    public void OpenVipCabinet(String finger, String uuid) {
         RetrunCabinetRequest retrunCabinetRequest = new RetrunCabinetRequest();
         retrunCabinetRequest.setFingerprint(finger);
         retrunCabinetRequest.setUuid(uuid);
         api.VIPCabinet(retrunCabinetRequest)
-                .compose(IOMainThread.<BaseEntity<VIPCabinetUser>>composeIO2main())
-                .subscribe(new BaseObserver<VIPCabinetUser>() {
+                .compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main())
+                .subscribe(new BaseObserver<CabinetInfo>() {
                     @Override
-                    protected void onSuccees(BaseEntity<VIPCabinetUser> t) {
-
+                    protected void onSuccees(BaseEntity<CabinetInfo> t) {
+                        listener.VipCabinetSuccess(t.getData());
                     }
 
                     @Override
@@ -84,33 +81,11 @@ public class VipController {
 
                     @Override
                     protected void onFailure(Throwable e, boolean isNetWorkError) {
-                        listener.onVipFail(e,isNetWorkError);
+                        listener.onVipFail(e, isNetWorkError);
                     }
 
                 });
     }
-    public void getCabinetInfo() {
-        api.getCabinetInfo()
-                .compose(IOMainThread.<BaseEntity<RealmList<CabinetInfo>>>composeIO2main())
-                .subscribe(new BaseObserver<RealmList<CabinetInfo>>() {
 
 
-                               @Override
-                               protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t)  {
-                                   listener.onCabinetInfoSuccess(t.getData());
-                               }
-
-                    @Override
-                    protected void onCodeError(String msg, String codeErrorr) {
-
-                    }
-
-
-                    @Override
-                               protected void onFailure(Throwable e, boolean isNetWorkError) {
-                                   listener.onVipFail(e, isNetWorkError);
-                               }
-                           }
-                );
-    }
 }

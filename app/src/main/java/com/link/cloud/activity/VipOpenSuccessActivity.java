@@ -2,6 +2,7 @@ package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +13,10 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.widget.PublicTitleView;
+
+import io.realm.Realm;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -48,10 +52,16 @@ public class VipOpenSuccessActivity extends BaseActivity {
     private android.widget.Button bindKeypad0;
     private android.widget.Button deleteButton;
     private android.widget.Button backButton;
-
+    Realm realm ;
     @Override
     protected void initViews() {
         initView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override
@@ -60,6 +70,7 @@ public class VipOpenSuccessActivity extends BaseActivity {
     }
 
     private void initView() {
+        realm = Realm.getDefaultInstance();
         cardNameText = (TextView) findViewById(R.id.cardNameText);
         nameText = (TextView) findViewById(R.id.nameText);
         phoneText = (TextView) findViewById(R.id.phoneText);
@@ -92,17 +103,20 @@ public class VipOpenSuccessActivity extends BaseActivity {
         bindKeypad0 = (Button) findViewById(R.id.bind_keypad_0);
         deleteButton = (Button) findViewById(R.id.deleteButton);
         backButton = (Button) findViewById(R.id.backButton);
-
-        if (getIntent().getExtras().getString(Constants.ActivityExtra.TYPE).equals("SUCCESS")) {
-            openSuccessLayout.setVisibility(View.VISIBLE);
-        } else {
+        String uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
+        CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+        nameText.setText(first.getNickname()+"");
+        phoneText.setText(first.getPhone()+"");
+        lockId.setText(first.getCabinetNo()+getString(R.string.open_success));
+        if (getIntent().getExtras().getString(Constants.ActivityExtra.TYPE).equals("PASSWORD")) {
             passwordLayout.setVisibility(View.VISIBLE);
+        } else {
+            openSuccessLayout.setVisibility(View.VISIBLE);
         }
 
     }
 
     @Override
     public void modelMsg(int state, String msg) {
-
     }
 }

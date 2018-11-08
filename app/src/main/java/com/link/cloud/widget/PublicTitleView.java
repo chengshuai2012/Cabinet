@@ -128,6 +128,10 @@ public class PublicTitleView extends LinearLayout {
         return value != null;
     }
 
+    public void hideBack(){
+        finsh.setVisibility(INVISIBLE);
+    }
+
     /**
      * 设置此控件的文本
      *

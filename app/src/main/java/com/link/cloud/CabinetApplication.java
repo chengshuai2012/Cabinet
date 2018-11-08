@@ -6,6 +6,7 @@ import android.os.Looper;
 import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import com.link.cloud.network.HttpConfig;
 import com.link.cloud.utils.Venueutils;
 import com.zitech.framework.BaseApplication;
 
@@ -45,10 +46,8 @@ public class CabinetApplication extends BaseApplication {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
-
         intSerialPort();
         intSpeak();
-
 
     }
 
