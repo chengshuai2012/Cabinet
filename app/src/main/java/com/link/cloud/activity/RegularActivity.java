@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +20,7 @@ import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
+import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -50,6 +50,8 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     private EditText editText;
     private String mType;
     private boolean isScanning = false;
+    private boolean canGetCode;
+
 
     @Override
     protected void initViews() {
@@ -82,24 +84,28 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 finish();
             }
         });
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))&&getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE)) && getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
             setLayout.setVisibility(View.GONE);
         }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.e("输入过程中执行该方法", "文字变化:" + editText.getText().toString());
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e("输入前确认执行该方法", "开始输入:" + editText.getText().toString());
+                ToastMaster.shortToast("1" + "start=" + start + "before=" + before + "count=" + count);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.e("输入结束执行该方法", "输入结束:" + editText.getText().toString());
-
+                rxTimerUtil.timer(1000, new RxTimerUtil.IRxNext() {
+                    @Override
+                    public void doNext(long number) {
+                        unlocking(editText.getText().toString(), Constants.ActivityExtra.XIAOCHENGXU);
+                    }
+                });
             }
         });
 
@@ -133,7 +139,13 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     }
 
     private void unlocking(String uid, String type) {
-        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
+        if (type.equals(Constants.ActivityExtra.FINGER)) {
+            speak(getResources().getString(R.string.finger_success));
+        } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
+            speak(getResources().getString(R.string.code_success));
+        } else {
+            speak(getResources().getString(R.string.password_success));
+        }
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
@@ -204,7 +216,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 realm.insert(allUser);
             }
         });
-        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
+        speak(getResources().getString(R.string.finger_success));
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.FINGER);
         bundle.putString(Constants.ActivityExtra.UUID, allUser.getUuid());
@@ -216,7 +228,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
 
     @Override
     public void faild(String message) {
-        TTSUtils.getInstance().speak(message);
+        speak(message);
     }
 
     @Override

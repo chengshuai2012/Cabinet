@@ -32,27 +32,23 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     private RegularOpenController regularOpenController;
     private boolean hasUuid = false;
     private TextView finsh;
-
+    private CabinetInfo cabinetInfo;
 
     @Override
     protected void initViews() {
         regularOpenController = new RegularOpenController(this);
         type = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
-        uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
-
+        if (!type.equals(Constants.ActivityExtra.PASSWORD)) {
+            uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
+        } else {
+            cabinetInfo = (CabinetInfo) getIntent().getExtras().getSerializable(Constants.ActivityExtra.ENTITY);
+        }
         openLayout = findViewById(R.id.openLayout);
         returnLayout = findViewById(R.id.returnLayout);
         finsh = findViewById(R.id.finsh);
-
-
-//        ViewUtils.setOnClickListener(openLayout, this);
         openLayout.setOnClickListener(this);
-
-
         ViewUtils.setOnClickListener(finsh, this);
         ViewUtils.setOnClickListener(returnLayout, this);
-
-
     }
 
     @Override
@@ -60,28 +56,30 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
+                if (cabinetInfo==null)
                 regularOpenController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
-                final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
-                for (CabinetInfo info : all) {
-                    if (info.getUuid().trim().equals(uuid.trim())) {
-                        hasUuid = true;
-                        openLock(info);
-                        break;
+                if (cabinetInfo==null){
+                    final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
+                    for (CabinetInfo info : all) {
+                        if (info.getUuid().trim().equals(uuid.trim())) {
+                            hasUuid = true;
+                            openLock(info);
+                            break;
+                        }
                     }
+                    if (!hasUuid) {
+                        regularOpenController.temCabinet(uuid);
+                    }
+                }else {
+                    openLock(cabinetInfo);
                 }
-                if (!hasUuid) {
-                    regularOpenController.temCabinet(uuid);
-                }
-
-
                 break;
 
             case R.id.finsh:
                 finish();
                 break;
-
         }
     }
 
@@ -92,27 +90,23 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
     @Override
     public void modelMsg(int state, String msg) {
-
     }
 
 
     private void openLock(CabinetInfo cabinetBean) {
-
         Bundle bundle = new Bundle();
         CabinetInfo cabinetBean1 = new CabinetInfo();
         cabinetBean1.setUuid(cabinetBean.getUuid());
         cabinetBean1.setNickname(cabinetBean.getNickname() == null ? "" : cabinetBean.getNickname());
         cabinetBean1.setPhone(cabinetBean.getPhone() == null ? "" : cabinetBean.getPhone());
         cabinetBean1.setLockNo(cabinetBean.getLockNo());
-
         if (type.equals(Constants.ActivityExtra.FINGER)) {
             cabinetBean1.setOpenWay(getResources().getString(R.string.open_finger));
         } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
             cabinetBean1.setOpenWay(getResources().getString(R.string.open_xiaochengxu));
         } else {
-            cabinetBean1.setOpenWay(getResources().getString(R.string.open_code));
+            cabinetBean1.setOpenWay(getResources().getString(R.string.password_open));
         }
-
         bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetBean1);
         showActivity(RegularOpenSuccessActivity.class, bundle);
         speak("柜子开了");

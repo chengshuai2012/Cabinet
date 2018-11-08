@@ -36,7 +36,11 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
         if (tBaseEntity.isSuccess()) {
             onSuccees(tBaseEntity);
         } else {
-            onCodeError(tBaseEntity.getSecondMessage()+tBaseEntity.getMsg(),tBaseEntity.getCode());
+            if (tBaseEntity.getCode().equals("400000502001")) {
+                onCodeError(tBaseEntity.getSecondMessage(), tBaseEntity.getCode());
+            } else {
+                onCodeError(tBaseEntity.getSecondMessage() + tBaseEntity.getMsg(), tBaseEntity.getCode());
+            }
         }
     }
 
@@ -64,7 +68,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param t
      * @throws Exception
      */
-    protected abstract void onSuccees(BaseEntity<T> t) ;
+    protected abstract void onSuccees(BaseEntity<T> t);
 
     /**
      * 返回成功了,但是code错误
@@ -72,7 +76,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param
      * @throws Exception
      */
-    protected abstract void onCodeError(String msg,String codeErrorr) ;
+    protected abstract void onCodeError(String msg, String codeErrorr);
 
     /**
      * 返回失败
@@ -86,9 +90,6 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
     protected void onRequestStart() {
 
     }
-
-
-
 
 
 }

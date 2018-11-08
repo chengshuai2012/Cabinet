@@ -181,15 +181,6 @@
     </LinearLayout>
 
 
-    <EditText
-        android:id="@+id/infoId"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/h200"
-        android:visibility="gone"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:textSize="@dimen/w24" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -210,5 +201,13 @@
             android:textSize="@dimen/w24"
             android:textStyle="bold" />
     </FrameLayout>
+
+    <EditText
+        android:id="@+id/infoId"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/h200"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/w24" />
 
 </LinearLayout>

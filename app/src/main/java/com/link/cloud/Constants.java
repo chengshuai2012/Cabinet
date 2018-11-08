@@ -24,6 +24,7 @@ public class Constants {
         String UUID="UUID";
         String FINGER="FINGER";
         String XIAOCHENGXU="XIAOCHENGXU";
+        String PASSWORD="PASSWORD";
     }
 
     public interface FragmentExtra {

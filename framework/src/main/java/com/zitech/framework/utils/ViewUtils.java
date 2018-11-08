@@ -39,7 +39,7 @@ public class ViewUtils {
      */
     public static void setOnClickListener(final View view, final View.OnClickListener onClickListener) {
         RxView.clicks(view)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
