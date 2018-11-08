@@ -15,6 +15,8 @@ public class Constants {
 //    1005 混合柜
     public static final int VIP_REGULAR_CABINET = 1005;
 
+    public static  int CABINET_TYPE =0;
+
 
 
     public interface ActivityExtra {

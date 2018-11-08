@@ -216,7 +216,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     }
 
     @Override
-    public void onCabinetInfoSuccess(RealmList<CabinetInfo> data) {
+    public void onCabinetInfoSuccess(RealmList<CabinetInfo>  data) {
 
 
     }

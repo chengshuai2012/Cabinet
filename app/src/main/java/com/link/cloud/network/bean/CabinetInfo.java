@@ -10,22 +10,23 @@ import io.realm.RealmObject;
 
 public class CabinetInfo extends RealmObject implements Serializable{
 
+
     /**
-     * id : 101
-     * lockId : 48
-     * deviceId : 3
+     * id : 386
+     * lockId : 82
+     * deviceId : 7
      * lineNo : 1
      * cabinetNo : 1
-     * locked : false
-     * uuid :
-     * startTime : null
-     * endTime : null
-     * vip : false
+     * locked : true
+     * uuid : 8148b486b35e4dd09315d6b5685f06fa
+     * nickname :
+     * phone :
+     * startTime : 2018-11-06 00:00:00
+     * endTime : 2018-11-16 00:00:00
+     * vip : true
      * lockNo : 1
-     * passwd :
+     * passwd : null
      */
-
-
 
     private int id;
     private int lockId;
@@ -34,19 +35,13 @@ public class CabinetInfo extends RealmObject implements Serializable{
     private String cabinetNo;
     private boolean locked;
     private String uuid;
+    private String nickname;
+    private String phone;
     private String startTime;
     private String endTime;
     private boolean vip;
     private int lockNo;
     private String passwd;
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
 
     public int getId() {
         return id;
@@ -104,6 +99,22 @@ public class CabinetInfo extends RealmObject implements Serializable{
         this.uuid = uuid;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getStartTime() {
         return startTime;
     }
@@ -134,5 +145,13 @@ public class CabinetInfo extends RealmObject implements Serializable{
 
     public void setLockNo(int lockNo) {
         this.lockNo = lockNo;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
     }
 }

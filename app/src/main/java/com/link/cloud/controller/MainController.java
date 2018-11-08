@@ -1,6 +1,10 @@
 package com.link.cloud.controller;
 
 
+import android.util.Log;
+
+import com.link.cloud.network.ArrayEntity;
+import com.link.cloud.network.ArrayObserver;
 import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.BaseObserver;
 import com.link.cloud.network.BaseService;
@@ -169,23 +173,26 @@ public class MainController {
 
     public void getCabinetInfo() {
         api.getCabinetInfo()
-                .compose(IOMainThread.<BaseEntity<RealmList<CabinetInfo>>>composeIO2main())
-                .subscribe(new BaseObserver<RealmList<CabinetInfo>>() {
+                .compose(IOMainThread.<ArrayEntity<CabinetInfo>>composeIO2main())
+                .subscribe(new ArrayObserver<CabinetInfo>() {
 
 
-                               @Override
-                               protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t)  {
-                                   listener.onCabinetInfoSuccess(t.getData());
-                               }
+                    @Override
+                    protected void onSuccees(ArrayEntity<CabinetInfo> cabinetInfoArrayEntity) {
+                        listener.onCabinetInfoSuccess(cabinetInfoArrayEntity.getData());
+                        Log.e("onSuccees: ","1111" );
+                    }
 
-                               @Override
+                    @Override
                                protected void onCodeError(String msg,String codeErrorr) {
                                    listener.onMainErrorCode(msg);
+                        Log.e("onSuccees: ","www" );
                                }
 
                                @Override
                                protected void onFailure(Throwable e, boolean isNetWorkError) {
                                    listener.onMainFail(e, isNetWorkError);
+                                   Log.e("onSuccees: ","333" );
                                }
                            }
                 );

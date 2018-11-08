@@ -5,10 +5,8 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
-import com.link.cloud.network.bean.VIPCabinetUser;
 
 import io.reactivex.Observable;
-import io.realm.RealmList;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -46,9 +44,9 @@ public interface BaseService {
 
     /**获取柜子配置信息*/
     @GET(ApiConstants.GETCABINETINFO)
-    Observable<BaseEntity<RealmList<CabinetInfo>>> getCabinetInfo();
+    Observable<ArrayEntity<CabinetInfo>> getCabinetInfo();
 
     /**Vip开柜*/
     @POST(ApiConstants.VIPCABINET)
-    Observable<BaseEntity<VIPCabinetUser>> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
+    Observable<BaseEntity<CabinetInfo>> VIPCabinet(@Body RetrunCabinetRequest retrunCabinetRequest);
 }

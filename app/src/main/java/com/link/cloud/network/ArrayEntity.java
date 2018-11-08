@@ -2,16 +2,25 @@ package com.link.cloud.network;
 
 import com.google.gson.annotations.JsonAdapter;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
- * Created by OFX002 on 2018/10/28.
+ * Created by 49488 on 2018/11/7.
  */
 
-public class BaseEntity<T> {
+public class ArrayEntity<T extends RealmObject>  {
     private static String SUCCESS_CODE="200000";
     private String code;
     private String message;
     private String secondMessage;
-    private T data;
+    @JsonAdapter(ArrayListAdapter.class)
+    private RealmList<T> data;
+
+    public void setData(RealmList<T> data) {
+        this.data = data;
+    }
+
 
     public String getSecondMessage() {
         return secondMessage;
@@ -40,16 +49,7 @@ public class BaseEntity<T> {
         this.message = message;
     }
 
-    public T getData() {
+    public RealmList<T> getData() {
         return data;
     }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-
-
-
-
 }

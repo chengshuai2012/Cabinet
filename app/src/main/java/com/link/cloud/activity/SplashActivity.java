@@ -2,6 +2,7 @@ package com.link.cloud.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.link.cloud.Constants;
@@ -28,6 +29,8 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
+import static com.link.cloud.Constants.CABINET_TYPE;
+
 /**
  * Created by 49488 on 2018/10/20.
  */
@@ -45,6 +48,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         mainController = new MainController(this);
         getDeviceInfo();
         showDate();
+
 
     }
 
@@ -104,6 +108,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (msg.equals("400000100000")){
             skipActivity(SettingActivity.class);
         }
+        Log.e("onMainErrorCode: ", msg);
     }
 
     @Override
@@ -169,6 +174,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
     public void showNext(){
         Bundle bundle = new Bundle();
+        CABINET_TYPE = deviceInfo.getDeviceTypeId();
         if (deviceInfo.getDeviceTypeId()  == Constants.REGULAR_CABINET) {
             bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
             skipActivity(RegularActivity.class, bundle);

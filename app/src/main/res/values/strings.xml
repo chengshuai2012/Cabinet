@@ -68,7 +68,8 @@
     <string name="finger_success">手指验证成功</string>
     <string name="again_finger">请移开手指,再次放置...</string>
     <string name="same_finger">验证错误，请放置同一根手指</string>
-
+    <string name="error_type" >设备类型错误</string>
+    <string name="open_success" >柜门已打开</string>
     <string name="device_id">设备ID:</string>
     <string name="device_psw">设备密码</string>
     <string name="please_device_psw">请输入设备密码</string>

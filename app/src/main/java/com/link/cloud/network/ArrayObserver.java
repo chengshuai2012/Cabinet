@@ -3,6 +3,7 @@ package com.link.cloud.network;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
@@ -14,16 +15,17 @@ import java.util.concurrent.TimeoutException;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.realm.RealmObject;
 
 /**
  * Created by OFX002 on 2018/10/28.
  */
 
-public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
+public abstract class ArrayObserver<T extends RealmObject> implements Observer<ArrayEntity<T >> {
     protected Context mContext;
 
 
-    public BaseObserver() {
+    public ArrayObserver() {
         this.mContext= CabinetApplication.getInstance();
     }
 
@@ -34,18 +36,18 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
     }
 
     @Override
-    public void onNext(BaseEntity<T> tBaseEntity) {
-        if (tBaseEntity.isSuccess()) {
-            onSuccees(tBaseEntity);
+    public void onNext(ArrayEntity<T> tArrayEntity) {
+                if (tArrayEntity.isSuccess()) {
+            onSuccees(tArrayEntity);
         } else {
-            if("400000999102".equals(tBaseEntity.getCode())){
-                Toast.makeText(mContext,tBaseEntity.getMsg(),Toast.LENGTH_LONG).show();
-                Intent intent2 = new Intent(mContext, SplashActivity.class);
-                intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent2);
-                android.os.Process.killProcess(android.os.Process.myPid());
+            if("400000999102".equals(tArrayEntity.getCode())){
+                Toast.makeText(mContext,tArrayEntity.getMsg(),Toast.LENGTH_LONG).show();
+//                Intent intent2 = new Intent(mContext, SplashActivity.class);
+//                intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mContext.startActivity(intent2);
+//                android.os.Process.killProcess(android.os.Process.myPid());
             }else {
-                onCodeError(tBaseEntity.getSecondMessage()+tBaseEntity.getMsg(),tBaseEntity.getCode());
+                onCodeError(tArrayEntity.getSecondMessage()+tArrayEntity.getMsg(),tArrayEntity.getCode());
             }
 
         }
@@ -59,6 +61,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
             } else {
                 onFailure(e, false);
             }
+            Log.e("onError: ",e.getMessage() );
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -75,7 +78,7 @@ public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
      * @param t
      * @throws Exception
      */
-    protected abstract void onSuccees(BaseEntity<T> t) ;
+    protected abstract void onSuccees(ArrayEntity<T>t ) ;
 
     /**
      * 返回成功了,但是code错误
