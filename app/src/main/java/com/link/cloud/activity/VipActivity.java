@@ -19,6 +19,7 @@ import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
+import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ToastMaster;
@@ -156,7 +157,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     }
                 }
                 if (state == 4) {
-                    ToastMaster.shortToast(getResources().getString(R.string.again_finger));
+                    TTSUtils.getInstance().speak(getResources().getString(R.string.again_finger));
                 }
                 if (state != 4 && state != 3) {
 
@@ -213,8 +214,11 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     @Override
     public void onVipErrorCode(String msg) {
         if ("您没有租用储物柜".equals(msg)) {
-            Toast.makeText(this, getString(R.string.sorry_for_is_not_vip), Toast.LENGTH_LONG).show();
+            TTSUtils.getInstance().speak(getResources().getString(R.string.sorry_for_is_not_vip));
+        }else {
+            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
         }
+
     }
 
     @Override
@@ -301,6 +305,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         if(IsNoPerson){
             vipController.getUser(1,pageNum);
         }
+        unlocking(uid, Constants.ActivityExtra.FINGER);
     }
 
 

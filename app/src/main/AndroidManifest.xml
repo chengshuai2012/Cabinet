@@ -53,7 +53,9 @@
         <activity android:name=".activity.RegularActivity" />
         <activity android:name=".activity.VipActivity" />
         <activity android:name=".activity.RegularOpenSuccessActivity" />
-        <activity android:name=".activity.VipOpenSuccessActivity" />
+        <activity android:name=".activity.VipOpenSuccessActivity"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.RegularOpenActivity" />

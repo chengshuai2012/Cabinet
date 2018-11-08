@@ -14,6 +14,7 @@ import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         mainController = new MainController(this);
         getDeviceInfo();
         showDate();
-
+        TTSUtils.getInstance().speak("");
     }
 
     private void showDate() {
@@ -174,6 +175,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     public void showNext() {
         Bundle bundle = new Bundle();
+        Constants.CABINET_TYPE=deviceInfo.getDeviceTypeId();
         if (deviceInfo.getDeviceTypeId() == Constants.REGULAR_CABINET) {
             bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
             skipActivity(RegularActivity.class, bundle);

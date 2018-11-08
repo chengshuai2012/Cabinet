@@ -71,7 +71,7 @@
     <string name="again_finger">请移开手指,再次放置...</string>
     <string name="same_finger">验证错误，请放置同一根手指</string>
     <string name="error_type" >设备类型错误</string>
-    <string name="open_success" >柜门已打开</string>
+    <string name="open_success" >号柜门已打开</string>
     <string name="device_id">设备ID:</string>
     <string name="device_psw">设备密码</string>
     <string name="please_device_psw">请输入设备密码</string>
@@ -86,6 +86,7 @@
     <string name="sorry_for_is_not_vip">抱歉，您非VIP柜子用户</string>
 
     <string name="remove_leave">号已退柜，请您带走所有随身物品并关好柜门</string>
+    <string name="close_lock">请您放入或带走随身物品并关好柜门</string>
     <string name="name">姓名  </string>
     <string name="phone">电话  </string>
     <string name="open_finger">指静脉开柜</string>
@@ -94,7 +95,9 @@
     <string name="open_nun">  号柜门已打开</string>
     <string name="lock_open_success">请取走您的物品关好柜门</string>
     <string name="inpu_num_pass">输入柜号/密码</string>
+    <string name="cabinet_not_found">您输入的柜号不存在</string>
     <string name="please_input_right">请输入正确的柜号和密码</string>
+    <string name="openSuccess">开柜成功</string>
 
 
 </resources>
