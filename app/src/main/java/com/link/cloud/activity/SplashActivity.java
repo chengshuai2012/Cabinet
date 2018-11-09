@@ -14,6 +14,7 @@ import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.utils.NettyClientBootstrap;
 import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
 
@@ -35,6 +36,7 @@ import io.realm.RealmResults;
 
 public class SplashActivity extends BaseActivity implements MainController.MainControllerListener {
 
+    private NettyClientBootstrap nettyClientBootstrap;
     int pageNum, total;
     private MainController mainController;
     private DeviceInfo deviceInfo;
@@ -54,6 +56,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
             if (deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
                 HttpConfig.TOKEN = deviceInfo.getToken();
                 getData();
+                nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
+                nettyClientBootstrap.start();
             } else {
                 getToken();
             }
@@ -98,6 +102,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         });
         HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
         getData();
+        nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
+        nettyClientBootstrap.start();
     }
 
     @Override

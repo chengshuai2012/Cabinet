@@ -31,7 +31,6 @@ public class MainActivity extends BaseActivity {
     private LinearLayout vipLayout;
     private MainController mainController;
 
-    private NettyClientBootstrap nettyClientBootstrap;
     private DeviceInfo deviceInfo;
 
 
@@ -44,12 +43,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initViews() {
         getDeviceInfo();
-        if (deviceInfo != null && deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
-            nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
-            nettyClientBootstrap.start();
-        } else {
-            skipActivity(SettingActivity.class);
-        }
+
     }
 
     private void getDeviceInfo() {

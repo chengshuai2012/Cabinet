@@ -34,5 +34,7 @@ public class ApiConstants {
     //验证指纹信息
     public static final String VALIDATEFINGERPRINTS = "/app/validateFingerprints";
 
+    //获取单独用户
+    public static final String GETSINGLEUSER = "user/{uuid}";
 
 }

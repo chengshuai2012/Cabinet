@@ -6,6 +6,7 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
+import com.link.cloud.network.bean.SingleUser;
 
 import io.reactivex.Observable;
 import io.realm.RealmList;
@@ -73,6 +74,13 @@ public interface BaseService {
      */
     @POST(ApiConstants.VALIDATEFINGERPRINTS)
     Observable<BaseEntity<AllUser>> findUser(@Body RetrunCabinetRequest retrunCabinetRequest);
+
+
+    /**
+     * 获取单个用户指静脉
+     */
+    @GET(ApiConstants.GETSINGLEUSER)
+    Observable<BaseEntity<SingleUser>> findOneUserFinger(@Path("uuid") String uuid);
 
 
 
