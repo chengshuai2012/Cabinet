@@ -125,7 +125,7 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                         }
                     }
                     if (state == 4) {
-                        TTSUtils.getInstance().speak(getResources().getString(R.string.please_move_finger));
+                        TTSUtils.getInstance().speak(getResources().getString(R.string.move_finger));
                     }
                 }
             }

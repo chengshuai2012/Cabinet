@@ -11,9 +11,8 @@ import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularOpenController;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.OpenDoorUtil;
+import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
-
-import java.io.IOException;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -30,7 +29,6 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     private String type;
     private String uuid;
     private RegularOpenController regularOpenController;
-    private boolean hasUuid = false;
     private TextView finsh;
     private CabinetInfo cabinetInfo;
 
@@ -61,15 +59,10 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
                 break;
             case R.id.openLayout:
                 if (cabinetInfo==null){
-                    final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
-                    for (CabinetInfo info : all) {
-                        if (info.getUuid().trim().equals(uuid.trim())) {
-                            hasUuid = true;
-                            openLock(info);
-                            break;
-                        }
-                    }
-                    if (!hasUuid) {
+                    CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+                    if (first!=null){
+                        openLock(first);
+                    }else {
                         regularOpenController.temCabinet(uuid);
                     }
                 }else {
@@ -110,18 +103,32 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetBean1);
         showActivity(RegularOpenSuccessActivity.class, bundle);
         speak("柜子开了");
-        try {
-            if (cabinetBean.getDeviceId() <= 10) {
-                CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.openOneDoor(cabinetBean.getDeviceId(), cabinetBean.getLockId()));
-            } else if (cabinetBean.getDeviceId() > 10 && cabinetBean.getDeviceId() <= 20) {
-                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openOneDoor(cabinetBean.getDeviceId() % 10, cabinetBean.getLockId()));
-            } else if (cabinetBean.getDeviceId() > 20 && cabinetBean.getDeviceId() <= 30) {
-                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openOneDoor(cabinetBean.getDeviceId() % 10, cabinetBean.getLockId()));
+
+
+        int lockplate=cabinetBean.getLockNo();
+        int nuberlock=cabinetBean.getLineNo();
+        if (nuberlock>10){
+            nuberlock=nuberlock%10;
+            Logger.e("SecondFragment==="+nuberlock);
+            if (nuberlock==0){
+                nuberlock=10;
+                Logger.e("SecondFragment==="+nuberlock);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        finish();
+        try {
+            if (lockplate<=10) {
+                CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate, nuberlock));
+            }else if (lockplate>10&&lockplate<=20){
+                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
+            }else if (lockplate>20&&lockplate<=30){
+                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
+            }
+
+        }catch (Exception e){
+
+        }finally {
+
+        }
 
     }
 
