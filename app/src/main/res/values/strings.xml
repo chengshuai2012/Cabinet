@@ -98,6 +98,7 @@
     <string name="cabinet_not_found">您输入的柜号不存在</string>
     <string name="please_input_right">请输入正确的柜号和密码</string>
     <string name="openSuccess">开柜成功</string>
+    <string name="verify_agin">请重试</string>
 
 
 </resources>

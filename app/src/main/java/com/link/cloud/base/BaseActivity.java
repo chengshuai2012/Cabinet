@@ -3,23 +3,37 @@ package com.link.cloud.base;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
+import com.link.cloud.Constants;
 import com.link.cloud.bean.DeviceInfo;
+import com.link.cloud.network.BaseEntity;
+import com.link.cloud.network.BaseObserver;
+import com.link.cloud.network.IOMainThread;
+import com.link.cloud.network.RetrofitFactory;
+import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.SingleUser;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Venueutils;
 import com.link.cloud.widget.SimpleStyleDialog;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zitech.framework.utils.ViewUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -34,7 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     private SimpleStyleDialog denyDialog;
 
     public Realm realm;
-
+    MesReceiver mesReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -43,6 +57,72 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         realm = Realm.getDefaultInstance();
         CabinetApplication.getVenueUtils().initVenue(this, this, false);
         initViews();
+    }
+    public void RegisteReciver(){
+        mesReceiver=new MesReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.MSG);
+        registerReceiver(mesReceiver, intentFilter);
+    }
+    public class MesReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String msg = intent.getStringExtra("msg");
+            String type  =null;
+            JSONObject object=null;
+            Log.e( "onReceive: ",msg );
+            Toast.makeText(BaseActivity.this,msg,Toast.LENGTH_LONG).show();
+            try {
+                object = new JSONObject(msg);
+                type = object.getString("msgType");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if("GET_USERS_FINGERPRINTS".equals(type)){
+                try {
+                    final String uuid = object.getJSONObject("data").getString("uuid");
+                    RetrofitFactory.getInstence().API().findOneUserFinger(uuid).compose(IOMainThread.<BaseEntity<SingleUser>>composeIO2main())
+                            .subscribe(new BaseObserver<SingleUser>() {
+                                @Override
+                                protected void onSuccees(final BaseEntity<SingleUser> t) {
+                                    Log.e("onNext: ",uuid );
+                                    final RealmResults<AllUser> all = realm.where(AllUser.class).equalTo("uuid",uuid).findAll();
+                                    Log.e("onNext: ",all.size()+"" );
+                                    if(all.size()>0){
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                all.deleteAllFromRealm();
+                                                realm.copyToRealm(t.getData().getFingerprints());
+                                            }
+                                        });
+                                    }else {
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                realm.copyToRealm(t.getData().getFingerprints());
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                protected void onCodeError(String msg, String codeErrorr) {
+
+                                }
+
+                                @Override
+                                protected void onFailure(Throwable e, boolean isNetWorkError) {
+
+                                }
+                            });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     protected abstract void initViews();
@@ -58,7 +138,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         super.onResume();
 
     }
-
+    public void unRegisterReceiver() {
+        unregisterReceiver(mesReceiver);
+    }
     protected void onPause() {
         super.onPause();
 

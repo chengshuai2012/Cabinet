@@ -82,6 +82,9 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             setLayout.setVisibility(View.GONE);
         }
         vipController = new VipController(this);
+        if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
+           RegisteReciver();
+        }
         finger();
     }
 
@@ -157,7 +160,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     }
                 }
                 if (state == 4) {
-                    TTSUtils.getInstance().speak(getResources().getString(R.string.again_finger));
+                    //TTSUtils.getInstance().speak(getResources().getString(R.string.again_finger));
                 }
                 if (state != 4 && state != 3) {
 
@@ -216,7 +219,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         if ("您没有租用储物柜".equals(msg)) {
             TTSUtils.getInstance().speak(getResources().getString(R.string.sorry_for_is_not_vip));
         }else {
-            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
+            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail)+","+getResources().getString(R.string.verify_agin));
         }
 
     }
@@ -230,6 +233,9 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     protected void onDestroy() {
         super.onDestroy();
         rxTimerUtil.cancel();
+        if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
+            unRegisterReceiver();
+        }
     }
 
     @Override
