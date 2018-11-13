@@ -71,6 +71,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (!all.isEmpty()) {
             deviceInfo = all.get(0);
         }
+        HttpConfig.TOKEN = deviceInfo.getToken();
     }
 
 
