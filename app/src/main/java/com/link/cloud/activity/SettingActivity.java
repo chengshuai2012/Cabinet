@@ -84,6 +84,8 @@ public class SettingActivity extends BaseActivity {
                             DeviceInfo deviceInfo = all.get(0);
                             deviceInfo.setPsw(second);
                             deviceInfo.setToken("");
+                            HttpConfig.TOKEN=null;
+                            realm.copyToRealm(deviceInfo);
                         }
                     });
                 } else {
