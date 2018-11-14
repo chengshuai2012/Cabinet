@@ -83,5 +83,15 @@ public interface BaseService {
     Observable<BaseEntity<SingleUser>> findOneUserFinger(@Path("uuid") String uuid);
 
 
+    /**
+     * 验证机器密码
+     *
+     * @param
+     * @returnscheduleReport
+     * @see
+     */
+    @POST(ApiConstants.VALIDATEPASS)
+    Observable<BaseEntity> validatePassword(@Path("password") String password);
+
 
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,20 +14,23 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
-import com.link.cloud.controller.MainController;
+import com.link.cloud.controller.RegularController;
+import com.link.cloud.network.BaseEntity;
+import com.link.cloud.network.BaseObserver;
+import com.link.cloud.network.IOMainThread;
+import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.AllUser;
-import com.link.cloud.network.bean.BindUser;
-import com.link.cloud.network.bean.CabinetInfo;
-import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
-import com.link.cloud.utils.TTSUtils;
+import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
+import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -37,7 +39,7 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends BaseActivity implements MainController.MainControllerListener {
+public class RegularActivity extends BaseActivity implements RegularController.RegularControllerListener {
 
 
     private LinearLayout zhijingmaiLayout;
@@ -45,13 +47,15 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     private TextView passwordLayout;
     private PublicTitleView publicTitleView;
     private RxTimerUtil rxTimerUtil;
-    private MainController mainController;
+    private RegularController regularController;
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
     private EditText editText;
     private String mType;
     private boolean isScanning = false;
+    private boolean canGetCode;
+
 
     @Override
     protected void initViews() {
@@ -71,11 +75,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
             publicTitleView.setFinsh(View.GONE);
         }
 
-        mainController = new MainController(this);
+        regularController = new RegularController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(manager, this);
+        ViewUtils.setOnClickListener(setLayout, this);
         finger();
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
@@ -83,35 +88,42 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                 finish();
             }
         });
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))) {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE)) && getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
             setLayout.setVisibility(View.GONE);
         }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.e("输入过程中执行该方法", "文字变化:" + editText.getText().toString());
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e("输入前确认执行该方法", "开始输入:" + editText.getText().toString());
+                ToastMaster.shortToast("1" + "start=" + start + "before=" + before + "count=" + count);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.e("输入结束执行该方法", "输入结束:" + editText.getText().toString());
-
+                if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
+                    rxTimerUtil.timer(1000, new RxTimerUtil.IRxNext() {
+                        @Override
+                        public void doNext(long number) {
+                            unlocking(editText.getText().toString().trim(), Constants.ActivityExtra.XIAOCHENGXU);
+                            editText.setText("");
+                        }
+                    });
+                }
             }
         });
 
     }
 
     private void finger() {
-        rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
+        rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
                 System.out.println(String.valueOf(number));
-                if (isScanning){
+                if (isScanning) {
                     int state = CabinetApplication.getVenueUtils().getState();
                     if (state == 3) {
                         RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
@@ -121,11 +133,12 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                         if (null != uid && !TextUtils.isEmpty(uid)) {
                             unlocking(uid, Constants.ActivityExtra.FINGER);
                         } else {
-                            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail));
+                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+                            regularController.findUser(finger);
                         }
                     }
                     if (state == 4) {
-                        TTSUtils.getInstance().speak(getResources().getString(R.string.move_finger));
+                     speak(getResources().getString(R.string.please_move_finger));
                     }
                 }
             }
@@ -133,7 +146,13 @@ public class RegularActivity extends BaseActivity implements MainController.Main
     }
 
     private void unlocking(String uid, String type) {
-        TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
+        if (type.equals(Constants.ActivityExtra.FINGER)) {
+            speak(getResources().getString(R.string.finger_success));
+        } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
+            speak(getResources().getString(R.string.code_success));
+        } else {
+            speak(getResources().getString(R.string.password_success));
+        }
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
@@ -185,10 +204,56 @@ public class RegularActivity extends BaseActivity implements MainController.Main
                 break;
 
             case R.id.manager:
-                skipActivity(SettingActivity.class);
+                showPasswordDialog();
                 break;
         }
     }
+
+    private void showPasswordDialog() {
+        speak(getResources().getString(R.string.please_save));
+        final InputPassWordDialog inputPassWordDialog = new InputPassWordDialog(this);
+        inputPassWordDialog.setCheakListener(new InputPassWordDialog.CheakListener() {
+            @Override
+            public void inputCheakSuccess(String pwd) {
+
+                RetrofitFactory.getInstence().API().validatePassword(pwd).compose(IOMainThread.<BaseEntity>composeIO2main()).subscribe(new BaseObserver() {
+                    @Override
+                    protected void onSuccees(BaseEntity t) {
+                        showActivity(SettingActivity.class);
+                        inputPassWordDialog.dismiss();
+                    }
+
+                    @Override
+                    protected void onCodeError(String msg, String codeErrorr) {
+                        speak(msg);
+                        inputPassWordDialog.dismiss();
+                    }
+
+                    @Override
+                    protected void onFailure(Throwable e, boolean isNetWorkError) {
+                        inputPassWordDialog.dismiss();
+                    }
+                });
+
+            }
+
+            @Override
+            public void inputCheakFail() {
+
+            }
+        });
+        inputPassWordDialog.show();
+        rxTimerUtil.timer(20000, new RxTimerUtil.IRxNext() {
+            @Override
+            public void doNext(long number) {
+                if (null != inputPassWordDialog && inputPassWordDialog.isShowing()) {
+                    inputPassWordDialog.dismiss();
+                }
+            }
+        });
+
+    }
+
 
     @Override
     public void modelMsg(int state, String msg) {
@@ -197,34 +262,30 @@ public class RegularActivity extends BaseActivity implements MainController.Main
 
 
     @Override
-    public void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean) {
-
+    public void successful(final AllUser allUser) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insert(allUser);
+            }
+        });
+        speak(getResources().getString(R.string.finger_success));
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.FINGER);
+        bundle.putString(Constants.ActivityExtra.UUID, allUser.getUuid());
+        showActivity(RegularOpenActivity.class, bundle);
+        if (TextUtils.isEmpty(mType)) {
+            finish();
+        }
     }
 
     @Override
-    public void onMainErrorCode(String msg) {
+    public void faild(String message) {
+        speak(message);
     }
 
     @Override
-    public void onMainFail(Throwable e, boolean isNetWork) {
+    public void onRegularFail(Throwable e, boolean isNetWork) {
 
     }
-
-    @Override
-    public void getUserSuccess(BindUser data) {
-
-    }
-
-    @Override
-    public void onCabinetInfoSuccess(RealmList<CabinetInfo>  data) {
-
-
-    }
-
-    @Override
-    public void temCabinetSuccess(CabinetInfo cabinetBean) {
-
-
-    }
-
 }

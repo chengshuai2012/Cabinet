@@ -37,4 +37,8 @@ public class ApiConstants {
     //获取单独用户
     public static final String GETSINGLEUSER = "user/{uuid}";
 
+
+    //验证机器密码
+    public static final String VALIDATEPASS = "/app/validatePassword/{password}";
+
 }

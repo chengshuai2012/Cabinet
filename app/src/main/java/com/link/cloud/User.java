@@ -29,6 +29,8 @@ public class User {
     }
 
 
+
+
     public int getCabinetType() {
         return cabinetType;
     }

@@ -10,9 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.link.cloud.R;
 import com.link.cloud.bean.FingerprintsBean;
-import com.link.cloud.bean.People;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.veune.MdDevice;
 import com.link.cloud.veune.MdUsbService;

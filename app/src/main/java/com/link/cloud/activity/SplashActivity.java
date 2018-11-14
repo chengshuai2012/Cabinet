@@ -71,7 +71,8 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (!all.isEmpty()) {
             deviceInfo = all.get(0);
         }
-        HttpConfig.TOKEN = deviceInfo.getToken();
+        if (null != deviceInfo)
+            HttpConfig.TOKEN = deviceInfo.getToken();
     }
 
 
@@ -182,7 +183,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     public void showNext() {
         Bundle bundle = new Bundle();
-        Constants.CABINET_TYPE=deviceInfo.getDeviceTypeId();
+        Constants.CABINET_TYPE = deviceInfo.getDeviceTypeId();
         if (deviceInfo.getDeviceTypeId() == Constants.REGULAR_CABINET) {
             bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
             skipActivity(RegularActivity.class, bundle);

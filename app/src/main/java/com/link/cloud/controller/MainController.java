@@ -175,7 +175,6 @@ public class MainController {
                                @Override
                                protected void onSuccees(BaseEntity<RealmList<CabinetInfo>> t)  {
                                    listener.onCabinetInfoSuccess(t.getData());
-                                   ToastMaster.shortToast(t.getMsg()+t.getCode());
                                }
 
                                @Override

@@ -1,6 +1,7 @@
 package com.link.cloud.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,14 +36,24 @@ public class InputPassWordDialog extends ValidDialog implements View.OnClickList
     private Button sureButton;
     private ImageView closeButton;
     private StringBuilder builder;
-    private boolean isVip;
+    private CheakListener cheakListener;
 
 
-    public InputPassWordDialog(Context context, boolean isVip) {
+    public InputPassWordDialog(Context context) {
         super(context, R.style.CommonDialog);
-        this.isVip = isVip;
         setContentView(R.layout.dialog_inputphone);
         initView();
+    }
+
+    public void setCheakListener(CheakListener cheakListener) {
+        this.cheakListener = cheakListener;
+    }
+
+    public interface CheakListener {
+
+        void inputCheakSuccess(String pass);
+
+        void inputCheakFail();
     }
 
 
@@ -62,11 +73,7 @@ public class InputPassWordDialog extends ValidDialog implements View.OnClickList
         cleanButton = (Button) findViewById(R.id.cleanButton);
         sureButton = (Button) findViewById(R.id.sureButton);
         closeButton = (ImageView) findViewById(R.id.closeButton);
-        if (isVip) {
-            sureButton.setBackground(getContext().getResources().getDrawable(R.drawable.ic_vip_btn_bg));
-        } else {
-            sureButton.setBackground(getContext().getResources().getDrawable(R.drawable.ic_regural_btn_bg));
-        }
+
         Utils.setCanNotEditAndClick(phoneNum);
         builder = new StringBuilder();
         ViewUtils.setOnClickListener(bindKeypad1, this);
@@ -124,6 +131,21 @@ public class InputPassWordDialog extends ValidDialog implements View.OnClickList
                 if (phoneNum != null) {
                     phoneNum.setText(builder.toString());
                 }
+                break;
+
+            case R.id.sureButton:
+
+                if (cheakListener != null) {
+                    String password = phoneNum.getText().toString().trim();
+                    if (!TextUtils.isEmpty(password)) {
+                        String fisrt = Utils.getMD5(password).toUpperCase();
+                        String second = Utils.getMD5(fisrt).toUpperCase();
+                        cheakListener.inputCheakSuccess(second);
+                    } else {
+                        cheakListener.inputCheakFail();
+                    }
+                }
+                phoneNum.setText("");
                 break;
 
         }

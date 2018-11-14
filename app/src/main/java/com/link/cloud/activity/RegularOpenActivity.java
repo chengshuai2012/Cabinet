@@ -15,7 +15,6 @@ import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * 作者：qianlu on 2018/11/1 15:14
@@ -54,18 +53,18 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
-                if (cabinetInfo==null)
-                regularOpenController.returnCabinet(uuid);
+                if (cabinetInfo == null)
+                    regularOpenController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
-                if (cabinetInfo==null){
+                if (cabinetInfo == null) {
                     CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
-                    if (first!=null){
+                    if (first != null) {
                         openLock(first);
-                    }else {
+                    } else {
                         regularOpenController.temCabinet(uuid);
                     }
-                }else {
+                } else {
                     openLock(cabinetInfo);
                 }
                 break;
@@ -102,31 +101,30 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         }
         bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetBean1);
         showActivity(RegularOpenSuccessActivity.class, bundle);
-        speak("柜子开了");
+        speak(cabinetBean.getLockNo() + getResources().getString(R.string.aready_open_string));
 
-
-        int lockplate=cabinetBean.getLockNo();
-        int nuberlock=cabinetBean.getLineNo();
-        if (nuberlock>10){
-            nuberlock=nuberlock%10;
-            Logger.e("SecondFragment==="+nuberlock);
-            if (nuberlock==0){
-                nuberlock=10;
-                Logger.e("SecondFragment==="+nuberlock);
+        int lockplate = cabinetBean.getLockNo();
+        int nuberlock = cabinetBean.getLineNo();
+        if (nuberlock > 10) {
+            nuberlock = nuberlock % 10;
+            Logger.e("SecondFragment===" + nuberlock);
+            if (nuberlock == 0) {
+                nuberlock = 10;
+                Logger.e("SecondFragment===" + nuberlock);
             }
         }
         try {
-            if (lockplate<=10) {
+            if (lockplate <= 10) {
                 CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate, nuberlock));
-            }else if (lockplate>10&&lockplate<=20){
-                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
-            }else if (lockplate>20&&lockplate<=30){
-                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
+            } else if (lockplate > 10 && lockplate <= 20) {
+                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate % 10, nuberlock));
+            } else if (lockplate > 20 && lockplate <= 30) {
+                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate % 10, nuberlock));
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-        }finally {
+        } finally {
 
         }
 
@@ -145,23 +143,16 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     }
 
     @Override
-    public void returnSuccess(CabinetInfo cabinetInfo) {
+    public void returnSuccess(final CabinetInfo cabinetInfo) {
         openLock(cabinetInfo);
         speak(cabinetInfo.getLockNo() + getResources().getString(R.string.remove_leave));
-        final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
-
-        for (int i = 0; i < all.size(); i++) {
-            if (all.get(i).getUuid().trim().equals(uuid.trim())) {
-                final int finalI = i;
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        all.deleteFromRealm(finalI);
-                    }
-                });
-                break;
+        final CabinetInfo cabinetInfos = realm.where(CabinetInfo.class).equalTo("uuid", cabinetInfo.getUuid()).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                cabinetInfos.deleteFromRealm();
             }
-        }
+        });
     }
 
     @Override

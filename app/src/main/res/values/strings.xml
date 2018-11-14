@@ -99,6 +99,12 @@
     <string name="please_input_right">请输入正确的柜号和密码</string>
     <string name="openSuccess">开柜成功</string>
     <string name="verify_agin">请重试</string>
+    <string name="please_save">请妥善保管密码</string>
+
+    <string name="open_lock">打开柜子</string>
+    <string name="please_input_lock_num">请输入柜号</string>
+    <string name="please_input_right_lock_num">请输入正确的柜号</string>
+    <string name="open_all">打开所有柜子</string>
 
 
 </resources>
