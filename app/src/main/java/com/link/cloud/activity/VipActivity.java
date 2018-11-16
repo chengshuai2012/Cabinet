@@ -36,6 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -63,6 +64,11 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     boolean IsNoPerson,isDeleteAll ;
     int pageNum =100;
     int total;
+    private RealmResults<AllUser> users;
+    private List<AllUser> peoples;
+    private RealmResults<AllUser> peopleIn;
+    private ArrayList<AllUser> peoplesIn;
+
     @Override
     protected void initViews() {
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
@@ -81,6 +87,27 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE))){
             setLayout.setVisibility(View.GONE);
         }
+        users = realm.where(AllUser.class).findAll();
+        peoples = new ArrayList<>();
+        users.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+            @Override
+            public void onChange(RealmResults<AllUser> allUsers) {
+                peoples.clear();
+                peoples.addAll(realm.copyFromRealm(users));
+            }
+        });
+        peoples.addAll(realm.copyFromRealm(users));
+
+        peopleIn = realm.where(AllUser.class).equalTo("isin",1).findAll();
+        peoplesIn = new ArrayList<>();
+        peopleIn.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+            @Override
+            public void onChange(RealmResults<AllUser> allUsers) {
+                peoplesIn.clear();
+                peoplesIn.addAll(realm.copyFromRealm(peopleIn));
+            }
+        });
+        peoplesIn.addAll(realm.copyFromRealm(peopleIn));
         vipController = new VipController(this);
         if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
            RegisteReciver();
@@ -132,10 +159,10 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {
                     IsNoPerson =false;
-                    RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                    List<AllUser> peoples = new ArrayList<>();
-                    peoples.addAll(realm.copyFromRealm(users));
-                    uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                    uid = CabinetApplication.getVenueUtils().identifyNewImg(peoplesIn);
+                    if(uid==null){
+                        uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                    }
                     final CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
                     if (uuid != null) {
                         String endTime = uuid.getEndTime();
