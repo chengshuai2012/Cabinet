@@ -167,6 +167,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         TTSUtils.getInstance().speak(message);
     }
 
+    public void speakMust(String message){
+        TTSUtils.getInstance().speakMust(message);
+    }
+
+
     public void DeleteDeviceInfo() {
         final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
         realm.executeTransaction(new Realm.Transaction() {

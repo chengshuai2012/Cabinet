@@ -20,10 +20,10 @@ import com.link.cloud.network.BaseObserver;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.AllUser;
-import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.widget.InputPassWordDialog;
 import com.link.cloud.widget.PublicTitleView;
+import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
@@ -124,21 +124,30 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             public void doNext(long number) {
                 System.out.println(String.valueOf(number));
                 if (isScanning) {
+
                     int state = CabinetApplication.getVenueUtils().getState();
                     if (state == 3) {
+                        long startTime=System.currentTimeMillis();   //获取开始时间
                         RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
                         List<AllUser> peoples = new ArrayList<>();
                         peoples.addAll(realm.copyFromRealm(users));
                         String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
-                        if (null != uid && !TextUtils.isEmpty(uid)) {
-                            unlocking(uid, Constants.ActivityExtra.FINGER);
-                        } else {
-                            String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
-                            regularController.findUser(finger);
+                        long endTime=System.currentTimeMillis(); //获取结束时间
+                        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
+                        if (uid == null) {
+                            Logger.e("贾工要的信息+Person:uid=get img failed, please try again ");
+                            speak(getResources().getString(R.string.move_finger));
                         }
-                    }
-                    if (state == 4) {
-                     speak(getResources().getString(R.string.please_move_finger));
+                        final AllUser uuid = realm.where(AllUser.class).equalTo("uid", uid).findFirst();
+                        if (null != uuid) {
+                            isScanning=false;
+                            unlocking(uuid.getUuid(), Constants.ActivityExtra.FINGER);
+                            System.out.println("贾工要的信息+Person:uid=" + uuid.getUuid());
+                        } else {
+                            speak(getResources().getString(R.string.cheack_fail));
+                        }
+                    } else if (state == 4) {
+                        speak(getResources().getString(R.string.move_finger));
                     }
                 }
             }

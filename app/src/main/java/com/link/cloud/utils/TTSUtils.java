@@ -83,6 +83,18 @@ public class TTSUtils implements InitListener,SynthesizerListener {
         }
     }
 
+
+    public void speakMust(String msg) {
+        if (isInitSuccess) {
+            if (mTts.isSpeaking()) {
+                mTts.stopSpeaking();
+            }
+            mTts.startSpeaking(msg, this);
+        } else {
+            init();
+        }
+    }
+
     public void stop() {
         mTts.stopSpeaking();
     }
