@@ -122,15 +122,18 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 }
             }else if("ENTRANCE_GUARD".equals(type)){
                 try {
-                    String uuid = object.getString("uuid");
+                    JSONObject data = object.getJSONObject("data");
+                    String uuid = data.getString("uuid");
+                    Log.e("onReceive: ",uuid );
                     final RealmResults<AllUser> personIn = realm.where(AllUser.class).equalTo("uuid", uuid).findAll();
+                    Log.e( "onReceive: ", personIn.size()+"");
                     for(int x=0;x<personIn.size();x++){
                         final int finalX = x;
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
                                 AllUser person = personIn.get(finalX);
-                                person.setIsin(1);
+                                person.setIsIn(1);
                             }
                         });
                     }

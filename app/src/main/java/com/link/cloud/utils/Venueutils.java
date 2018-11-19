@@ -107,9 +107,9 @@ public class Venueutils {
         List<Future<String>> futures = new ArrayList();
         for (int i = 0; i < nThreads; i++) {
                 if(i==nThreads-1){
-                    subListPeople= peoples.subList(1000* nThreads * i, peoples.size());
+                    subListPeople= peoples.subList(1000 * i, peoples.size());
                 }else {
-                    subListPeople= peoples.subList(1000* nThreads * i, 1000*nThreads * (i + 1));
+                    subListPeople= peoples.subList(1000 * i, 1000 * (i + 1));
                 }
             Callable<String> task = new Callable<String>() {
                 @Override
@@ -160,9 +160,9 @@ public class Venueutils {
         List<Future<String>> futures = new ArrayList();
         for (int i = 0; i < nThreads; i++) {
             if(i==nThreads-1){
-                subListUser= peoples.subList(1000* nThreads * i, peoples.size());
+                subListUser= peoples.subList(1000 * i, peoples.size());
             }else {
-                subListUser= peoples.subList(1000* nThreads * i, 1000*nThreads * (i + 1));
+                subListUser= peoples.subList(1000 * i, 1000 * (i + 1));
             }
 
             Callable<String> task = new Callable<String>() {

@@ -98,7 +98,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         });
         peoples.addAll(realm.copyFromRealm(users));
 
-        peopleIn = realm.where(AllUser.class).equalTo("isin",1).findAll();
+        peopleIn = realm.where(AllUser.class).equalTo("isIn",1).findAll();
         peoplesIn = new ArrayList<>();
         peopleIn.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
             @Override

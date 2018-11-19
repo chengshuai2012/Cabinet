@@ -82,6 +82,12 @@ public interface BaseService {
     @GET(ApiConstants.GETSINGLEUSER)
     Observable<BaseEntity<SingleUser>> findOneUserFinger(@Path("uuid") String uuid);
 
+    /**
+     * 二维码开柜
+     */
+    @GET(ApiConstants.QROPEN)
+    Observable<BaseEntity<SingleUser>> useCabinetGuardByQrCode(@Path("uuid") String uuid);
+
 
     /**
      * 验证机器密码

@@ -77,6 +77,17 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
 
     private void getToken() {
+        final RealmResults<AllUser> peopleIn = realm.where(AllUser.class).equalTo("isIn",1).findAll();
+        for(int x=0;x<peopleIn.size();x++){
+            final int finalX = x;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    AllUser person = peopleIn.get(finalX);
+                    person.setIsIn(0);
+                }
+            });
+        }
         mainController.login(deviceInfo.getDeviceId().trim(), deviceInfo.getPsw());
     }
 
