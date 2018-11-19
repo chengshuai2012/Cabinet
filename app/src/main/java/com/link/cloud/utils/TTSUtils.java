@@ -9,6 +9,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechEvent;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
+import com.iflytek.cloud.util.ResourceUtil;
 import com.link.cloud.CabinetApplication;
 
 /**
@@ -39,7 +40,9 @@ public class TTSUtils implements InitListener,SynthesizerListener {
         // 清空参数
         mTts.setParameter(SpeechConstant.PARAMS, null);
         // 设置在线云端
-        mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
+        mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
+        //设置发音人资源路径
+        mTts.setParameter(ResourceUtil.TTS_RES_PATH,getResourcePath());
         // 设置发音人
         mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan");
         // 设置发音语速
@@ -53,7 +56,19 @@ public class TTSUtils implements InitListener,SynthesizerListener {
         // 设置播放合成音频打断音乐播放，默认为true
         mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS, "true");
         // 设置音频保存路径，需要申请WRITE_EXTERNAL_STORAGE权限，如不需保存注释该行代码
+        mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
         mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, "./sdcard/iflytek.pcm");
+    }
+
+    //获取发音人资源路径
+    private String getResourcePath(){
+        StringBuffer tempBuffer = new StringBuffer();
+        //合成通用资源
+        tempBuffer.append(ResourceUtil.generateResourcePath(CabinetApplication.getInstance(), ResourceUtil.RESOURCE_TYPE.assets, "tts/common.jet"));
+        tempBuffer.append(";");
+        //发音人资源
+        tempBuffer.append(ResourceUtil.generateResourcePath(CabinetApplication.getInstance(), ResourceUtil.RESOURCE_TYPE.assets, "tts/"+"xiaoyan"+".jet"));
+        return tempBuffer.toString();
     }
 
     //开始合成
