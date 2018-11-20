@@ -134,6 +134,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                             public void execute(Realm realm) {
                                 AllUser person = personIn.get(finalX);
                                 person.setIsIn(1);
+                                realm.copyToRealm(person);
                             }
                         });
                     }

@@ -76,7 +76,7 @@ public class AllUser extends RealmObject{
         return isIn;
     }
 
-    public void setIsIn(int isin) {
+    public void setIsIn(int isIn) {
         this.isIn = isIn;
     }
 }

@@ -1,13 +1,16 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
@@ -21,8 +24,6 @@ import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
-import com.orhanobut.logger.Logger;
-import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
 
 import java.text.ParseException;
@@ -37,7 +38,6 @@ import java.util.concurrent.Future;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -52,7 +52,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     private LinearLayout zhijingmaiLayout;
     private LinearLayout xiaochengxuLayout;
     private TextView passwordLayout;
-
+    private EditText code_mumber;
     private PublicTitleView publicTitleView;
     private LinearLayout setLayout;
     private TextView member;
@@ -69,6 +69,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     private RealmResults<AllUser> peopleIn;
     private ArrayList<AllUser> peoplesIn;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void initViews() {
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
@@ -76,6 +77,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         passwordLayout = findViewById(R.id.passwordLayout);
         publicTitleView =  findViewById(R.id.publicTitle);
         setLayout = (LinearLayout) findViewById(R.id.setLayout);
+        code_mumber = (EditText) findViewById(R.id.code_number);
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
         publicTitleView.hideBack();
@@ -113,6 +115,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
            RegisteReciver();
         }
         finger();
+        initData();
     }
 
     @Override
@@ -222,7 +225,50 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         }
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void initData() {
+        code_mumber.setFocusable(true);
+        code_mumber.setCursorVisible(true);
+        code_mumber.setFocusableInTouchMode(true);
+        code_mumber.requestFocus();
+        code_mumber.setShowSoftInputOnFocus(false);
+        /**
+         * EditText编辑框内容发生变化时的监听回调
+         */
+        code_mumber.addTextChangedListener(new EditTextChangeListener());
+    }
+    public class EditTextChangeListener implements TextWatcher {
+        long lastTime;
+        /**
+         * 编辑框的内容发生改变之前的回调方法
+         */
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+        /**
+         * 编辑框的内容正在发生改变时的回调方法 >>用户正在输入
+         * 我们可以在这里实时地 通过搜索匹配用户的输入
+         */
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+        /**
+         * 编辑框的内容改变以后,用户没有继续输入时 的回调方法
+         */
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String str=code_mumber.getText().toString();
+            if (str.contains("\n")) {
+                if(System.currentTimeMillis()-lastTime<1500){
+                    code_mumber.setText("");
+                    return;
+                }
+                lastTime=System.currentTimeMillis();
+                vipController.OpenVipCabinetByCode(code_mumber.getText().toString());
+                code_mumber.setText("");
+            }
+        }
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -339,6 +385,28 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             vipController.getUser(1,pageNum);
         }
         unlocking(uid, Constants.ActivityExtra.FINGER);
+    }
+
+    @Override
+    public void VipSuccessByQr(final CabinetInfo codeInBean) {
+        String cabinetNo = codeInBean.getCabinetNo();
+        final RealmResults<CabinetInfo> cabinetNos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetNo).findAll();
+        if(cabinetNos.size()>0){
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    cabinetNos.deleteAllFromRealm();
+                }
+            });
+        }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(codeInBean);
+            }
+        });
+
+        unlocking(codeInBean.getUuid(), Constants.ActivityExtra.FINGER);
     }
 
 

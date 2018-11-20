@@ -10,8 +10,10 @@ import com.link.cloud.network.bean.SingleUser;
 
 import io.reactivex.Observable;
 import io.realm.RealmList;
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -97,7 +99,16 @@ public interface BaseService {
      * @see
      */
     @POST(ApiConstants.VALIDATEPASS)
-    Observable<BaseEntity> validatePassword(@Path("password") String password);
+    Observable<BaseEntity> validatePassword(@Path("password") String password);    /**
+     * 二维码开柜
+     *
+     * @param
+     * @returnscheduleReport
+     * @see
+     */
+    @POST(ApiConstants.QROPEN)
+    @Headers("Content-Type:application/json;charset=utf-8")
+    Observable<BaseEntity<CabinetInfo>> openCabinetByQr(@Body RequestBody qr);
 
 
 }

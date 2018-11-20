@@ -10,7 +10,10 @@ import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 
-import io.realm.RealmList;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.RequestBody;
 
 /**
  * Created by 49488 on 2018/11/5.
@@ -27,6 +30,8 @@ public class VipController {
         void getUserSuccess(BindUser data);
 
         void VipCabinetSuccess(CabinetInfo vipCabinetUser);
+
+        void VipSuccessByQr(CabinetInfo codeInBean);
 
     }
 
@@ -71,6 +76,38 @@ public class VipController {
                     @Override
                     protected void onSuccees(BaseEntity<CabinetInfo> t) {
                         listener.VipCabinetSuccess(t.getData());
+                    }
+
+                    @Override
+                    protected void onCodeError(String msg, String codeErrorr) {
+                        listener.onVipErrorCode(msg);
+                    }
+
+
+                    @Override
+                    protected void onFailure(Throwable e, boolean isNetWorkError) {
+                        listener.onVipFail(e, isNetWorkError);
+                    }
+
+                });
+    }
+    public void OpenVipCabinetByCode(String code) {
+        JSONObject object =null;
+        try {
+            object= new JSONObject(code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (object==null){
+            return;
+        }
+        RequestBody requestBody=RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),object.toString());
+        api.openCabinetByQr(requestBody)
+                .compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main())
+                .subscribe(new BaseObserver<CabinetInfo>() {
+                    @Override
+                    protected void onSuccees(BaseEntity<CabinetInfo> t) {
+                        listener.VipSuccessByQr(t.getData());
                     }
 
                     @Override

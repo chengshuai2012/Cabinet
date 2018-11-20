@@ -42,6 +42,6 @@ public class ApiConstants {
     public static final String VALIDATEPASS = "/app/validatePassword/{password}";
 
     //二维码开柜
-    public static final String QROPEN = "useCabinetGuardByQrCode";
+    public static final String QROPEN = "useCabinetByQrCode";
 
 }
