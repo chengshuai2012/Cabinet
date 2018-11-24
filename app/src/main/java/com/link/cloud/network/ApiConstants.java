@@ -44,4 +44,10 @@ public class ApiConstants {
     //二维码开柜
     public static final String QROPEN = "useCabinetByQrCode";
 
+    //获取APP版本
+    public static final String APPVERSION = "appVersion/{appType}";
+
+    //下载App
+    public static final String DOWNLOAD = "downloadApp/{appType}";
+
 }

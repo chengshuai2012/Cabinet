@@ -1,5 +1,8 @@
 package com.link.cloud.activity;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -10,6 +13,7 @@ import com.link.cloud.base.BaseActivity;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.HttpConfig;
+import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
@@ -231,6 +235,30 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         mainController.getUser(pageNum, 1);
     }
 
+    @Override
+    public void getVersionSuccess(APPVersionBean appVersionBean) {
+        String version = appVersionBean.getVersion();
+        try {
+            int i = Integer.parseInt(version);
+            if(i>getVersion(this)){
+                mainController.downloadFile();
+            }
+        }catch (Exception e)
+        {
+
+        }
+    }
+    private static int getVersion(Context context)// 获取版本号
+    {
+        try {
+            PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pi.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return 0;
+        }
+    }
     @Override
     public void temCabinetSuccess(CabinetInfo cabinetBean) {
 

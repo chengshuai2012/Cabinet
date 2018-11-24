@@ -1,5 +1,6 @@
 package com.link.cloud.network;
 
+import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
@@ -8,14 +9,17 @@ import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.link.cloud.network.bean.SingleUser;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.realm.RealmList;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 /**
  * Created by OFX002 on 2018/10/28.
@@ -110,5 +114,17 @@ public interface BaseService {
     @Headers("Content-Type:application/json;charset=utf-8")
     Observable<BaseEntity<CabinetInfo>> openCabinetByQr(@Body RequestBody qr);
 
+    /**
+     * APP版本
+     */
+    @GET(ApiConstants.APPVERSION)
+    Observable<BaseEntity<APPVersionBean>> getAppVersion(@Path("appType") int type);
+    /**
+     * 获取最新App
+     */
+    @Streaming
+    @Headers("Content-Type:application/force-download")
+    @GET(ApiConstants.DOWNLOAD)
+    Flowable<ResponseBody> getApp(@Path("appType") int type);
 
 }

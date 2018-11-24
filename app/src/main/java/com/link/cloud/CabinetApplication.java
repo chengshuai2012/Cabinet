@@ -1,12 +1,19 @@
 package com.link.cloud;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import com.link.cloud.activity.SplashActivity;
+import com.link.cloud.utils.TimeService;
 import com.link.cloud.utils.Venueutils;
+import com.orhanobut.logger.Logger;
 import com.zitech.framework.BaseApplication;
 
 import java.io.File;
@@ -20,7 +27,8 @@ public class CabinetApplication extends BaseApplication {
 
     private Handler mainThreadHandler;
     public static Venueutils venueUtils;
-
+    public  int count =0;
+    public static final String COUNT_CHANGE = "change_count";
     public SerialPort serialPortOne = null;
     public SerialPort serialPortTwo = null;
     public SerialPort serialPortThree = null;
@@ -45,9 +53,12 @@ public class CabinetApplication extends BaseApplication {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
-//        intSerialPort();
+        intSerialPort();
         intSpeak();
-
+        Thread.setDefaultUncaughtExceptionHandler(restartHandler);
+        Intent intent = new Intent(getApplicationContext(), TimeService.class);
+        startService(intent);
+        registerLifeCircle();
     }
 
 
@@ -94,5 +105,63 @@ public class CabinetApplication extends BaseApplication {
     public static CabinetApplication getInstance() {
         return (CabinetApplication) BaseApplication.getInstance();
     }
+    private void registerLifeCircle(){
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle bundle) {
 
+            }
+            @Override
+            public void onActivityStarted(Activity activity) {
+                count++;
+                Log.e("onActivityStarted: ",count+"" );
+                Intent countIntent = new Intent(COUNT_CHANGE);
+                countIntent.putExtra("count",count);
+                sendBroadcast(countIntent);
+            }
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+            @Override
+            public void onActivityStopped(Activity activity) {
+                count--;
+                Log.e("onActivityStarted: ",count+"" );
+                Intent countIntent = new Intent(COUNT_CHANGE);
+                countIntent.putExtra("count",count);
+                sendBroadcast(countIntent);
+            }
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+            }
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+
+    }
+    private Thread.UncaughtExceptionHandler restartHandler = new Thread.UncaughtExceptionHandler() {
+        public void uncaughtException(Thread thread, Throwable ex) {
+            Throwable cause = ex.getCause();
+            StringBuilder builder = new StringBuilder();
+            builder.append(ex.getCause().toString()+"\r\n");
+            for(int x=0;x<cause.getStackTrace().length;x++){
+                builder.append("FileName:"+cause.getStackTrace()[x].getFileName()+">>>>Method:"+cause.getStackTrace()[x].getMethodName()+">>>>FileLine:"+cause.getStackTrace()[x].getLineNumber()+"\r\n");
+            }
+
+            Logger.e(builder.toString());
+            restartApp();
+        }
+    };
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
 }

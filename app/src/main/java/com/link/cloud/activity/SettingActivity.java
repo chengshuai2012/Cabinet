@@ -1,8 +1,12 @@
 package com.link.cloud.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +30,7 @@ import com.zitech.framework.utils.ViewUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -62,6 +67,7 @@ public class SettingActivity extends BaseActivity {
         mac = Utils.getMac();
         rxTimerUtil = new RxTimerUtil();
         deviceId.setText(getResources().getString(R.string.device_id) + mac);
+        checkReadPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,REQUEST_SD_PERMISSION);
     }
 
     @Override
@@ -244,7 +250,73 @@ public class SettingActivity extends BaseActivity {
         rxTimerUtil.cancel();
     }
 
+    public static final int REQUEST_SD_PERMISSION = 10111;
 
+
+
+    /**
+
+     * 判断是否有某项权限
+
+     * @param string_permission 权限
+
+     * @param request_code 请求码
+
+     * @return
+
+     */
+
+    public boolean checkReadPermission(String string_permission,int request_code) {
+
+        boolean flag = false;
+
+        if (ContextCompat.checkSelfPermission(this, string_permission) == PackageManager.PERMISSION_GRANTED) {//已有权限
+
+            flag = true;
+
+        } else {//申请权限
+
+            ActivityCompat.requestPermissions(this, new String[]{string_permission}, request_code);
+
+        }
+
+        return flag;
+
+    }
+
+
+
+    /**
+
+     * 检查权限后的回调
+
+     * @param requestCode 请求码
+
+     * @param permissions  权限
+
+     * @param grantResults 结果
+
+     */
+
+    @Override
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+
+            case REQUEST_SD_PERMISSION:
+
+                if (permissions.length != 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {//失败
+
+                    Toast.makeText(this, getString(R.string.sd_permession),Toast.LENGTH_SHORT).show();
+
+                }
+
+                break;
+
+        }
+
+    }
     @Override
     public void modelMsg(int state, String msg) {
 

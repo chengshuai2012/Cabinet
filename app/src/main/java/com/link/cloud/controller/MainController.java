@@ -1,11 +1,15 @@
 package com.link.cloud.controller;
 
 
+import android.os.Environment;
+
 import com.link.cloud.network.BaseEntity;
 import com.link.cloud.network.BaseObserver;
 import com.link.cloud.network.BaseService;
+import com.link.cloud.network.FileDownLoadSubscriber;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
+import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
@@ -13,7 +17,11 @@ import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.zitech.framework.utils.ToastMaster;
 
+import java.io.File;
+
 import io.realm.RealmList;
+
+import static com.link.cloud.network.IOMainThread.ioMainDownload;
 
 /**
  * Created by 49488 on 2018/10/28.
@@ -32,6 +40,8 @@ public class MainController {
         void getUserSuccess(BindUser data);
 
         void onCabinetInfoSuccess(RealmList<CabinetInfo> data);
+
+        void getVersionSuccess(APPVersionBean appVersionBean);
 
         void temCabinetSuccess(CabinetInfo cabinetBean);
 
@@ -188,5 +198,43 @@ public class MainController {
                                }
                            }
                 );
+    }
+    public void getAppVersion(){
+        api.getAppVersion(2).compose(IOMainThread.<BaseEntity<APPVersionBean>>composeIO2main()).subscribe(new BaseObserver<APPVersionBean>() {
+
+            @Override
+            protected void onSuccees(BaseEntity<APPVersionBean> t) {
+                listener.getVersionSuccess(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg, String codeErrorr) {
+                listener.onMainErrorCode(codeErrorr);
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                listener.onMainFail(e, isNetWorkError);
+            }
+        });
+    }
+    String TAG ="download";
+    public void downloadFile() {
+        File file = new File(Environment.getExternalStorageDirectory()+"/lingxi.apk");
+        api.getApp(2).
+                compose(ioMainDownload()).
+                subscribeWith(new FileDownLoadSubscriber(file){
+                    @Override
+                    public void onError(Throwable t) {
+                        super.onError(t);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                    }
+
+                });
+
     }
 }

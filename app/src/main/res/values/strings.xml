@@ -106,5 +106,5 @@
     <string name="please_input_right_lock_num">请输入正确的柜号</string>
     <string name="open_all">打开所有柜子</string>
 
-
+    <string name="sd_permession">请打开设备内存卡读写权限</string>
 </resources>
