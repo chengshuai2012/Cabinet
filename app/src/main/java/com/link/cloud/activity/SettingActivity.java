@@ -183,6 +183,11 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void gotoSetting(String pass) {
+
+    }
+
 
     private void openLock(CabinetInfo cabinetBean) {
         speak(cabinetBean.getLockNo() + getResources().getString(R.string.aready_open_string));
@@ -247,7 +252,7 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rxTimerUtil.cancel();
+      //  rxTimerUtil.cancel();
     }
 
     public static final int REQUEST_SD_PERMISSION = 10111;

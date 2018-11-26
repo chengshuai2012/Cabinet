@@ -76,6 +76,11 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     }
 
     @Override
+    public void gotoSetting(String pass) {
+
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_regularopen;
     }

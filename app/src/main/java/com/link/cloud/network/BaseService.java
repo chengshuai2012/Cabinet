@@ -5,6 +5,7 @@ import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.network.bean.PasswordBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.link.cloud.network.bean.SingleUser;
@@ -103,7 +104,7 @@ public interface BaseService {
      * @see
      */
     @POST(ApiConstants.VALIDATEPASS)
-    Observable<BaseEntity> validatePassword(@Path("password") String password);    /**
+    Observable<BaseEntity<PasswordBean>> validatePassword(@Path("password") String password);    /**
      * 二维码开柜
      *
      * @param

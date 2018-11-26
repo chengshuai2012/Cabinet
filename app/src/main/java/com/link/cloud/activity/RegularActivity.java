@@ -218,6 +218,11 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         }
     }
 
+    @Override
+    public void gotoSetting(String pass) {
+
+    }
+
     private void showPasswordDialog() {
         speak(getResources().getString(R.string.please_save));
         final InputPassWordDialog inputPassWordDialog = new InputPassWordDialog(this);

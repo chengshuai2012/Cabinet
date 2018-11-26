@@ -101,6 +101,11 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     @Override
+    public void gotoSetting(String pass) {
+
+    }
+
+    @Override
     public void modelMsg(int state, String msg) {
 
     }
@@ -125,9 +130,14 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     @Override
     public void onMainErrorCode(String msg) {
-        if (msg.equals("400000100000") || msg.equals("400000999102")) {
-            DeleteDeviceInfo();
+        if (msg.equals("400000100000") ) {
             skipActivity(SettingActivity.class);
+            TTSUtils.getInstance().speak(getString(R.string.login_fail));
+        }else if(msg.equals("400000999102")){
+            HttpConfig.TOKEN = "";
+            getToken();
+        }else {
+            showNext();
         }
 
 
@@ -220,6 +230,7 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     private void getData() {
         mainController.getCabinetInfo();
+        mainController.getAppVersion();
     }
 
     @Override

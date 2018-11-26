@@ -67,6 +67,11 @@ public class VipOpenActivity extends BaseActivity {
     }
 
     @Override
+    public void gotoSetting(String pass) {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         realm.close();

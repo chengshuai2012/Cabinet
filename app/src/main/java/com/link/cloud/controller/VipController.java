@@ -7,6 +7,7 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.PasswordBean;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 
@@ -33,6 +34,8 @@ public class VipController {
 
         void VipSuccessByQr(CabinetInfo codeInBean);
 
+        void VipPassWord(PasswordBean passwordBean);
+
     }
 
     private BaseService api;
@@ -41,7 +44,26 @@ public class VipController {
         api = RetrofitFactory.getInstence().API();
         this.listener = listener;
     }
+    public void password(String pass){
+        api.validatePassword(pass).compose(IOMainThread.<BaseEntity<PasswordBean>>composeIO2main()).subscribe(new BaseObserver<PasswordBean>() {
 
+
+            @Override
+            protected void onSuccees(BaseEntity<PasswordBean> t) {
+                listener.VipPassWord(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg, String codeErrorr) {
+                listener.onVipErrorCode(msg);
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                listener.onVipFail(e, isNetWorkError);
+            }
+        });
+    }
     public void getUser(int pageNume, int Page) {
         RequestBindFinger requestBindFinger = new RequestBindFinger();
         requestBindFinger.setContent("CHINA00001");

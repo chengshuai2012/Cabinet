@@ -24,6 +24,36 @@ public class OpenDoorUtil {
         bytes[4] = decimalToBinary(door);
         bytes[5] = (byte) (bytes[1] ^ bytes[2] ^ bytes[3] ^ bytes[4]);
         bytes[6] = (byte) 0XEE;
+        Log.e(TAG, "checkClose: "+HexUtil.bytesToHexString(bytes) );
+        return bytes;
+    }
+    /**
+     * 查询关门
+     */
+    public static byte[] checkClose(int serialnum, int door) {
+        //mSerialmanager
+        byte[] bytes = new byte[7];
+        bytes[0] = 0X55;
+        bytes[1] = 0X02;
+        bytes[2] = (byte) 0XA3;
+        bytes[3] = decimalToBinary(serialnum);
+        bytes[4] = decimalToBinary(door);
+        bytes[5] = (byte) (bytes[1] ^ bytes[2] ^ bytes[3] ^ bytes[4]);
+        bytes[6] = (byte) 0XEE;
+        Log.e(TAG, "checkClose: "+HexUtil.bytesToHexString(bytes) );
+        return bytes;
+    }    /**
+     * 查询关门
+     */
+    public static byte[] handShake() {
+        //mSerialmanager
+        byte[] bytes = new byte[5];
+        bytes[0] = 0X55;
+        bytes[1] = 0X00;
+        bytes[2] = (byte) 0XAE;
+        bytes[3] = (byte) (bytes[1] ^ bytes[2] );
+        bytes[4] = (byte) 0XEE;
+        Log.e(TAG, "checkClose: "+HexUtil.bytesToHexString(bytes) );
         return bytes;
     }
 

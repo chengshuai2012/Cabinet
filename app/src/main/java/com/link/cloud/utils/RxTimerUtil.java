@@ -1,5 +1,7 @@
 package com.link.cloud.utils;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.annotations.NonNull;
@@ -69,11 +71,12 @@ public class RxTimerUtil {
 
                     @Override
                     public void onCompleted() {
+                        Log.e("onCompleted: ","0000" );
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        System.out.println(e.getMessage());
+                        Log.e("onCompleted: ",e.getMessage());
                         interval(milliseconds, next);
                     }
 
@@ -88,6 +91,7 @@ public class RxTimerUtil {
         if (mDisposable != null) {
             mDisposable.unsubscribe();
         }
+        Log.e( "cancel: " ,"1111111111");
     }
 
     public interface IRxNext {

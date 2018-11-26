@@ -88,8 +88,7 @@ public class MainController {
 
             @Override
             protected void onCodeError(String msg,String codeErrorr)  {
-                ToastMaster.shortToast(msg);
-                listener.onMainErrorCode(msg);
+                listener.onMainErrorCode(codeErrorr);
 
             }
 
@@ -189,7 +188,7 @@ public class MainController {
 
                                @Override
                                protected void onCodeError(String msg,String codeErrorr) {
-
+                                   listener.onMainErrorCode(codeErrorr);
                                }
 
                                @Override
@@ -200,7 +199,7 @@ public class MainController {
                 );
     }
     public void getAppVersion(){
-        api.getAppVersion(2).compose(IOMainThread.<BaseEntity<APPVersionBean>>composeIO2main()).subscribe(new BaseObserver<APPVersionBean>() {
+        api.getAppVersion(3).compose(IOMainThread.<BaseEntity<APPVersionBean>>composeIO2main()).subscribe(new BaseObserver<APPVersionBean>() {
 
             @Override
             protected void onSuccees(BaseEntity<APPVersionBean> t) {
@@ -221,7 +220,7 @@ public class MainController {
     String TAG ="download";
     public void downloadFile() {
         File file = new File(Environment.getExternalStorageDirectory()+"/lingxi.apk");
-        api.getApp(2).
+        api.getApp(3).
                 compose(ioMainDownload()).
                 subscribeWith(new FileDownLoadSubscriber(file){
                     @Override

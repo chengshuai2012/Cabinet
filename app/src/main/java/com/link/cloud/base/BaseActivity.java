@@ -193,6 +193,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         try {
             CabinetApplication.getVenueUtils().unBindService();
         } catch (Exception e) {
+
         }
     }
 
@@ -335,5 +336,5 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
         win.setAttributes(winParams);
     }
-
+    public abstract void gotoSetting(String pass);
 }

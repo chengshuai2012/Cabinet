@@ -326,4 +326,9 @@ public class VipOpenSuccessActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void gotoSetting(String pass) {
+
+    }
+
 }

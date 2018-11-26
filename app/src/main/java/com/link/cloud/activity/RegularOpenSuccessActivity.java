@@ -290,6 +290,11 @@ public class RegularOpenSuccessActivity extends BaseActivity {
     }
 
     @Override
+    public void gotoSetting(String pass) {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         rxTimerUtil.cancel();

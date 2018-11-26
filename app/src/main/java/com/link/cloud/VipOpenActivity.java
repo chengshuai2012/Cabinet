@@ -21,6 +21,11 @@ public class VipOpenActivity extends BaseActivity {
     }
 
     @Override
+    public void gotoSetting(String pass) {
+
+    }
+
+    @Override
     public void modelMsg(int state, String msg) {
 
     }
