@@ -4,18 +4,18 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.link.cloud"
-        minSdkVersion 17
+        minSdkVersion 22
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
         packagingOptions {
             exclude 'META-INF/rxjava.properties'
         }
 
         ndk {
-            abiFilters "armeabi-v7a", "arm"
+            abiFilters "armeabi-v7a"
         }
     }
     buildTypes {
@@ -69,4 +69,5 @@ dependencies {
     api project(':framework')
     implementation files('libs/netty-all-4.0.14.Final.jar')
     implementation files('libs/Msc.jar')
+
 }

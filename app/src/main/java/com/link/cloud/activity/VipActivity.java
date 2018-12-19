@@ -22,17 +22,22 @@ import com.link.cloud.controller.VipController;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
 import com.link.cloud.utils.DialogCancelListener;
 import com.link.cloud.utils.DialogUtils;
 import com.link.cloud.utils.HexUtil;
 import com.link.cloud.utils.OpenDoorUtil;
+import com.link.cloud.utils.RxTimerDelayUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Venueutils;
 import com.link.cloud.widget.PublicTitleView;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +56,8 @@ import java.util.concurrent.Future;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -102,16 +109,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         ViewUtils.setOnClickListener(setLayout, this);
         ViewUtils.setOnClickListener(member, this);
         ViewUtils.setOnClickListener(manager, this);
-        managersRealm = realm.where(AllUser.class).equalTo("isadmin", 1).findAll();
-        managers.addAll(realm.copyFromRealm(managersRealm));
 
-        managersRealm.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
-            @Override
-            public void onChange(RealmResults<AllUser> allUsers) {
-                managers.clear();
-                managers.addAll(realm.copyFromRealm(managersRealm));
-            }
-        });
         dialogUtils = DialogUtils.getDialogUtils(this);
         users = realm.where(AllUser.class).findAll();
         peoples = new ArrayList<>();
@@ -137,7 +135,16 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         vipController = new VipController(this);
         if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
            RegisteReciver();
+            managersRealm = realm.where(AllUser.class).equalTo("isadmin", 1).findAll();
+            managers.addAll(realm.copyFromRealm(managersRealm));
 
+            managersRealm.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+                @Override
+                public void onChange(RealmResults<AllUser> allUsers) {
+                    managers.clear();
+                    managers.addAll(realm.copyFromRealm(managersRealm));
+                }
+            });
         }else {
             setLayout.setVisibility(View.GONE);
         }
@@ -194,7 +201,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             public void doNext(long number) {
                 System.out.println(String.valueOf(number));
                 int state = CabinetApplication.getVenueUtils().getState();
-                if (state == 3||state==4) {
+                if (state == 3) {
                     if(dialogUtils.isShowing()){
                         uid = null;
                         uid =  CabinetApplication.getVenueUtils().identifyNewImg(managers);
@@ -355,6 +362,13 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 member.setBackground(null);
                 member.setTextColor(getResources().getColor(R.color.text_gray));
                 manager.setTextColor(getResources().getColor(R.color.almost_white));
+                RxTimerDelayUtil rxTimerDelayUtil = new RxTimerDelayUtil();
+                rxTimerDelayUtil.timer(10000,new  RxTimerDelayUtil.IRxNext(){
+                    @Override
+                    public void doNext(long number) {
+                        dialogUtils.dissMiss();
+                    }
+                });
                 break;
             case R.id.passwordLayout:
                 Bundle bundle1 = new Bundle();
@@ -408,7 +422,17 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     return;
                 }
                 lastTime=System.currentTimeMillis();
-                vipController.OpenVipCabinetByCode(code_mumber.getText().toString());
+                JSONObject object = null;
+                try {
+                    object = new JSONObject(code_mumber.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (object == null) {
+                    return;
+                }
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
+                vipController.findUserByQr(requestBody);
                 code_mumber.setText("");
             }
         }
@@ -432,7 +456,10 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         manager.setBackground(null);
         member.setTextColor(getResources().getColor(R.color.almost_white));
         manager.setTextColor(getResources().getColor(R.color.text_gray));
+        rxTimerUtil.cancel();
         finger();
+
+
     }
 
 
@@ -446,7 +473,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         if ("您没有租用储物柜".equals(msg)) {
             TTSUtils.getInstance().speak(getResources().getString(R.string.sorry_for_is_not_vip));
         }else {
-            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail)+","+getResources().getString(R.string.verify_agin));
+            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail)+","+msg);
         }
 
     }
@@ -463,7 +490,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
             unRegisterReceiver();
         }
-        CabinetApplication.getVenueUtils().unBindService();
     }
 
     @Override
@@ -543,26 +569,27 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     }
 
     @Override
-    public void VipSuccessByQr(final CabinetInfo codeInBean) {
-        String cabinetNo = codeInBean.getCabinetNo();
-        final RealmResults<CabinetInfo> cabinetNos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetNo).findAll();
-        if(cabinetNos.size()>0){
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    cabinetNos.deleteAllFromRealm();
-                }
-            });
-        }
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(codeInBean);
-            }
-        });
+    public void qrSuccess(EdituserRequest allUser) {
+        String uuid = allUser.getUuid();
+        final RealmResults<CabinetInfo> cabinetNos = realm.where(CabinetInfo.class).equalTo("cabinetNo", uuid).findAll();
+//        if(cabinetNos.size()>0){
+//            realm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    cabinetNos.deleteAllFromRealm();
+//                }
+//            });
+//        }
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                realm.copyToRealm(codeInBean);
+//            }
+//        });
 
-        unlocking(codeInBean.getUuid(), Constants.ActivityExtra.FINGER);
+        unlocking(uuid, Constants.ActivityExtra.FINGER);
     }
+
 
     @Override
     public void VipPassWord(PasswordBean passwordBean) {

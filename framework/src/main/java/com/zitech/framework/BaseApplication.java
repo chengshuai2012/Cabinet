@@ -1,6 +1,8 @@
 package com.zitech.framework;
 
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.zitech.framework.utils.Utils;
@@ -18,6 +20,12 @@ public abstract class BaseApplication extends MultiDexApplication {
 
     public static BaseApplication getInstance() {
         return mInstance;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     @Override

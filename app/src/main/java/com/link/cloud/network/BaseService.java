@@ -5,7 +5,9 @@ import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
+import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
+import com.link.cloud.network.bean.QrRequest;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 import com.link.cloud.network.bean.SingleUser;
@@ -113,13 +115,18 @@ public interface BaseService {
      */
     @POST(ApiConstants.QROPEN)
     @Headers("Content-Type:application/json;charset=utf-8")
-    Observable<BaseEntity<CabinetInfo>> openCabinetByQr(@Body RequestBody qr);
+    Observable<BaseEntity<EdituserRequest>> openCabinetByQr(@Body RequestBody qr);
 
     /**
      * APP版本
      */
     @GET(ApiConstants.APPVERSION)
     Observable<BaseEntity<APPVersionBean>> getAppVersion(@Path("appType") int type);
+    /**
+     * 验证密码
+     */
+    @POST(ApiConstants.PASSWORD)
+    Observable<BaseEntity<APPVersionBean>> validate(@Path("uuid") String uuid,@Path("pwd") String pwd);
     /**
      * 获取最新App
      */

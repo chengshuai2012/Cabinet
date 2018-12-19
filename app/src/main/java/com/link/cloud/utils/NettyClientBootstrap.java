@@ -61,7 +61,7 @@ public class NettyClientBootstrap {
             @Override
             protected void initChannel(SocketChannel socketChannel) throws Exception {
                 //超时处理
-                socketChannel.pipeline().addLast(new IdleStateHandler(0, 10, 0));
+                socketChannel.pipeline().addLast(new IdleStateHandler(5, 5, 5));
                 //编码，解码，回调，如果没有用带编解码删除new Encode(), new Decode()
                 socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new NettyClientHandler());
             }

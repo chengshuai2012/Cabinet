@@ -71,7 +71,15 @@ public class AllUser extends RealmObject{
     private String createTime;
     private int isadmin;
     private int isIn;
+    public String getPhone() {
+        return phone;
+    }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    private String phone;
     public int getIsIn() {
         return isIn;
     }

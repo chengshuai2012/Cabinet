@@ -42,12 +42,15 @@ public class ApiConstants {
     public static final String VALIDATEPASS = "/app/validatePassword/{password}";
 
     //二维码开柜
-    public static final String QROPEN = "useCabinetByQrCode";
+    public static final String QROPEN = "bindUserByQrCode";
 
     //获取APP版本
     public static final String APPVERSION = "appVersion/{appType}";
 
     //下载App
     public static final String DOWNLOAD = "downloadApp/{appType}";
+
+    //验证密码
+    public static final String PASSWORD = "checkPwd/{uuid}/{pwd}";
 
 }

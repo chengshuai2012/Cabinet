@@ -1,10 +1,14 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,17 +18,16 @@ import android.widget.TextView;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.controller.RegularOpenController;
+import com.link.cloud.network.HttpConfig;
+import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
-import com.link.cloud.utils.RxTimerUtil;
+
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Utils;
 import com.link.cloud.widget.PublicTitleView;
 import com.zitech.framework.utils.ViewUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.realm.RealmResults;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -32,7 +35,7 @@ import io.realm.RealmResults;
  * 打开成功
  */
 @SuppressLint("Registered")
-public class RegularOpenSuccessActivity extends BaseActivity {
+public class RegularOpenSuccessActivity extends BaseActivity implements RegularOpenController.RegularOpenControllerListener {
 
 
     private TextView cardNameText;
@@ -63,14 +66,14 @@ public class RegularOpenSuccessActivity extends BaseActivity {
     private android.widget.Button backButton;
     private TextView inputNumAndPass;
     private CabinetInfo cabinetInfo;
-    RxTimerUtil rxTimerUtil;
     private StringBuilder lockNumber;
     private StringBuilder password;
+    private RegularOpenController regularOpenController;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void initViews() {
-        rxTimerUtil = new RxTimerUtil();
         initView();
     }
 
@@ -78,15 +81,18 @@ public class RegularOpenSuccessActivity extends BaseActivity {
     protected int getLayoutId() {
         return R.layout.activity_regularopensuccess;
     }
-
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            finish();
+        }
+    };
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
-        rxTimerUtil.timer(30000, new RxTimerUtil.IRxNext() {
-            @Override
-            public void doNext(long number) {
-                finish();
-            }
-        });
+        regularOpenController = new RegularOpenController(this);
+        handler.sendEmptyMessageDelayed(1,10000);
         cardNameText = (TextView) findViewById(R.id.cardNameText);
         nameText = (TextView) findViewById(R.id.nameText);
         phoneText = (TextView) findViewById(R.id.phoneText);
@@ -97,7 +103,11 @@ public class RegularOpenSuccessActivity extends BaseActivity {
         publicTitle.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
             public void itemClickListener() {
-                finish();
+                if(Constants.CABINET_TYPE==Constants.VIP_REGULAR_CABINET){
+                    skipActivity(MainActivity.class);
+                }else {
+                    skipActivity(RegularActivity.class);
+                }
             }
         });
         lockNumber = new StringBuilder();
@@ -122,7 +132,6 @@ public class RegularOpenSuccessActivity extends BaseActivity {
         backButton = (Button) findViewById(R.id.backButton);
         passwordLayout = findViewById(R.id.passwordLayout);
         inputNumAndPass = findViewById(R.id.inputNumAndPass);
-
         ViewUtils.setOnClickListener(finishDealButton, this);
         ViewUtils.setOnClickListener(bindKeypad1, this);
         ViewUtils.setOnClickListener(bindKeypad2, this);
@@ -155,7 +164,7 @@ public class RegularOpenSuccessActivity extends BaseActivity {
             if (cabinetInfo != null) {
                 nameText.setText(cabinetInfo.getNickname() == null ? "" : getResources().getString(R.string.name) + cabinetInfo.getNickname());
                 phoneText.setText(cabinetInfo.getPhone() == null ? "" : getResources().getString(R.string.phone) + cabinetInfo.getPhone());
-                lockId.setText(cabinetInfo.getLockNo() + getResources().getString(R.string.open_nun));
+                lockId.setText(cabinetInfo.getCabinetNo() + getResources().getString(R.string.open_nun));
                 openWay.setText(cabinetInfo.getOpenWay());
                 openSuccessText.setBackground(getResources().getDrawable(R.drawable.border_gray_gradient));
                 openSuccessText.setTextColor(getResources().getColor(R.color.black));
@@ -175,7 +184,11 @@ public class RegularOpenSuccessActivity extends BaseActivity {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.finishDealButton:
-                finish();
+                if(Constants.CABINET_TYPE==Constants.VIP_REGULAR_CABINET){
+                    skipActivity(MainActivity.class);
+                }else {
+                    skipActivity(RegularActivity.class);
+                }
                 break;
             case R.id.bind_keypad_0:
             case R.id.bind_keypad_1:
@@ -246,7 +259,12 @@ public class RegularOpenSuccessActivity extends BaseActivity {
                 }
                 break;
             case R.id.backButton:
-                finish();
+                if(Constants.CABINET_TYPE==Constants.VIP_REGULAR_CABINET){
+                    skipActivity(MainActivity.class);
+                }else {
+                    skipActivity(RegularActivity.class);
+                }
+
                 break;
 
             case R.id.sureButton:
@@ -261,27 +279,11 @@ public class RegularOpenSuccessActivity extends BaseActivity {
 
                 String fisrt = Utils.getMD5(edit_pswText).toUpperCase();
                 final String second = Utils.getMD5(fisrt).toUpperCase();
-
-
-                final RealmResults<CabinetInfo> all = realm.where(CabinetInfo.class).findAll();
-                List<CabinetInfo> cabinetInfos = new ArrayList<>();
-                cabinetInfos.addAll(realm.copyFromRealm(all));
-                CabinetInfo cabinetInfo = null;
-                for (CabinetInfo info : cabinetInfos) {
-                    if (info.getPasswd() != null && info.getPasswd().equals(second) && String.valueOf(info.getLockNo()).equals(containerNo_text)) {
-                        cabinetInfo = info;
-                        break;
-                    }
-                }
+                 cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
                 if (cabinetInfo == null) {
                     speak(getResources().getString(R.string.please_input_right));
                 } else {
-                    TTSUtils.getInstance().speak(getResources().getString(R.string.finger_success));
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.PASSWORD);
-                    bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetInfo);
-                    showActivity(RegularOpenActivity.class, bundle);
-                    finish();
+                    regularOpenController.OpenLockByPass(cabinetInfo.getUuid(),edit_pswText);
                 }
                 break;
 
@@ -297,6 +299,56 @@ public class RegularOpenSuccessActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rxTimerUtil.cancel();
+        handler.removeMessages(1);
+    }
+
+    @Override
+    public void OpenSuccess(CabinetInfo cabinetInfo) {
+
+    }
+
+    @Override
+    public void returnSuccess(CabinetInfo cabinetInfo) {
+
+    }
+
+    @Override
+    public void openFaild(String message, String code) {
+        if (code.equals("400000100000") ) {
+            skipActivity(SettingActivity.class);
+            TTSUtils.getInstance().speak(getString(R.string.login_fail));
+        }else if(code.equals("400000999102")) {
+            HttpConfig.TOKEN = "";
+            Intent intent1 = new Intent(this, SplashActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }else {
+            speak(message);
+        }
+    }
+
+    @Override
+    public void returnFail(String message, String code) {
+
+    }
+
+    @Override
+    public void onFail(Throwable e, boolean isNetWork) {
+        if(isNetWork){
+            speak(getResources().getString(R.string.network_unavailable));
+        }else {
+            speak(getResources().getString(R.string.parse_error));
+        }
+    }
+
+    @Override
+    public void SuccessByQr(CabinetInfo cabinetInfo) {
+
+    }
+
+    @Override
+    public void OpenLockByPass(APPVersionBean appVersionBean) {
+
     }
 }

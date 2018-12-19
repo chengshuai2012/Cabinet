@@ -3,7 +3,7 @@
     <string name="member">会员</string>
     <string name="manager">管理员</string>
     <string name="welcome_to_use_sweat_locker">Welcome To Use Sweat Locker</string>
-    <string name="well_use_string">欢迎使用汗的储物柜</string>
+    <string name="well_use_string">欢迎使用智能储物柜</string>
     <string name="open_string">开柜</string>
     <string name="open_ark">Open Ark</string>
     <string name="queit_string">退柜</string>
@@ -112,4 +112,6 @@
     <string name="handy_venue_intro">请验证已有的指静脉，用于管理员登录</string>
     <string name="manager_pwd">输入管理员密码</string>
     <string name="no_manager">抱歉您非管理员</string>
+    <string name="error_net">网络异常</string>
+    <string name="parse_error">解析异常</string>
 </resources>

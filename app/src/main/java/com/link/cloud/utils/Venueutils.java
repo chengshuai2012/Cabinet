@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.link.cloud.R;
 import com.link.cloud.bean.FingerprintsBean;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.veune.MdDevice;
@@ -87,9 +88,9 @@ public class Venueutils {
             lastTouchState = 3;
             mdDeviceBinder.setDeviceLed(0, MdUsbService.getFvColorGREEN(), false);
             img = mdDeviceBinder.tryGrabImg(0);
-            Logger.e(HexUtil.bytesToHexString(img));
             if (img == null) {
                 Logger.e("get img failed,please try again");
+                TTSUtils.getInstance().speak(context.getString(R.string.again_finger));
                 return 0;
             }
         }

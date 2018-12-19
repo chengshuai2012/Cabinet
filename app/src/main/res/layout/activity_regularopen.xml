@@ -18,12 +18,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/icon_main_bg" />
 
-        <ImageView
-            android:layout_width="@dimen/w244"
-            android:layout_height="@dimen/h86"
-            android:layout_marginLeft="@dimen/h41"
-            android:layout_marginTop="@dimen/h28"
-            android:src="@drawable/ic_write_handy_log" />
+
 
 
     </FrameLayout>

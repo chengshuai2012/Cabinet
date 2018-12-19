@@ -111,10 +111,7 @@ public class DialogUtils implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.cancel:
             case R.id.close:
-                dialog.dismiss();
-                if(listener!=null){
-                    listener.dialogCancel();
-                }
+                dissMiss();
                 break;
             case R.id.psw_login:
                 dialog.dismiss();
@@ -160,13 +157,14 @@ public class DialogUtils implements View.OnClickListener {
                 String fisrt = Utils.getMD5( builder.toString()).toUpperCase();
                 String second = Utils.getMD5(fisrt).toUpperCase();
                 ( (BaseActivity)context).gotoSetting(second);
-                dialog.dismiss();
+                dissMiss();
                 break;
         }
     }
 
     public void dissMiss() {
         if (dialog.isShowing()) {
+            listener.dialogCancel();
             dialog.dismiss();
         }
     }

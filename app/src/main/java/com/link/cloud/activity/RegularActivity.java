@@ -1,10 +1,12 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,23 +17,31 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularController;
-import com.link.cloud.network.BaseEntity;
-import com.link.cloud.network.BaseObserver;
-import com.link.cloud.network.IOMainThread;
-import com.link.cloud.network.RetrofitFactory;
+import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.EdituserRequest;
+import com.link.cloud.network.bean.PasswordBean;
+import com.link.cloud.utils.DialogCancelListener;
+import com.link.cloud.utils.DialogUtils;
+import com.link.cloud.utils.HexUtil;
+import com.link.cloud.utils.RxTimerDelayUtil;
 import com.link.cloud.utils.RxTimerUtil;
-import com.link.cloud.widget.InputPassWordDialog;
+import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.widget.PublicTitleView;
-import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ToastMaster;
 import com.zitech.framework.utils.ViewUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 作者：qianlu on 2018/10/10 11:13
@@ -39,8 +49,7 @@ import io.realm.RealmResults;
  * 选择开柜方式
  */
 @SuppressLint("Registered")
-public class RegularActivity extends BaseActivity implements RegularController.RegularControllerListener {
-
+public class RegularActivity extends BaseActivity implements RegularController.RegularControllerListener, DialogCancelListener {
 
     private LinearLayout zhijingmaiLayout;
     private LinearLayout xiaochengxuLayout;
@@ -55,8 +64,16 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     private String mType;
     private boolean isScanning = false;
     private boolean canGetCode;
-
-
+    private RealmResults<AllUser> users;
+    List<AllUser> peoples = new ArrayList<>();
+    private RealmResults<AllUser> peopleIn;
+    private ArrayList<AllUser> peoplesIn;
+    private DialogUtils dialogUtils;
+    private RealmResults<AllUser> managersRealm;
+    List<AllUser> managers = new ArrayList<>();
+    boolean IsNoPerson = false;
+    boolean isDeleteAll = false;
+    long lastTime;
     @Override
     protected void initViews() {
         rxTimerUtil = new RxTimerUtil();
@@ -68,29 +85,60 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
         editText = findViewById(R.id.infoId);
-        if (getIntent() != null)
-            mType = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
-
-        if (!TextUtils.isEmpty(mType)) {
+        if (Constants.CABINET_TYPE==Constants.REGULAR_CABINET) {
             publicTitleView.setFinsh(View.GONE);
         }
+        if (Constants.CABINET_TYPE == Constants.REGULAR_CABINET) {
+            RegisteReciver();
+            managersRealm = realm.where(AllUser.class).equalTo("isadmin", 1).findAll();
+            managers.addAll(realm.copyFromRealm(managersRealm));
 
+            managersRealm.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+                @Override
+                public void onChange(RealmResults<AllUser> allUsers) {
+                    managers.clear();
+                    managers.addAll(realm.copyFromRealm(managersRealm));
+                }
+            });
+        } else {
+            setLayout.setVisibility(View.GONE);
+        }
+        users = realm.where(AllUser.class).findAll();
+        peoples.addAll(realm.copyFromRealm(users));
+        users.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+            @Override
+            public void onChange(RealmResults<AllUser> allUsers) {
+                peoples.clear();
+                peoples.addAll(realm.copyFromRealm(users));
+            }
+        });
+        peopleIn = realm.where(AllUser.class).equalTo("isIn", 1).findAll();
+        peoplesIn = new ArrayList<>();
+        peopleIn.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
+            @Override
+            public void onChange(RealmResults<AllUser> allUsers) {
+                peoplesIn.clear();
+                peoplesIn.addAll(realm.copyFromRealm(peopleIn));
+            }
+        });
+        peoplesIn.addAll(realm.copyFromRealm(peopleIn));
         regularController = new RegularController(this);
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
         ViewUtils.setOnClickListener(passwordLayout, this);
         ViewUtils.setOnClickListener(manager, this);
         ViewUtils.setOnClickListener(setLayout, this);
-        finger();
+        ViewUtils.setOnClickListener(member, this);
         publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
             @Override
             public void itemClickListener() {
                 finish();
             }
         });
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.ActivityExtra.TYPE)) && getIntent().getStringExtra(Constants.ActivityExtra.TYPE).equals("REGULAR")) {
-            setLayout.setVisibility(View.GONE);
-        }
+        dialogUtils = DialogUtils.getDialogUtils(this);
+        dialogUtils.setDialogCanceListener(this);
+
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,58 +147,86 @@ public class RegularActivity extends BaseActivity implements RegularController.R
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ToastMaster.shortToast("1" + "start=" + start + "before=" + before + "count=" + count);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
-                    rxTimerUtil.timer(1000, new RxTimerUtil.IRxNext() {
-                        @Override
-                        public void doNext(long number) {
-                            unlocking(editText.getText().toString().trim(), Constants.ActivityExtra.XIAOCHENGXU);
+                    String str=editText.getText().toString();
+                    if (str.contains("\n")) {
+                        if(System.currentTimeMillis()-lastTime<1500){
                             editText.setText("");
+                            return;
                         }
-                    });
+                        lastTime=System.currentTimeMillis();
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(editText.getText().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (object == null) {
+                            return;
+                        }
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
+                        regularController.findUserByQr(requestBody);
+
+                        editText.setText("");
+                    }
+
                 }
             }
         });
-
+    finger();
     }
+
+    String uid;
 
     private void finger() {
         rxTimerUtil.interval(1000, new RxTimerUtil.IRxNext() {
             @Override
             public void doNext(long number) {
-                System.out.println(String.valueOf(number));
+                if(number>=10&&Constants.CABINET_TYPE!=Constants.REGULAR_CABINET){
+                    finish();
+                }
                 if (isScanning) {
-
                     int state = CabinetApplication.getVenueUtils().getState();
+
                     if (state == 3) {
-                        long startTime=System.currentTimeMillis();   //获取开始时间
-                        RealmResults<AllUser> users = realm.where(AllUser.class).findAll();
-                        List<AllUser> peoples = new ArrayList<>();
-                        peoples.addAll(realm.copyFromRealm(users));
-                        String uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
-                        long endTime=System.currentTimeMillis(); //获取结束时间
-                        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
-                        if (uid == null) {
-                            Logger.e("贾工要的信息+Person:uid=get img failed, please try again ");
-                            speak(getResources().getString(R.string.move_finger));
-                        }
-                        final AllUser uuid = realm.where(AllUser.class).equalTo("uid", uid).findFirst();
-                        if (null != uuid) {
-                            isScanning=false;
-                            unlocking(uuid.getUuid(), Constants.ActivityExtra.FINGER);
-                            System.out.println("贾工要的信息+Person:uid=" + uuid.getUuid());
+                        if (dialogUtils.isShowing()) {
+                            uid = null;
+                            uid = CabinetApplication.getVenueUtils().identifyNewImg(managers);
+                            if (uid != null) {
+                                showActivity(SettingActivity.class);
+                            } else {
+                                TTSUtils.getInstance().speak(getString(R.string.no_manager));
+
+                            }
                         } else {
-                            speak(getResources().getString(R.string.cheack_fail));
+                            uid = null;
+                            IsNoPerson = false;
+                            uid = CabinetApplication.getVenueUtils().identifyNewImg(peoplesIn);
+                            if (uid == null) {
+                                uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
+                            }
+
+                            if (uid != null) {
+                                unlocking(uid, Constants.ActivityExtra.FINGER);
+                            } else {
+                                if (CabinetApplication.getVenueUtils().img != null) {
+                                    String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+                                    regularController.findUser(finger);
+                                    IsNoPerson = true;
+                                    isDeleteAll = false;
+                                }
+
+                            }
+
                         }
-                    } else if (state == 4) {
-                        speak(getResources().getString(R.string.move_finger));
                     }
                 }
             }
+
         });
     }
 
@@ -166,7 +242,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
         showActivity(RegularOpenActivity.class, bundle);
-        if (TextUtils.isEmpty(mType)) {
+        if (Constants.CABINET_TYPE!=Constants.REGULAR_CABINET) {
             finish();
         }
     }
@@ -181,11 +257,19 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     protected void onResume() {
         super.onResume();
         isScanning = true;
+        member.setBackground(getResources().getDrawable(R.drawable.border_red));
+        manager.setBackground(null);
+        member.setTextColor(getResources().getColor(R.color.almost_white));
+        manager.setTextColor(getResources().getColor(R.color.text_gray));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.e("onDestroy: ","11111");
+        if(Constants.CABINET_TYPE==Constants.REGULAR_CABINET){
+            unRegisterReceiver();
+        }
         rxTimerUtil.cancel();
     }
 
@@ -212,62 +296,34 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 showActivity(RegularOpenSuccessActivity.class, bundle1);
                 break;
 
+            case R.id.member:
+                member.setBackground(getResources().getDrawable(R.drawable.border_red));
+                manager.setBackground(null);
+                member.setTextColor(getResources().getColor(R.color.almost_white));
+                manager.setTextColor(getResources().getColor(R.color.text_gray));
+                break;
             case R.id.manager:
-                showPasswordDialog();
+                View view = View.inflate(RegularActivity.this, R.layout.veune_dialog, null);
+                dialogUtils.showManagerDialog(view);
+                manager.setBackground(getResources().getDrawable(R.drawable.border_red));
+                member.setBackground(null);
+                member.setTextColor(getResources().getColor(R.color.text_gray));
+                manager.setTextColor(getResources().getColor(R.color.almost_white));
+                RxTimerDelayUtil rxTimerDelayUtil = new RxTimerDelayUtil();
+                rxTimerDelayUtil.timer(10000,new  RxTimerDelayUtil.IRxNext(){
+                    @Override
+                    public void doNext(long number) {
+                        dialogUtils.dissMiss();
+                    }
+                });
                 break;
         }
     }
 
     @Override
     public void gotoSetting(String pass) {
-
+        regularController.password(pass);
     }
-
-    private void showPasswordDialog() {
-        speak(getResources().getString(R.string.please_save));
-        final InputPassWordDialog inputPassWordDialog = new InputPassWordDialog(this);
-        inputPassWordDialog.setCheakListener(new InputPassWordDialog.CheakListener() {
-            @Override
-            public void inputCheakSuccess(String pwd) {
-
-                RetrofitFactory.getInstence().API().validatePassword(pwd).compose(IOMainThread.<BaseEntity>composeIO2main()).subscribe(new BaseObserver() {
-                    @Override
-                    protected void onSuccees(BaseEntity t) {
-                        showActivity(SettingActivity.class);
-                        inputPassWordDialog.dismiss();
-                    }
-
-                    @Override
-                    protected void onCodeError(String msg, String codeErrorr) {
-                        speak(msg);
-                        inputPassWordDialog.dismiss();
-                    }
-
-                    @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) {
-                        inputPassWordDialog.dismiss();
-                    }
-                });
-
-            }
-
-            @Override
-            public void inputCheakFail() {
-
-            }
-        });
-        inputPassWordDialog.show();
-        rxTimerUtil.timer(20000, new RxTimerUtil.IRxNext() {
-            @Override
-            public void doNext(long number) {
-                if (null != inputPassWordDialog && inputPassWordDialog.isShowing()) {
-                    inputPassWordDialog.dismiss();
-                }
-            }
-        });
-
-    }
-
 
     @Override
     public void modelMsg(int state, String msg) {
@@ -288,18 +344,64 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         bundle.putString(Constants.ActivityExtra.TYPE, Constants.ActivityExtra.FINGER);
         bundle.putString(Constants.ActivityExtra.UUID, allUser.getUuid());
         showActivity(RegularOpenActivity.class, bundle);
-        if (TextUtils.isEmpty(mType)) {
+        if (Constants.CABINET_TYPE!=Constants.REGULAR_CABINET) {
             finish();
         }
     }
 
     @Override
-    public void faild(String message) {
-        speak(message);
+    public void qrSuccess(EdituserRequest allUser) {
+        if(allUser!=null){
+            unlocking(allUser.getUuid(), Constants.ActivityExtra.XIAOCHENGXU);
+        }
+
     }
 
     @Override
+    public void failed(String message, String code) {
+        if (code.equals("400000100000") ) {
+            skipActivity(SettingActivity.class);
+            TTSUtils.getInstance().speak(getString(R.string.login_fail));
+        }else if(code.equals("400000999102")) {
+            HttpConfig.TOKEN = "";
+            Intent intent1 = new Intent(this, SplashActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }else if(code.equals("400000999999")){
+            TTSUtils.getInstance().speak(getString(R.string.cheack_fail)+","+getString(R.string.again_finger));
+        }else {
+            speak(message);
+        }
+
+    }
+
     public void onRegularFail(Throwable e, boolean isNetWork) {
+            if(isNetWork){
+                speak(getResources().getString(R.string.network_unavailable));
+            }
+    }
+
+    @Override
+    public void openByFingerPrints() {
+
+    }
+
+    @Override
+    public void onPassWord(PasswordBean passwordBean) {
+        showActivity(SettingActivity.class);
+    }
+
+    @Override
+    public void dialogCancel() {
+        member.setBackground(getResources().getDrawable(R.drawable.border_red));
+        manager.setBackground(null);
+        member.setTextColor(getResources().getColor(R.color.almost_white));
+        manager.setTextColor(getResources().getColor(R.color.text_gray));
+    }
+
+    @Override
+    public void onVenuePay() {
 
     }
 }

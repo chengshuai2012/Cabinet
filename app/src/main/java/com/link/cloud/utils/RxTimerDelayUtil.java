@@ -14,23 +14,21 @@ import rx.android.schedulers.AndroidSchedulers;
  * 作者：qianlu on 2018/10/29 16:28
  * 邮箱：zar.l@qq.com
  */
-public class RxTimerUtil {
+public class RxTimerDelayUtil {
 
 
     private static Subscription mDisposable;
 
-
     /**
-     * 每隔milliseconds毫秒后执行next操作
+     * milliseconds毫秒后执行next操作
      *
      * @param milliseconds
      * @param next
      */
-    public void interval(final long milliseconds, final IRxNext next) {
-        mDisposable = Observable.interval(milliseconds, TimeUnit.MILLISECONDS)
+    public void timer(long milliseconds, final IRxNext next) {
+        mDisposable = Observable.timer(milliseconds, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Long>() {
-
                     @Override
                     public void onNext(@NonNull Long number) {
                         if (next != null) {
@@ -39,16 +37,16 @@ public class RxTimerUtil {
                     }
 
                     @Override
-                    public void onCompleted()     {
-
+                    public void onCompleted() {
+                        //取消订阅
+                        cancel();
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        //取消订阅
                         cancel();
-                        interval(milliseconds, next);
                     }
-
                 });
     }
 
@@ -60,7 +58,6 @@ public class RxTimerUtil {
         if (mDisposable != null) {
             mDisposable.unsubscribe();
         }
-
     }
 
     public interface IRxNext {

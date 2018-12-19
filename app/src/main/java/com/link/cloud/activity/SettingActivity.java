@@ -22,14 +22,18 @@ import com.link.cloud.controller.MainController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.OpenDoorUtil;
+import com.link.cloud.utils.RxTimerDelayUtil;
 import com.link.cloud.utils.RxTimerUtil;
 import com.link.cloud.utils.Utils;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android_serialport_api.SerialPort;
 import io.reactivex.annotations.NonNull;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -59,13 +63,11 @@ public class SettingActivity extends BaseActivity {
     private String mac;
     private TextView clean;
     private TextView openOne;
-    private RxTimerUtil rxTimerUtil;
 
     @Override
     protected void initViews() {
         initView();
         mac = Utils.getMac();
-        rxTimerUtil = new RxTimerUtil();
         deviceId.setText(getResources().getString(R.string.device_id) + mac);
         checkReadPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,REQUEST_SD_PERMISSION);
     }
@@ -80,7 +82,7 @@ public class SettingActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.back_app:
-
+                finish();
 
             case R.id.member:
                 finish();
@@ -154,7 +156,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 String lockNo = lockNum.getText().toString().trim();
                 if (!TextUtils.isEmpty(lockNo)) {
-                    CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("lockNo", Integer.parseInt(lockNo)).findFirst();
+                    CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", lockNo).findFirst();
                     if (cabinetInfo != null) {
                         openLock(cabinetInfo);
                     } else {
@@ -165,20 +167,22 @@ public class SettingActivity extends BaseActivity {
 
             case R.id.clean:
 
-                RealmResults<CabinetInfo> users = realm.where(CabinetInfo.class).findAll();
-                final List<CabinetInfo> cabinetInfos = new ArrayList<>();
-                cabinetInfos.addAll(realm.copyFromRealm(users));
-                rxTimerUtil.interval(2000, new RxTimerUtil.IRxNext() {
-                    @Override
-                    public void doNext(long number) {
-                        if ((int) number < cabinetInfos.size()){
-                            openLock(cabinetInfos.get((int)number));
-                        }else {
-                            rxTimerUtil.cancel();
-                        }
+                try {
 
-                    }
-                });
+                    CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.openAllDoor());
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                try {
+                    CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openAllDoor());
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                try {
+                    CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openAllDoor());
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -190,7 +194,7 @@ public class SettingActivity extends BaseActivity {
 
 
     private void openLock(CabinetInfo cabinetBean) {
-        speak(cabinetBean.getLockNo() + getResources().getString(R.string.aready_open_string));
+        speak(cabinetBean.getCabinetNo() + getResources().getString(R.string.aready_open_string));
         int lockplate = cabinetBean.getLockNo();
         int nuberlock = cabinetBean.getLineNo();
         if (nuberlock > 10) {
@@ -246,13 +250,13 @@ public class SettingActivity extends BaseActivity {
         ViewUtils.setOnClickListener(close, this);
         ViewUtils.setOnClickListener(clean, this);
         ViewUtils.setOnClickListener(openOne, this);
+        ViewUtils.setOnClickListener(backApp, this);
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-      //  rxTimerUtil.cancel();
     }
 
     public static final int REQUEST_SD_PERMISSION = 10111;

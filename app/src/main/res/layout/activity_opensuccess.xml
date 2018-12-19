@@ -28,12 +28,7 @@
         android:orientation="vertical">
 
 
-        <ImageView
-            android:layout_width="@dimen/w151"
-            android:layout_height="@dimen/h53"
-            android:layout_marginLeft="@dimen/w37"
-            android:layout_marginTop="@dimen/h33"
-            android:src="@drawable/ic_write_handy_log" />
+
 
         <TextView
             android:id="@+id/nameText"

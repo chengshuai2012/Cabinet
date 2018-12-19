@@ -151,6 +151,9 @@ public class VipOpenSuccessActivity extends BaseActivity {
         CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
         if(first!=null){
             openLock(first);
+            open_way_one.setText(getString(R.string.open_finger));
+            open_way_one.setBackground(null);
+            open_way_one.setTextColor(getResources().getColor(R.color.white));
             nameText.setText(first.getNickname()+"");
             phoneText.setText(first.getPhone()+"");
             lockId.setText(first.getCabinetNo()+getString(R.string.open_success));
@@ -163,7 +166,11 @@ public class VipOpenSuccessActivity extends BaseActivity {
             lockNumber =new StringBuilder();
             password= new StringBuilder();
             open_way_one.setText(getString(R.string.password_open));
-            openWay.setText(getString(R.string.password_open));
+            open_way_one.setBackgroundResource(R.drawable.border_gray_vip_gradient);
+            open_way_one.setTextColor(getResources().getColor(R.color.black));
+            openWay.setText(getString(R.string.openSuccess));
+            openWay.setTextColor(getResources().getColor(R.color.white));
+            openWay.setBackground(null);
 
         } else {
             openSuccessLayout.setVisibility(View.VISIBLE);
@@ -200,8 +207,11 @@ public class VipOpenSuccessActivity extends BaseActivity {
         if(openSuccessLayout.getVisibility()!=View.VISIBLE){
             openSuccessLayout.setVisibility(View.VISIBLE);
             passwordLayout.setVisibility(View.INVISIBLE);
-            open_way_one.setText(getString(R.string.openSuccess));
+            open_way_one.setBackground(null);
+            open_way_one.setTextColor(getResources().getColor(R.color.white));
             openWay.setText(getString(R.string.openSuccess));
+            openWay.setTextColor(getResources().getColor(R.color.black));
+            openWay.setBackgroundResource(R.drawable.border_gray_vip_gradient);
             nameText.setText(info.getNickname()+"");
             phoneText.setText(info.getPhone()+"");
             lockId.setText(info.getCabinetNo()+getString(R.string.open_success));
@@ -310,7 +320,7 @@ public class VipOpenSuccessActivity extends BaseActivity {
                 }
                 CabinetInfo cabinetNo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
                 if(cabinetNo!=null){
-                    openLock(cabinetNo);
+
                 }else {
                     speak(getResources().getString(R.string.cabinet_not_found));
                 }

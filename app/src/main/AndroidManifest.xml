@@ -43,7 +43,9 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:launchMode="singleTask">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,21 +55,30 @@
 
         <activity
             android:name=".activity.RegularActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.VipActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activity.RegularOpenSuccessActivity" />
+        <activity android:name=".activity.RegularOpenSuccessActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity
             android:name=".activity.VipOpenSuccessActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTop"
             />
-        <activity android:name=".activity.RegularOpenActivity" />
-        <activity android:name=".activity.VipOpenActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
+            />
+        <activity android:name=".activity.RegularOpenActivity"
+            android:launchMode="singleTop"
+            />
+        <activity android:name=".activity.VipOpenActivity"
+            android:launchMode="singleTop"
+            />
 
         <service android:name=".veune.MdUsbService" />
         <receiver android:name=".utils.UpdateReceiver">

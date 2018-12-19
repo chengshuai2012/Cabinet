@@ -13,6 +13,7 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.activity.MainActivity;
 import com.link.cloud.activity.RegularActivity;
+import com.link.cloud.activity.SplashActivity;
 import com.link.cloud.activity.VipActivity;
 import com.link.cloud.bean.DeviceInfo;
 
@@ -44,32 +45,11 @@ public class TimeService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log.e("onReceive: ","count"+count );
             if (intent.getAction().equals(Intent.ACTION_TIME_TICK)&&count==0) {
-                Realm defaultInstance = Realm.getDefaultInstance();
-                RealmResults<DeviceInfo> all = defaultInstance.where(DeviceInfo.class).findAll();
-                int type=0;
-                if(all.size()>0){
-                    DeviceInfo deviceInfo = all.get(0);
-                    type=deviceInfo.getDeviceTypeId();
-                    Constants.CABINET_TYPE = type;
-                }
-                switch (Constants.CABINET_TYPE){
-                    case Constants.REGULAR_CABINET:
-                        Intent sayHelloIntent1 = new Intent(context, RegularActivity.class);
-                        sayHelloIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(sayHelloIntent1);
-                        break;
-                        case Constants.VIP_CABINET:
-                            Intent sayHelloIntent3= new Intent(context, VipActivity.class);
-                            sayHelloIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(sayHelloIntent3);
-                        break;
-                        case Constants.VIP_REGULAR_CABINET:
-                            Intent sayHelloIntent2 = new Intent(context, MainActivity.class);
-                            sayHelloIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(sayHelloIntent2);
-                        break;
-                }
 
+                Intent intent1 = new Intent(context, SplashActivity.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
             if(intent.getAction().equals(CabinetApplication.COUNT_CHANGE)){
                 count=intent.getIntExtra("count",0);

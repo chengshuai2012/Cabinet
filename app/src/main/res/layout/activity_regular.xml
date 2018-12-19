@@ -17,12 +17,7 @@
             android:src="@drawable/ic_regular_title_bg" />
 
 
-        <ImageView
-            android:layout_width="@dimen/w244"
-            android:layout_height="@dimen/h86"
-            android:layout_marginLeft="@dimen/h41"
-            android:layout_marginTop="@dimen/h28"
-            android:src="@drawable/ic_write_handy_log" />
+
 
 
         <LinearLayout
@@ -51,7 +46,12 @@
         </LinearLayout>
     </FrameLayout>
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/main_bg"
+        >
     <com.link.cloud.widget.PublicTitleView
         android:id="@+id/publicTitle"
         android:layout_width="match_parent"
@@ -201,7 +201,7 @@
             android:textSize="@dimen/w24"
             android:textStyle="bold" />
     </FrameLayout>
-
+</LinearLayout>
     <EditText
         android:id="@+id/infoId"
         android:layout_width="match_parent"

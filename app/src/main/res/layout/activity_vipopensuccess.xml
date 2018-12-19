@@ -20,12 +20,6 @@
             android:src="@drawable/ic_regular_title_bg" />
 
 
-        <ImageView
-            android:layout_width="@dimen/w244"
-            android:layout_height="@dimen/h86"
-            android:layout_marginLeft="@dimen/h41"
-            android:layout_marginTop="@dimen/h28"
-            android:src="@drawable/ic_write_handy_log" />
 
     </FrameLayout>
 
@@ -66,7 +60,7 @@
             android:layout_width="@dimen/w120"
             android:layout_height="@dimen/h60"
             android:layout_gravity="left"
-            android:background="@drawable/border_gray_ye_gradient"
+            android:background="@drawable/border_red"
             android:text="开柜成功"
             android:textColor="@color/black"
             android:id="@+id/open_way_one"
@@ -105,12 +99,7 @@
             android:background="@drawable/ic_member_bg"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="@dimen/w151"
-                android:layout_height="@dimen/h53"
-                android:layout_marginLeft="@dimen/w37"
-                android:layout_marginTop="@dimen/h33"
-                android:src="@drawable/ic_write_handy_log" />
+
 
             <TextView
                 android:id="@+id/nameText"

@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import com.link.cloud.Constants;
 import com.link.cloud.R;
+import com.link.cloud.User;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
+import com.link.cloud.controller.SplashController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.AllUser;
@@ -38,36 +40,49 @@ import io.realm.RealmResults;
  * Created by 49488 on 2018/10/20.
  */
 
-public class SplashActivity extends BaseActivity implements MainController.MainControllerListener {
+public class SplashActivity extends BaseActivity implements SplashController.MainControllerListener {
 
     private NettyClientBootstrap nettyClientBootstrap;
     int pageNum, total;
-    private MainController mainController;
+    private SplashController mainController;
     private DeviceInfo deviceInfo;
 
 
     @Override
     protected void initViews() {
         pageNum = 100;
-        mainController = new MainController(this);
+        mainController = new SplashController(this);
         getDeviceInfo();
         showDate();
         TTSUtils.getInstance().speak("");
     }
 
     private void showDate() {
-        if (deviceInfo != null && deviceInfo.getPsw() != null && !TextUtils.isEmpty(deviceInfo.getPsw())) {
-            if (deviceInfo.getToken() != null && !TextUtils.isEmpty(deviceInfo.getToken())) {
-                HttpConfig.TOKEN = deviceInfo.getToken();
+        if (!TextUtils.isEmpty(HttpConfig.TOKEN)) {
                 getData();
-                nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
-                nettyClientBootstrap.start();
+            ExecutorService service = Executors.newFixedThreadPool(1);
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    nettyClientBootstrap = new NettyClientBootstrap(SplashActivity.this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + HttpConfig.TOKEN  + "\"}");
+                    nettyClientBootstrap.start();
+                }
+            };
+            service.execute(runnable);
+
             } else {
-                getToken();
+            if(deviceInfo!=null){
+                if(!TextUtils.isEmpty(deviceInfo.getDeviceId())&&!TextUtils.isEmpty(deviceInfo.getPsw())){
+                    getToken();
+                }else {
+                    skipActivity(SettingActivity.class);
+                }
+            }else {
+                skipActivity(SettingActivity.class);
             }
-        } else {
-            skipActivity(SettingActivity.class);
-        }
+
+            }
+
     }
 
     private void getDeviceInfo() {
@@ -75,8 +90,9 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         if (!all.isEmpty()) {
             deviceInfo = all.get(0);
         }
-        if (null != deviceInfo)
+        if (null != deviceInfo){
             HttpConfig.TOKEN = deviceInfo.getToken();
+        }
     }
 
 
@@ -124,8 +140,16 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
         });
         HttpConfig.TOKEN = cabnetDeviceInfoBean.getToken();
         getData();
-        nettyClientBootstrap = new NettyClientBootstrap(this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + deviceInfo.getToken() + "\"}");
-        nettyClientBootstrap.start();
+        ExecutorService service = Executors.newFixedThreadPool(1);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                nettyClientBootstrap = new NettyClientBootstrap(SplashActivity.this, Constants.TCP_PORT, Constants.TCP_URL, "{\"data\":{},\"msgType\":\"HEART_BEAT\",\"token\":\"" + HttpConfig.TOKEN  + "\"}");
+                nettyClientBootstrap.start();
+            }
+        };
+        service.execute(runnable);
+
     }
 
     @Override
@@ -145,7 +169,13 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
 
     @Override
     public void onMainFail(Throwable e, boolean isNetWork) {
-
+        if(isNetWork){
+            TTSUtils.getInstance().speak(getString(R.string.error_net));
+            showNext();
+        }else {
+            TTSUtils.getInstance().speak(getString(R.string.parse_error));
+            showNext();
+        }
     }
 
     boolean isDeleteAll = false;
@@ -198,7 +228,6 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
                     realm.copyToRealm(data.getData());
                 }
             });
-            Logger.e(data.getData().get(0).getUuid());
             showNext();
         } else {
             showNext();
@@ -207,15 +236,12 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
     }
 
     public void showNext() {
-        Bundle bundle = new Bundle();
         Constants.CABINET_TYPE = deviceInfo.getDeviceTypeId();
         if (deviceInfo.getDeviceTypeId() == Constants.REGULAR_CABINET) {
-            bundle.putString(Constants.ActivityExtra.TYPE, "regularactivity");
-            skipActivity(RegularActivity.class, bundle);
+            skipActivity(RegularActivity.class);
             finish();
         } else if (deviceInfo.getDeviceTypeId() == Constants.VIP_CABINET) {
-            bundle.putString(Constants.ActivityExtra.TYPE, "VipActivity");
-            skipActivity(VipActivity.class, bundle);
+            skipActivity(VipActivity.class);
             finish();
         } else if (deviceInfo.getDeviceTypeId() == Constants.VIP_REGULAR_CABINET) {
             skipActivity(MainActivity.class);
@@ -270,9 +296,9 @@ public class SplashActivity extends BaseActivity implements MainController.MainC
             return 0;
         }
     }
+
     @Override
-    public void temCabinetSuccess(CabinetInfo cabinetBean) {
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
 }

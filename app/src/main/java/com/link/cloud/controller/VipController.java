@@ -7,7 +7,9 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
+import com.link.cloud.network.bean.QrRequest;
 import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 
@@ -32,8 +34,7 @@ public class VipController {
 
         void VipCabinetSuccess(CabinetInfo vipCabinetUser);
 
-        void VipSuccessByQr(CabinetInfo codeInBean);
-
+        void qrSuccess(EdituserRequest allUser);
         void VipPassWord(PasswordBean passwordBean);
 
     }
@@ -113,38 +114,24 @@ public class VipController {
 
                 });
     }
-    public void OpenVipCabinetByCode(String code) {
-        JSONObject object =null;
-        try {
-            object= new JSONObject(code);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (object==null){
-            return;
-        }
-        RequestBody requestBody=RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),object.toString());
-        api.openCabinetByQr(requestBody)
-                .compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main())
-                .subscribe(new BaseObserver<CabinetInfo>() {
-                    @Override
-                    protected void onSuccees(BaseEntity<CabinetInfo> t) {
-                        listener.VipSuccessByQr(t.getData());
-                    }
-
-                    @Override
-                    protected void onCodeError(String msg, String codeErrorr) {
-                        listener.onVipErrorCode(msg);
-                    }
+    public void findUserByQr(RequestBody qr) {
+        api.openCabinetByQr(qr).compose(IOMainThread.<BaseEntity<EdituserRequest>>composeIO2main()).subscribe(new BaseObserver<EdituserRequest>() {
 
 
-                    @Override
-                    protected void onFailure(Throwable e, boolean isNetWorkError) {
-                        listener.onVipFail(e, isNetWorkError);
-                    }
+            @Override
+            protected void onSuccees(BaseEntity<EdituserRequest> t) {
+                listener.qrSuccess(t.getData());
+            }
 
-                });
-    }
+            @Override
+            protected void onCodeError(String msg, String codeErrorr) {
+                listener.onVipErrorCode(msg);
+            }
 
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                listener.onVipFail(e, isNetWorkError);
+            }
+        });}
 
 }

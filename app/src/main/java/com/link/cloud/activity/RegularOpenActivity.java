@@ -1,6 +1,11 @@
 package com.link.cloud.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,12 +14,16 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularOpenController;
+import com.link.cloud.network.HttpConfig;
+import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.utils.OpenDoorUtil;
+import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 作者：qianlu on 2018/11/1 15:14
@@ -30,16 +39,25 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     private RegularOpenController regularOpenController;
     private TextView finsh;
     private CabinetInfo cabinetInfo;
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            finish();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeMessages(0);
+    }
 
     @Override
     protected void initViews() {
+        handler.sendEmptyMessageDelayed(0,10000);
         regularOpenController = new RegularOpenController(this);
-        type = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
-        if (!type.equals(Constants.ActivityExtra.PASSWORD)) {
-            uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
-        } else {
-            cabinetInfo = (CabinetInfo) getIntent().getExtras().getSerializable(Constants.ActivityExtra.ENTITY);
-        }
         openLayout = findViewById(R.id.openLayout);
         returnLayout = findViewById(R.id.returnLayout);
         finsh = findViewById(R.id.finsh);
@@ -49,28 +67,49 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        type = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
+        if (!type.equals(Constants.ActivityExtra.PASSWORD)) {
+            uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
+
+        } else {
+
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
                 if (cabinetInfo == null)
-                    regularOpenController.returnCabinet(uuid);
+                        regularOpenController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
                 if (cabinetInfo == null) {
                     CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+                    Log.e("onClick: ",realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst()+"");
                     if (first != null) {
                         openLock(first);
+                        Log.e("onClick: ",first.getUuid()+"000" );
                     } else {
-                        regularOpenController.temCabinet(uuid);
+                            regularOpenController.temCabinet(uuid);
                     }
                 } else {
+                    Log.e("onClick: ",cabinetInfo +"222");
                     openLock(cabinetInfo);
                 }
                 break;
 
             case R.id.finsh:
-                finish();
+                if(Constants.CABINET_TYPE==Constants.VIP_REGULAR_CABINET){
+                    skipActivity(MainActivity.class);
+                }else {
+                    skipActivity(RegularActivity.class);
+                }
+
                 break;
         }
     }
@@ -96,7 +135,7 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         cabinetBean1.setUuid(cabinetBean.getUuid());
         cabinetBean1.setNickname(cabinetBean.getNickname() == null ? "" : cabinetBean.getNickname());
         cabinetBean1.setPhone(cabinetBean.getPhone() == null ? "" : cabinetBean.getPhone());
-        cabinetBean1.setLockNo(cabinetBean.getLockNo());
+        cabinetBean1.setCabinetNo(cabinetBean.getCabinetNo());
         if (type.equals(Constants.ActivityExtra.FINGER)) {
             cabinetBean1.setOpenWay(getResources().getString(R.string.open_finger));
         } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
@@ -106,7 +145,7 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         }
         bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetBean1);
         showActivity(RegularOpenSuccessActivity.class, bundle);
-        speak(cabinetBean.getLockNo() + getResources().getString(R.string.aready_open_string));
+        speak(cabinetBean.getCabinetNo() + getResources().getString(R.string.aready_open_string));
 
         int lockplate = cabinetBean.getLockNo();
         int nuberlock = cabinetBean.getLineNo();
@@ -137,36 +176,94 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
     @Override
     public void OpenSuccess(final CabinetInfo cabinetInfo) {
+        final RealmResults<CabinetInfo> cabinetInfos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetInfo.getCabinetNo()).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                cabinetInfos.deleteAllFromRealm();
                 realm.copyToRealm(cabinetInfo);
             }
         });
         openLock(cabinetInfo);
-        speak(cabinetInfo.getLockNo() + getResources().getString(R.string.aready_open_string));
+        speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
     }
 
     @Override
     public void returnSuccess(final CabinetInfo cabinetInfo) {
         openLock(cabinetInfo);
-        speak(cabinetInfo.getLockNo() + getResources().getString(R.string.remove_leave));
-        final CabinetInfo cabinetInfos = realm.where(CabinetInfo.class).equalTo("uuid", cabinetInfo.getUuid()).findFirst();
+        speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.remove_leave));
+        Log.e("returnSuccess: ", cabinetInfo.getCabinetNo());
+        final CabinetInfo cabinetInfos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetInfo.getCabinetNo()).findFirst();
+        if(cabinetInfos!=null){
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Log.e("returnSuccess: ", cabinetInfos.getCabinetNo());
+                    cabinetInfos.setUuid("");
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void openFaild(String message, String code) {
+
+        if (code.equals("400000100000") ) {
+            skipActivity(SettingActivity.class);
+            TTSUtils.getInstance().speak(getString(R.string.login_fail));
+        }else if(code.equals("400000999102")) {
+            HttpConfig.TOKEN = "";
+            Intent intent1 = new Intent(this, SplashActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }else if(code.equals("400000999999")){
+            TTSUtils.getInstance().speak(getString(R.string.cheack_fail)+","+getString(R.string.again_finger));
+        }else {
+            speak(message);
+        }
+    }
+
+    @Override
+    public void returnFail(String message, String code) {
+        speak(message);
+        if (code.equals("400000100000") ) {
+            skipActivity(SettingActivity.class);
+            TTSUtils.getInstance().speak(getString(R.string.login_fail));
+        }else if(code.equals("400000999102")) {
+            HttpConfig.TOKEN = "";
+            Intent intent1 = new Intent(this, SplashActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+    }
+
+    @Override
+    public void onFail(Throwable e, boolean isNetWork) {
+        if(isNetWork){
+            speak(getResources().getString(R.string.network_unavailable));
+        }
+    }
+
+    @Override
+    public void SuccessByQr(final CabinetInfo cabinetInfo) {
+        final RealmResults<CabinetInfo> cabinetInfos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetInfo.getCabinetNo()).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                cabinetInfos.deleteFromRealm();
+                cabinetInfos.deleteAllFromRealm();
+                realm.copyToRealm(cabinetInfo);
             }
         });
+        openLock(cabinetInfo);
+        speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
     }
 
     @Override
-    public void openFaild(String message) {
-        speak(message);
+    public void OpenLockByPass(APPVersionBean appVersionBean) {
+
     }
 
-    @Override
-    public void returnFail(String message) {
-        speak(message);
-    }
 }
