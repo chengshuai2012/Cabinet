@@ -88,7 +88,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     private List<AllUser> peoples;
     private RealmResults<AllUser> peopleIn;
     private ArrayList<AllUser> peoplesIn;
-    private ReadThread readThread;
     private DialogUtils dialogUtils;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -149,9 +148,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             setLayout.setVisibility(View.GONE);
         }
         initData();
-        mInputStream=CabinetApplication.getInstance().serialPortOne.getInputStream();
-        readThread = new ReadThread();
-        readThread.start();
         try {
             CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.handShake());
         } catch (IOException e) {
@@ -212,7 +208,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
 
                         }
                     }else {
-                        checkLock();
                         uid=null;
                         IsNoPerson =false;
                         uid = CabinetApplication.getVenueUtils().identifyNewImg(peoplesIn);
@@ -279,65 +274,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
 
     }
 
-    private class ReadThread extends Thread {
-            byte[] buf = new byte[8];
-            @Override
-            public void run() {
-                int len = 0;
-                while (true) {
 
-                    if (mInputStream == null){
-                        return;
-                    }
-                    try {
-                        len = mInputStream.read(buf);
-                        if(len > 0){
-                            byte  b = buf[6];
-                            Log.e("receive: ",HexUtil.bytesToHexString(buf));
-                        }
-
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }
-
-    public void checkLock(){
-//        int lockplate=info.getLockNo();
-//        int nuberlock=info.getLineNo();
-        int lockplate =1;
-        int nuberlock=3;
-        if (nuberlock>10){
-            nuberlock=nuberlock%10;
-            Logger.e("SecondFragment==="+nuberlock);
-            if (nuberlock==0){
-                nuberlock=10;
-                Logger.e("SecondFragment==="+nuberlock);
-            }
-        }
-        try {
-            if (lockplate<=10) {
-                CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.checkClose(lockplate%10, nuberlock));
-            }else if (lockplate>10&&lockplate<=20){
-                mInputStream=CabinetApplication.getInstance().serialPortTwo.getInputStream();
-                 readThread = new ReadThread();
-                readThread.start();
-                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.checkClose(lockplate%10, nuberlock));
-            }else if (lockplate>20&&lockplate<=30){
-                mInputStream=CabinetApplication.getInstance().serialPortThree.getInputStream();
-               readThread = new ReadThread();
-                readThread.start();
-                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.checkClose(lockplate%10, nuberlock));
-            }
-
-        }catch (Exception e){
-            Log.e("checkLock: ",e.getMessage() );
-        }finally {
-
-        }
-
-    }
 
     @Override
     public void onClick(View v) {

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
@@ -23,9 +24,12 @@ import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
 
+import com.link.cloud.network.bean.PassWordValidate;
+import com.link.cloud.utils.OpenDoorUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Utils;
 import com.link.cloud.widget.PublicTitleView;
+import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
 
@@ -348,7 +352,50 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
     }
 
     @Override
-    public void OpenLockByPass(APPVersionBean appVersionBean) {
+    public void OpenLockByPass(PassWordValidate appVersionBean) {
+        String uuid = appVersionBean.getUuid();
+       CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+       openLock(cabinetInfo);
+    }
+    public void openLock(CabinetInfo info){
+        int lockplate=info.getLockNo();
+        int nuberlock=info.getLineNo();
+        if (nuberlock>10){
+            nuberlock=nuberlock%10;
+            Logger.e("SecondFragment==="+nuberlock);
+            if (nuberlock==0){
+                nuberlock=10;
+                Logger.e("SecondFragment==="+nuberlock);
+            }
+        }
+        try {
+            if (lockplate<=10) {
+                CabinetApplication.getInstance().serialPortOne.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate, nuberlock));
+            }else if (lockplate>10&&lockplate<=20){
+                CabinetApplication.getInstance().serialPortTwo.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
+            }else if (lockplate>20&&lockplate<=30){
+                CabinetApplication.getInstance().serialPortThree.getOutputStream().write(OpenDoorUtil.openOneDoor(lockplate%10, nuberlock));
+            }
 
+        }catch (Exception e){
+
+        }finally {
+
+        }
+        if(openSuccessLayout.getVisibility()!=View.VISIBLE){
+            passwordLayout.setVisibility(View.INVISIBLE);
+            inputNumAndPass.setVisibility(View.INVISIBLE);
+            openSuccessLayout.setVisibility(View.VISIBLE);
+            nameText.setText(info.getNickname() == null ? "" : getResources().getString(R.string.name) + info.getNickname());
+            phoneText.setText(info.getPhone() == null ? "" : getResources().getString(R.string.phone) + info.getPhone());
+            lockId.setText(info.getCabinetNo() + getResources().getString(R.string.open_nun));
+            openWay.setText(getResources().getString(R.string.password_open));
+            openSuccessText.setBackground(getResources().getDrawable(R.drawable.border_gray_gradient));
+            openSuccessText.setTextColor(getResources().getColor(R.color.black));
+            openWay.setTextColor(getResources().getColor(R.color.color_FFABB6C8));
+            openWay.setBackground(null);
+            TTSUtils.getInstance().speak(info.getCabinetNo()+getString(R.string.open_success));
+        }
+        handler.sendEmptyMessageDelayed(18,3000);
     }
 }

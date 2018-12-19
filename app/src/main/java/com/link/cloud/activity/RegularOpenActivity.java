@@ -17,6 +17,7 @@ import com.link.cloud.controller.RegularOpenController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.utils.OpenDoorUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
@@ -262,8 +263,9 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     }
 
     @Override
-    public void OpenLockByPass(APPVersionBean appVersionBean) {
+    public void OpenLockByPass(PassWordValidate appVersionBean) {
 
     }
+
 
 }

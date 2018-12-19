@@ -6,6 +6,7 @@ import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.CabnetDeviceInfoBean;
 import com.link.cloud.network.bean.EdituserRequest;
+import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.network.bean.PasswordBean;
 import com.link.cloud.network.bean.QrRequest;
 import com.link.cloud.network.bean.RequestBindFinger;
@@ -126,7 +127,7 @@ public interface BaseService {
      * 验证密码
      */
     @POST(ApiConstants.PASSWORD)
-    Observable<BaseEntity<APPVersionBean>> validate(@Path("uuid") String uuid,@Path("pwd") String pwd);
+    Observable<BaseEntity<PassWordValidate>> validate(@Path("uuid") String uuid, @Path("pwd") String pwd);
     /**
      * 获取最新App
      */

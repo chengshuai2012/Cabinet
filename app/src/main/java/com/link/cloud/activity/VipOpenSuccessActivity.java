@@ -19,7 +19,9 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.controller.VipSuccessController;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.utils.OpenDoorUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Utils;
@@ -39,7 +41,7 @@ import io.realm.RealmResults;
  * 打开成功
  */
 @SuppressLint("Registered")
-public class VipOpenSuccessActivity extends BaseActivity {
+public class VipOpenSuccessActivity extends BaseActivity implements VipSuccessController.VipControllerListener {
 
 
     private TextView cardNameText;
@@ -72,6 +74,8 @@ public class VipOpenSuccessActivity extends BaseActivity {
     Realm realm ;
     private StringBuilder lockNumber;
     private StringBuilder password;
+    private VipSuccessController vipSuccessController;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void initViews() {
@@ -91,6 +95,7 @@ public class VipOpenSuccessActivity extends BaseActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
+        vipSuccessController = new VipSuccessController(this);
         realm = Realm.getDefaultInstance();
         cardNameText = (TextView) findViewById(R.id.cardNameText);
         nameText = (TextView) findViewById(R.id.nameText);
@@ -320,16 +325,13 @@ public class VipOpenSuccessActivity extends BaseActivity {
                 }
                 CabinetInfo cabinetNo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
                 if(cabinetNo!=null){
-
+                    vipSuccessController.OpenLockByPass(cabinetNo.getUuid(),edit_pswText);
                 }else {
                     speak(getResources().getString(R.string.cabinet_not_found));
                 }
-                String fisrt = Utils.getMD5(edit_pswText).toUpperCase();
-                final String second = Utils.getMD5(fisrt).toUpperCase();
 
-                if(second.equals(cabinetNo.getPasswd())){
-                    openLock(cabinetNo);
-                }
+
+
                 break;
 
 
@@ -341,4 +343,24 @@ public class VipOpenSuccessActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onVipErrorCode(String msg) {
+        speak(msg);
+    }
+
+    @Override
+    public void onVipFail(Throwable e, boolean isNetWork) {
+        if(isNetWork){
+            speak(getString(R.string.network_unavailable));
+        }else {
+            speak(getString(R.string.parse_error));
+        }
+    }
+
+    @Override
+    public void OpenLockByPass(PassWordValidate appVersionBean) {
+        String uuid = appVersionBean.getUuid();
+        CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+        openLock(cabinetInfo);
+    }
 }

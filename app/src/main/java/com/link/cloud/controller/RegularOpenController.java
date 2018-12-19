@@ -7,6 +7,7 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.network.bean.QrRequest;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 
@@ -39,7 +40,7 @@ public class RegularOpenController {
 
        void SuccessByQr(CabinetInfo cabinetInfo);
 
-        void OpenLockByPass(APPVersionBean appVersionBean);
+        void OpenLockByPass(PassWordValidate appVersionBean);
     }
 
 
@@ -98,11 +99,11 @@ public class RegularOpenController {
 
     }
     public void OpenLockByPass(String uuid,String passWord) {
-        api.validate(uuid,passWord).compose(IOMainThread.<BaseEntity<APPVersionBean>>composeIO2main()).subscribe(new BaseObserver<APPVersionBean>() {
+        api.validate(uuid,passWord).compose(IOMainThread.<BaseEntity<PassWordValidate>>composeIO2main()).subscribe(new BaseObserver<PassWordValidate>() {
 
 
             @Override
-            protected void onSuccees(BaseEntity<APPVersionBean> t) {
+            protected void onSuccees(BaseEntity<PassWordValidate> t) {
                 listener.OpenLockByPass(t.getData());
             }
 
