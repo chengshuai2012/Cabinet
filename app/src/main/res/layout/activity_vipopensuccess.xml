@@ -207,7 +207,6 @@
                     android:layout_gravity="center"
                     android:background="@null"
                     android:hint="@string/input_cabinet_nu"
-                    android:inputType="textPassword"
                     android:paddingLeft="@dimen/w32"
                     android:textColor="@color/color_black_333333"
                     android:textColorHint="@color/color_gray_999999"

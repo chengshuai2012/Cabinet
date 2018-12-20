@@ -48,7 +48,7 @@ public class VipSuccessController {
 
             @Override
             protected void onCodeError(String msg, String codeErrorr) {
-                listener.onVipErrorCode(codeErrorr);
+                listener.onVipErrorCode(msg);
             }
 
             @Override
