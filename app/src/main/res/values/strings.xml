@@ -8,9 +8,9 @@
     <string name="open_ark">Open Ark</string>
     <string name="queit_string">退柜</string>
     <string name="back_home">返回首页</string>
-    <string name="mode_one">方式1.指静脉验证开柜</string>
+    <string name="mode_one">指静脉验证开柜</string>
     <string name="mode_one_hint">请将手指正确放置模块上方完成验证，听到“验证成功”设备开柜</string>
-    <string name="mode_two">方式2.小程序二维码开柜</string>
+    <string name="mode_two">二维码开柜</string>
     <string name="mode_two_hint">请将小程序二维码在扫描枪扫描完成验证，听到“验证成功”设备开柜</string>
     <string name="mode_three">方式3.密码口令开柜</string>
     <string name="mode_three_hint">请点击界面选择已使用的柜号，输入自己的手机 后4位进行验证，听到“验证成功”设备开柜</string>

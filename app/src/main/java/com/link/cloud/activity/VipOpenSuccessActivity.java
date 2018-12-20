@@ -288,7 +288,7 @@ public class VipOpenSuccessActivity extends BaseActivity implements VipSuccessCo
                     if (password != null) {
                         inputPassword.setText(password.toString());
                     }
-                    containerNo.setSelection(password.length());
+                    inputPassword.setSelection(password.length());
                 }
                 break;
             case R.id.cleanButton:
@@ -325,6 +325,10 @@ public class VipOpenSuccessActivity extends BaseActivity implements VipSuccessCo
                 }
                 CabinetInfo cabinetNo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
                 if(cabinetNo!=null){
+                    if(TextUtils.isEmpty(cabinetNo.getUuid())){
+                        speak(getResources().getString(R.string.please_input_right));
+                        return;
+                    }
                     vipSuccessController.OpenLockByPass(cabinetNo.getUuid(),edit_pswText);
                 }else {
                     speak(getResources().getString(R.string.cabinet_not_found));

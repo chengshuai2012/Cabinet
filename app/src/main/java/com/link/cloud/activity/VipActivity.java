@@ -81,26 +81,32 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     private VipController vipController;
     private String uid;
     private RxTimerUtil rxTimerUtil;
-    boolean IsNoPerson,isDeleteAll ;
-    int pageNum =100;
+    boolean IsNoPerson, isDeleteAll;
+    int pageNum = 100;
     int total;
     private RealmResults<AllUser> users;
     private List<AllUser> peoples;
     private RealmResults<AllUser> peopleIn;
     private ArrayList<AllUser> peoplesIn;
     private DialogUtils dialogUtils;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void initViews() {
         zhijingmaiLayout = findViewById(R.id.zhijingmaiLayout);
         xiaochengxuLayout = findViewById(R.id.xiaochengxuLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
-        publicTitleView =  findViewById(R.id.publicTitle);
+        publicTitleView = findViewById(R.id.publicTitle);
         setLayout = (LinearLayout) findViewById(R.id.setLayout);
         code_mumber = (EditText) findViewById(R.id.code_number);
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
-        publicTitleView.hideBack();
+        publicTitleView.setItemClickListener(new PublicTitleView.onItemClickListener() {
+            @Override
+            public void itemClickListener() {
+                finish();
+            }
+        });
         rxTimerUtil = new RxTimerUtil();
         ViewUtils.setOnClickListener(zhijingmaiLayout, this);
         ViewUtils.setOnClickListener(xiaochengxuLayout, this);
@@ -121,7 +127,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         });
         peoples.addAll(realm.copyFromRealm(users));
 
-        peopleIn = realm.where(AllUser.class).equalTo("isIn",1).findAll();
+        peopleIn = realm.where(AllUser.class).equalTo("isIn", 1).findAll();
         peoplesIn = new ArrayList<>();
         peopleIn.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {
             @Override
@@ -132,8 +138,8 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         });
         peoplesIn.addAll(realm.copyFromRealm(peopleIn));
         vipController = new VipController(this);
-        if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
-           RegisteReciver();
+        if (Constants.CABINET_TYPE == Constants.VIP_CABINET) {
+            RegisteReciver();
             managersRealm = realm.where(AllUser.class).equalTo("isadmin", 1).findAll();
             managers.addAll(realm.copyFromRealm(managersRealm));
 
@@ -144,8 +150,10 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     managers.addAll(realm.copyFromRealm(managersRealm));
                 }
             });
-        }else {
+            publicTitleView.hideBack();
+        } else {
             setLayout.setVisibility(View.GONE);
+
         }
         initData();
         try {
@@ -162,33 +170,30 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     }
 
 
-        public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
-        public static long convert2long(String date, String format) {
+    public static long convert2long(String date, String format) {
 
-            try {
+        try {
 
-                if (!TextUtils.isEmpty(date)&&!TextUtils.isEmpty(format)) {
+            if (!TextUtils.isEmpty(date) && !TextUtils.isEmpty(format)) {
 
-                    SimpleDateFormat sf = new SimpleDateFormat(format);
+                SimpleDateFormat sf = new SimpleDateFormat(format);
 
-                    return sf.parse(date).getTime();
-
-                }
-
-            } catch (ParseException e) {
-
-                e.printStackTrace();
+                return sf.parse(date).getTime();
 
             }
 
-            return 0l;
+        } catch (ParseException e) {
+
+            e.printStackTrace();
 
         }
 
+        return 0l;
 
-
+    }
 
 
     private void finger() {
@@ -198,30 +203,30 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 System.out.println(String.valueOf(number));
                 int state = CabinetApplication.getVenueUtils().getState();
                 if (state == 3) {
-                    if(dialogUtils.isShowing()){
+                    if (dialogUtils.isShowing()) {
                         uid = null;
-                        uid =  CabinetApplication.getVenueUtils().identifyNewImg(managers);
+                        uid = CabinetApplication.getVenueUtils().identifyNewImg(managers);
                         if (uid != null) {
                             showActivity(SettingActivity.class);
                         } else {
                             TTSUtils.getInstance().speak(getString(R.string.no_manager));
 
                         }
-                    }else {
-                        uid=null;
-                        IsNoPerson =false;
+                    } else {
+                        uid = null;
+                        IsNoPerson = false;
                         uid = CabinetApplication.getVenueUtils().identifyNewImg(peoplesIn);
-                        if(uid==null){
+                        if (uid == null) {
                             uid = CabinetApplication.getVenueUtils().identifyNewImg(peoples);
                         }
                         final CabinetInfo uuid = realm.where(CabinetInfo.class).equalTo("uuid", uid).findFirst();
                         if (uuid != null) {
                             String endTime = uuid.getEndTime();
                             long endTimeLong = convert2long(endTime, TIME_FORMAT);
-                            long now =System.currentTimeMillis();
-                            if(endTimeLong>now){
+                            long now = System.currentTimeMillis();
+                            if (endTimeLong > now) {
                                 unlocking(uid, Constants.ActivityExtra.FINGER);
-                            }else {
+                            } else {
                                 vipController.OpenVipCabinet("", uid);
                             }
 
@@ -229,12 +234,12 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                             if (uid != null) {
                                 vipController.OpenVipCabinet("", uid);
                             } else {
-                                if(CabinetApplication.getVenueUtils().img!=null){
+                                if (CabinetApplication.getVenueUtils().img != null) {
                                     String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
                                     vipController.OpenVipCabinet(finger, "");
                                     IsNoPerson = true;
-                                    isDeleteAll =false;
-                                }else {
+                                    isDeleteAll = false;
+                                } else {
 
                                 }
 
@@ -242,23 +247,25 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
 
                         }
                     }
-                    }
+                }
 
 
             }
         });
     }
+
     private void unlocking(String uid, String type) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ActivityExtra.TYPE, type);
         bundle.putString(Constants.ActivityExtra.UUID, uid);
         showActivity(VipOpenSuccessActivity.class, bundle);
         Log.e(TAG, "unlocking: ");
-        if(Constants.CABINET_TYPE!=Constants.VIP_CABINET){
+        if (Constants.CABINET_TYPE != Constants.VIP_CABINET) {
             Log.e(TAG, "unlocking: ");
             finish();
         }
     }
+
     InputStream mInputStream;
 
     @Override
@@ -273,7 +280,6 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     public void onVenuePay() {
 
     }
-
 
 
     @Override
@@ -300,7 +306,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 member.setTextColor(getResources().getColor(R.color.text_gray));
                 manager.setTextColor(getResources().getColor(R.color.almost_white));
                 RxTimerDelayUtil rxTimerDelayUtil = new RxTimerDelayUtil();
-                rxTimerDelayUtil.timer(10000,new  RxTimerDelayUtil.IRxNext(){
+                rxTimerDelayUtil.timer(10000, new RxTimerDelayUtil.IRxNext() {
                     @Override
                     public void doNext(long number) {
                         dialogUtils.dissMiss();
@@ -332,14 +338,17 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
          */
         code_mumber.addTextChangedListener(new EditTextChangeListener());
     }
+
     public class EditTextChangeListener implements TextWatcher {
         long lastTime;
+
         /**
          * 编辑框的内容发生改变之前的回调方法
          */
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         /**
          * 编辑框的内容正在发生改变时的回调方法 >>用户正在输入
          * 我们可以在这里实时地 通过搜索匹配用户的输入
@@ -347,18 +356,19 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         /**
          * 编辑框的内容改变以后,用户没有继续输入时 的回调方法
          */
         @Override
         public void afterTextChanged(Editable editable) {
-            String str=code_mumber.getText().toString();
+            String str = code_mumber.getText().toString();
             if (str.contains("\n")) {
-                if(System.currentTimeMillis()-lastTime<1500){
+                if (System.currentTimeMillis() - lastTime < 1500) {
                     code_mumber.setText("");
                     return;
                 }
-                lastTime=System.currentTimeMillis();
+                lastTime = System.currentTimeMillis();
                 JSONObject object = null;
                 try {
                     object = new JSONObject(code_mumber.getText().toString());
@@ -374,6 +384,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             }
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -388,7 +399,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: " );
+        Log.e(TAG, "onResume: ");
         member.setBackground(getResources().getDrawable(R.drawable.border_red));
         manager.setBackground(null);
         member.setTextColor(getResources().getColor(R.color.almost_white));
@@ -409,8 +420,8 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     public void onVipErrorCode(String msg) {
         if ("您没有租用储物柜".equals(msg)) {
             TTSUtils.getInstance().speak(getResources().getString(R.string.sorry_for_is_not_vip));
-        }else {
-            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail)+","+msg);
+        } else {
+            TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail) + "," + msg);
         }
 
     }
@@ -424,7 +435,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     protected void onDestroy() {
         super.onDestroy();
 
-        if(Constants.CABINET_TYPE==Constants.VIP_CABINET){
+        if (Constants.CABINET_TYPE == Constants.VIP_CABINET) {
             unRegisterReceiver();
         }
     }
@@ -432,49 +443,50 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     @Override
     public void getUserSuccess(final BindUser data) {
         final RealmResults<AllUser> all = realm.where(AllUser.class).findAll();
-        total =data.getTotal();
-            if(!isDeleteAll){
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        all.deleteAllFromRealm();
-                        isDeleteAll=true;
-
-                    }
-                });
-                int totalPage = total / pageNum + 1;
-                ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
-                List<Future<Boolean>> futures = new ArrayList();
-                if (totalPage >= 2) {
-                    for (int i = 2; i <= totalPage; i++) {
-                        final int finalI = i;
-                        Callable<Boolean> task = new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() throws Exception {
-                                vipController.getUser(pageNum, finalI);
-                                return true;
-                            }
-                        };
-
-                        futures.add(executorService.submit(task));
-                    }
-                    for (Future<Boolean> future : futures) {
-                        try {
-                            future.get();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    executorService.shutdown();}
-            }
+        total = data.getTotal();
+        if (!isDeleteAll) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.copyToRealm(data.getData());
+                    all.deleteAllFromRealm();
+                    isDeleteAll = true;
+
                 }
             });
+            int totalPage = total / pageNum + 1;
+            ExecutorService executorService = Executors.newFixedThreadPool(totalPage);
+            List<Future<Boolean>> futures = new ArrayList();
+            if (totalPage >= 2) {
+                for (int i = 2; i <= totalPage; i++) {
+                    final int finalI = i;
+                    Callable<Boolean> task = new Callable<Boolean>() {
+                        @Override
+                        public Boolean call() throws Exception {
+                            vipController.getUser(pageNum, finalI);
+                            return true;
+                        }
+                    };
+
+                    futures.add(executorService.submit(task));
+                }
+                for (Future<Boolean> future : futures) {
+                    try {
+                        future.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                executorService.shutdown();
+            }
+        }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(data.getData());
+            }
+        });
 
 
     }
@@ -484,7 +496,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
     public void VipCabinetSuccess(final CabinetInfo vipCabinetUser) {
         String cabinetNo = vipCabinetUser.getCabinetNo();
         final RealmResults<CabinetInfo> cabinetNos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetNo).findAll();
-        if(cabinetNos.size()>0){
+        if (cabinetNos.size() > 0) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -493,14 +505,14 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             });
         }
         realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealm(vipCabinetUser);
-                }
-            });
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(vipCabinetUser);
+            }
+        });
 
-        if(IsNoPerson){
-            vipController.getUser(1,pageNum);
+        if (IsNoPerson) {
+            vipController.getUser(1, pageNum);
         }
         unlocking(uid, Constants.ActivityExtra.FINGER);
     }

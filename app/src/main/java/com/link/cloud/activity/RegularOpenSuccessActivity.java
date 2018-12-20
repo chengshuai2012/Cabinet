@@ -241,7 +241,7 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
                     if (password != null) {
                         inputPassword.setText(password.toString());
                     }
-                    containerNo.setSelection(password.length());
+                    inputPassword.setSelection(password.length());
                 }
                 break;
             case R.id.cleanButton:
@@ -287,6 +287,10 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
                 if (cabinetInfo == null) {
                     speak(getResources().getString(R.string.please_input_right));
                 } else {
+                    if(TextUtils.isEmpty(cabinetInfo.getUuid())){
+                        speak(getResources().getString(R.string.please_input_right));
+                        return;
+                    }
                     regularOpenController.OpenLockByPass(cabinetInfo.getUuid(),edit_pswText);
                 }
                 break;

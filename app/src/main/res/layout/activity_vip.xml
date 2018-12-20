@@ -18,9 +18,6 @@
             android:src="@drawable/ic_regular_title_bg" />
 
 
-
-
-
         <LinearLayout
             android:id="@+id/setLayout"
             android:layout_width="@dimen/text_width_main"
@@ -46,160 +43,169 @@
                 android:textColor="@color/text_gray" />
         </LinearLayout>
     </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@drawable/main_bg"
-        >
-    <com.link.cloud.widget.PublicTitleView
-        android:id="@+id/publicTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:finish_text_Background="@drawable/border_vip_gradient_round"
-        app:finish_text_color="@color/color_black_333333"
-        app:hint_text="@string/use_vip_way"
-        app:hint_text_color="@color/color_C69F85" />
+        android:orientation="vertical">
 
-
-    <LinearLayout
-        android:id="@+id/zhijingmaiLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/h160"
-        android:layout_marginLeft="@dimen/w45"
-        android:layout_marginRight="@dimen/w45"
-        android:layout_marginTop="@dimen/h38"
-        android:background="@drawable/vip_selecter_button_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <com.link.cloud.widget.PublicTitleView
+            android:id="@+id/publicTitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/w40"
-            android:text="01"
-            android:textColor="@color/color_FFD9B499"
-            android:textSize="@dimen/w62"
-            android:textStyle="bold" />
+            app:finish_text_Background="@drawable/border_vip_gradient_round"
+            app:finish_text_color="@color/color_black_333333"
+            app:hint_text="@string/use_vip_way"
+            app:hint_text_color="@color/color_C69F85" />
 
-        <ImageView
-            android:id="@+id/fingerImage"
-            android:layout_width="@dimen/w136"
-            android:layout_height="@dimen/w136"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w12"
-            android:src="@drawable/ic_vip_zhijingmai" />
 
         <LinearLayout
+            android:id="@+id/zhijingmaiLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/w30"
-            android:layout_toRightOf="@+id/fingerImage"
-            android:gravity="left|center"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/CommonText"
-                android:text="@string/mode_one"
-                android:textColor="@color/color_FFD9B499"
-                android:textSize="@dimen/w24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/h17"
-                android:lineSpacingExtra="@dimen/w10"
-                android:paddingRight="@dimen/w80"
-                android:text="@string/mode_one_hint"
-                android:textColor="@color/color_FFD9B499"
-                android:textSize="@dimen/w16" />
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/xiaochengxuLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/h160"
-        android:layout_marginLeft="@dimen/w45"
-        android:layout_marginRight="@dimen/w45"
-        android:layout_marginTop="@dimen/h21"
-        android:background="@drawable/vip_selecter_button_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/w40"
-            android:text="02"
-            android:textColor="@color/color_FFD9B499"
-            android:textSize="@dimen/w62"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/wechatImage"
-            android:layout_width="@dimen/w138"
-            android:layout_height="@dimen/w138"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/w12"
-            android:src="@drawable/ic_vip_xiaochengxu" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/w30"
-            android:layout_toRightOf="@+id/wechatImage"
-            android:gravity="left|center"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/CommonText"
-                android:text="@string/mode_two"
-                android:textColor="@color/color_FFD9B499"
-                android:textSize="@dimen/w24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/h17"
-                android:lineSpacingExtra="@dimen/w10"
-                android:paddingRight="@dimen/w80"
-                android:text="@string/mode_two_hint"
-                android:textColor="@color/color_FFD9B499"
-                android:textSize="@dimen/w16" />
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/passwordLayout"
-            android:layout_width="@dimen/w226"
-            android:layout_height="@dimen/h60"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="@dimen/h60"
+            android:layout_height="@dimen/h250"
             android:layout_marginLeft="@dimen/w45"
-            android:textSize="@dimen/w24"
             android:layout_marginRight="@dimen/w45"
-            android:layout_marginTop="@dimen/h21"
-            android:background="@drawable/border_gray_ye_gradient"
-            android:gravity="center"
-            android:text="@string/password_open"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-    </FrameLayout>
+            android:layout_marginTop="@dimen/h38"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/w30"
+                android:layout_toRightOf="@+id/fingerImage"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CommonText"
+                    android:text="@string/mode_one"
+                    android:textColor="@color/color_FFD9B499"
+                    android:textSize="@dimen/w24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/h17"
+                    android:paddingRight="@dimen/w80"
+                    android:text="@string/mode_one_hint"
+                    android:textColor="@color/color_FFD9B499"
+                    android:textSize="@dimen/w16" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/margin_main"
+                    android:layout_width="@dimen/main_image_height"
+                    android:layout_height="@dimen/main_image_height"
+                    android:src="@drawable/finger1_vip" />
+
+                <ImageView
+                    android:layout_marginRight="@dimen/margin_main"
+                    android:layout_width="@dimen/main_image_height"
+                    android:layout_height="@dimen/main_image_height"
+                    android:src="@drawable/finger2_vip" />
+
+                <ImageView
+                    android:layout_width="@dimen/main_image_height"
+                    android:layout_height="@dimen/main_image_height"
+                    android:src="@drawable/finger3_vip" />
+
+            </LinearLayout>
+        </LinearLayout>
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:src="@drawable/or_vip"
+    />
+
+        <LinearLayout
+            android:id="@+id/xiaochengxuLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/h250"
+            android:layout_marginLeft="@dimen/w45"
+            android:layout_marginRight="@dimen/w45"
+
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/w30"
+                android:layout_toRightOf="@+id/wechatImage"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CommonText"
+                    android:text="@string/mode_two"
+                    android:textColor="@color/color_FFD9B499"
+                    android:textSize="@dimen/w24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/h17"
+                    android:lineSpacingExtra="@dimen/w10"
+                    android:paddingRight="@dimen/w80"
+                    android:text="@string/mode_two_hint"
+                    android:textColor="@color/color_FFD9B499"
+                    android:textSize="@dimen/w16" />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/margin_main"
+                    android:layout_width="@dimen/main_image_height"
+                    android:layout_height="@dimen/main_image_height"
+                    android:src="@drawable/qrcode_vip" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/passwordLayout"
+                android:layout_width="@dimen/w226"
+                android:layout_height="@dimen/h60"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/h60"
+                android:layout_marginLeft="@dimen/w45"
+                android:layout_marginRight="@dimen/w45"
+                android:layout_marginTop="@dimen/h21"
+                android:background="@drawable/border_gray_ye_gradient"
+                android:gravity="center"
+                android:text="@string/password_open"
+                android:textColor="@color/black"
+                android:textSize="@dimen/w24"
+                android:textStyle="bold" />
+        </FrameLayout>
     </LinearLayout>
+
     <EditText
         android:id="@+id/code_number"
         android:layout_width="1dp"
