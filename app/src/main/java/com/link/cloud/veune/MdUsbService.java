@@ -17,12 +17,11 @@ import android.util.SparseBooleanArray;
 
 import md.com.sdk.MicroFingerVein;
 
-
 public class MdUsbService extends Service {
     private final static String TAG=MdUsbService.class.getSimpleName()+"_DEBUG";
     private final static String ACTION_USB_PERMISSION = "com.android.USB_PERMISSION";
     private MyBinder myBinder=new MyBinder();
-    private MicroFingerVein microFingerVein;
+    public MicroFingerVein microFingerVein;
     private SparseBooleanArray deviceStates=new SparseBooleanArray();
 
     private UsbMsgCallback usbMsgCallback;
@@ -41,7 +40,7 @@ public class MdUsbService extends Service {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case md.com.sdk.MicroFingerVein.USB_HAS_REQUST_PERMISSION: {//请求usb授权；
+                case MicroFingerVein.USB_HAS_REQUST_PERMISSION: {//请求usb授权；
                     Log.e(TAG,"usb has request permission.");
                     UsbDevice usbDevice=(UsbDevice)msg.obj;
                     UsbManager mManager=(UsbManager)getSystemService(Context.USB_SERVICE);
@@ -53,7 +52,7 @@ public class MdUsbService extends Service {
                     }
                     break;
                 }
-                case md.com.sdk.MicroFingerVein.USB_CONNECT_SUCESS: {//打印usb节点信息；
+                case MicroFingerVein.USB_CONNECT_SUCESS: {//打印usb节点信息；
                     Log.e(TAG,"get usb connect info success.");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         UsbDevice usbDevice = (UsbDevice) msg.obj;
@@ -63,14 +62,14 @@ public class MdUsbService extends Service {
                     }
                     break;
                 }
-                case md.com.sdk.MicroFingerVein.USB_DISCONNECT: {//usb 连接已断开，通知重连；
+                case MicroFingerVein.USB_DISCONNECT: {//usb 连接已断开，通知重连；
                     Log.e(TAG,"usb disconnected.");
                     if(MdUsbService.this.usbMsgCallback!=null){
                         usbMsgCallback.onUsbDisconnect();
                     }
                     break;
                 }
-                case md.com.sdk.MicroFingerVein.UsbDeviceConnection: {//接收device连接器对象
+                case MicroFingerVein.UsbDeviceConnection: {//接收device连接器对象
                     Log.e(TAG, "usb device connection received OK.");
                     break;
                 }
@@ -87,13 +86,13 @@ public class MdUsbService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.e(TAG,"onCreate");
-        microFingerVein= md.com.sdk.MicroFingerVein.getInstance(this);
+        microFingerVein= MicroFingerVein.getInstance(this);
     }
     @Override
     public IBinder onBind(Intent intent) {
         Log.e(TAG,"onBind");
         if(microFingerVein==null){
-            microFingerVein= md.com.sdk.MicroFingerVein.getInstance(MdUsbService.this);
+            microFingerVein= MicroFingerVein.getInstance(MdUsbService.this);
             Log.e(TAG,"microFingerVein is null,try reopen it.");
         }
         return myBinder;
@@ -106,7 +105,7 @@ public class MdUsbService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(microFingerVein!=null&& md.com.sdk.MicroFingerVein.fvdev_get_count()>0){
+        if(microFingerVein!=null&& MicroFingerVein.fvdev_get_count()>0){
             int recOpenDevCount=deviceStates.size();
             for(int i=0;i<recOpenDevCount;i++){
                 if(deviceStates.valueAt(i)){
@@ -122,7 +121,7 @@ public class MdUsbService extends Service {
      */
     public static Bitmap chg2VisibleBmp(byte []img){
         if(img==null||img.length==0) return null;
-        byte[] jpgVisible= md.com.sdk.MicroFingerVein.fvGetImage(img);
+        byte[] jpgVisible= MicroFingerVein.fvGetImage(img);
         return CommonUtils.getBitmapByBytes(jpgVisible);
     }
     /**
@@ -131,14 +130,14 @@ public class MdUsbService extends Service {
      *  fenergy[2]：fLeakRatio漏光值，fenergy[3]:fPress按压值；
      */
     public static int qualityImgEx(byte[]img,float []fenergy){
-        return md.com.sdk.MicroFingerVein.fv_QualityEx(img,fenergy);
+        return MicroFingerVein.fv_QualityEx(img,fenergy);
     }
 
     /**
      *  将传入的最多3个图片进行融合并返回融合模版数组；
      */
     public static byte[] extractImgModel(byte []img1, byte[]img2, byte[]img3){
-        return md.com.sdk.MicroFingerVein.fv_extract_model(img1,img2,img3);
+        return MicroFingerVein.fv_extract_model(img1,img2,img3);
     }
 
     /**
@@ -146,17 +145,17 @@ public class MdUsbService extends Service {
      *  基本对比结果，当且仅当返回值为true并且对比得分score[0]>认证阈值时认为认证成功；
      */
     public static boolean fvSearchFeature(byte []feature,int featureNum, byte []img, int []pos, float []score){
-        return md.com.sdk.MicroFingerVein.fv_index(feature,featureNum,img,pos,score);
+        return MicroFingerVein.fv_index(feature,featureNum,img,pos,score);
     }
 
     public final static int getFvColorNONE(){//关闭指示灯
-        return md.com.sdk.MicroFingerVein.COLOR_NONE;
+        return MicroFingerVein.COLOR_NONE;
     }
     public final static int getFvColorGREEN(){//绿灯
-        return md.com.sdk.MicroFingerVein.COLOR_GREEN;
+        return MicroFingerVein.COLOR_GREEN;
     }
     public final static int getFvColorRED(){//红灯
-        return md.com.sdk.MicroFingerVein.COLOR_RED;
+        return MicroFingerVein.COLOR_RED;
     }
     //----------------------------------------------------------------------------------------------
     public class MyBinder extends Binder {
@@ -179,7 +178,7 @@ public class MdUsbService extends Service {
          */
         public boolean openDevice(int index){
             if(microFingerVein!=null){
-                if(md.com.sdk.MicroFingerVein.fvdev_get_count()<=0){
+                if(MicroFingerVein.fvdev_get_count()<=0){
                     Log.e(TAG,"device count is 0 when try open device.(deviceIndex="+index+")");
                     deviceStates.clear();
                     return false;
@@ -193,9 +192,35 @@ public class MdUsbService extends Service {
                 return isOpenOk;
             }
             deviceStates.clear();
-            microFingerVein= md.com.sdk.MicroFingerVein.getInstance(MdUsbService.this);
+            microFingerVein= MicroFingerVein.getInstance(MdUsbService.this);
             Log.e(TAG,"open failed,microFingerVein is null,try getting microFingerVein instance again.");
             return false;
+        }
+        public  byte[] tryGetBestImg(final int tryTimes){
+            if(microFingerVein==null) {
+                Log.e(TAG,"tryGetBestImg():microFingerVein is null.");
+                return null;
+            }
+            long startTimeMillis=System.currentTimeMillis();
+            float decentScore=microFingerVein.fEnergyThreshold*1.5f;//大于此值认为是质评优质图；
+            int i;
+            byte[] img=null;
+            float quaScore=0f;
+            for(i=0;i<tryTimes;i++){
+                byte[] imgTmp=microFingerVein.fvdev_grab(0);
+                if(imgTmp!=null&&MicroFingerVein.fv_quality(imgTmp)==0){
+                    float quaScoreTmp=microFingerVein.fImageEnergy;
+                    if(quaScoreTmp>quaScore){
+                        quaScore=quaScoreTmp;
+                        img=imgTmp;
+                    }
+                }
+                if(quaScore>=decentScore) break;//遇到质评优质图立即返回
+            }
+            if(i>=tryTimes) i=tryTimes-1;
+            Log.e(TAG,"constantly grab img "+(i+1)+"/"+tryTimes+" times,takeTimeMillis="
+                    +(System.currentTimeMillis()-startTimeMillis)+",highScore="+quaScore);
+            return img;
         }
         /**
          *  打开索引为0的指静脉设备，同openDevice(int index)；
@@ -232,7 +257,7 @@ public class MdUsbService extends Service {
          *  获取当前连接的指静脉设备数量；
          */
         public int getDeviceCount(){
-            int devCount= md.com.sdk.MicroFingerVein.fvdev_get_count();
+            int devCount= MicroFingerVein.fvdev_get_count();
             if(devCount<=0){
                 devCount=0;
                 deviceStates.clear();
