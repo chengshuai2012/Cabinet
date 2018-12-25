@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.link.cloud.R;
 import com.link.cloud.bean.FingerprintsBean;
@@ -39,8 +40,6 @@ public class Venueutils {
     Context context;
     VenueCallBack callBack;
     private boolean bOpen = false;//设备是否打开
-    private int[] pos = new int[1];
-    private float[] score = new float[1];
     private boolean ret;
     public ModelImgMng modelImgMng = new ModelImgMng();
     private int[] tipTimes = {0, 0};//后两次次建模时用了不同手指或提取特征识别时，最多重复提醒限制3次
@@ -97,28 +96,28 @@ public class Venueutils {
         return state;
     }
 
-    List<AllUser> subListPeople = new ArrayList<>();
-
-
-
-
     public String identifyNewImg(final List<AllUser> peoples) {
-        final int nThreads=peoples.size()/1000+1;
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        final int nThreads = peoples.size() / 1000 + 1;
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
         List<Future<String>> futures = new ArrayList();
         for (int i = 0; i < nThreads; i++) {
-                if(i==nThreads-1){
-                    subListPeople= peoples.subList(1000 * i, peoples.size());
-                }else {
-                    subListPeople= peoples.subList(1000 * i, 1000 * (i + 1));
-                }
+            List<AllUser> subListPeople = new ArrayList<>();
+            if (i == nThreads - 1) {
+                subListPeople = peoples.subList(1000 * i, peoples.size());
+            } else {
+                subListPeople = peoples.subList(1000 * i, 1000 * (i + 1));
+            }
+
+            final List<AllUser> finalSubListPeople = subListPeople;
             Callable<String> task = new Callable<String>() {
                 @Override
                 public String call() throws Exception {
+                    int[] pos = new int[1];
+                    float[] score = new float[1];
                     StringBuffer sb = new StringBuffer();
                     String[] uids = new String[1000];
-                    int position =0;
-                    for (AllUser userBean : subListPeople) {
+                    int position = 0;
+                    for (AllUser userBean : finalSubListPeople) {
                         sb.append(userBean.getFingerprint());
                         uids[position] = userBean.getUuid();
                         position++;
@@ -142,61 +141,8 @@ public class Venueutils {
         }
         for (Future<String> future : futures) {
             try {
-                if(!TextUtils.isEmpty(future.get())){
-                    return future.get();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        executorService.shutdown();
-        return null;
-    }
-    List<FingerprintsBean> subListUser = new ArrayList<>();
-    public String identifyNewImgUser(final ArrayList<FingerprintsBean> peoples) {
-        final int nThreads=peoples.size()/1000+1;
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-        List<Future<String>> futures = new ArrayList();
-        for (int i = 0; i < nThreads; i++) {
-            if(i==nThreads-1){
-                subListUser= peoples.subList(1000 * i, peoples.size());
-            }else {
-                subListUser= peoples.subList(1000 * i, 1000 * (i + 1));
-            }
-
-            Callable<String> task = new Callable<String>() {
-                @Override
-                public String call() throws Exception {
-                    StringBuffer sb = new StringBuffer();
-                    String[] uids = new String[1000];
-                    int position =0;
-                    for (FingerprintsBean userBean : subListUser) {
-                        sb.append(userBean.getFingerprint());
-                        uids[position] = userBean.getUuid();
-                        position++;
-
-                    }
-                    byte[] allFeaturesBytes = HexUtil.hexStringToByte(sb.toString());
-                    boolean identifyResult = MicroFingerVein.fv_index(allFeaturesBytes, allFeaturesBytes.length / 3352, img, pos, score);
-                    identifyResult = identifyResult && score[0] > IDENTIFY_SCORE_THRESHOLD;//得分是否达标
-                    if (identifyResult) {//比对通过且得分达标时打印此手指绑定的用户名
-                        String uid = uids[pos[0]];
-                        return uid;
-                    } else {
-                        return null;
-
-                    }
-                }
-            };
-
-            futures.add(executorService.submit(task));
-
-        }
-        for (Future<String> future : futures) {
-            try {
-                if(!TextUtils.isEmpty(future.get())){
+                Log.d("future=", future.get() + "");
+                if (!TextUtils.isEmpty(future.get())) {
                     return future.get();
                 }
             } catch (InterruptedException e) {
