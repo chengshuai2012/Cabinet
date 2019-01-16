@@ -19,6 +19,7 @@ import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
 import com.link.cloud.utils.DialogCancelListener;
@@ -60,6 +61,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     private LinearLayout setLayout;
     private TextView member;
     private TextView manager;
+    private TextView number;
     private EditText editText;
     private String mType;
     private boolean isScanning = false;
@@ -70,10 +72,14 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     private ArrayList<AllUser> peoplesIn;
     private DialogUtils dialogUtils;
     private RealmResults<AllUser> managersRealm;
+    private RealmResults<CabinetInfo> cabinetInfos;
     List<AllUser> managers = new ArrayList<>();
+
     boolean IsNoPerson = false;
     boolean isDeleteAll = false;
     long lastTime;
+    private long allCabinet;
+
     @Override
     protected void initViews() {
         rxTimerUtil = new RxTimerUtil();
@@ -84,6 +90,17 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         setLayout = (LinearLayout) findViewById(R.id.setLayout);
         member = (TextView) findViewById(R.id.member);
         manager = (TextView) findViewById(R.id.manager);
+        number = (TextView) findViewById(R.id.number);
+        allCabinet = realm.where(CabinetInfo.class).count();
+        cabinetInfos = realm.where(CabinetInfo.class).equalTo("locked",false).findAll();
+        cabinetInfos.addChangeListener(new RealmChangeListener<RealmResults<CabinetInfo>>() {
+            @Override
+            public void onChange(RealmResults<CabinetInfo> cabinetInfos) {
+                long used = allCabinet - cabinetInfos.size();
+                number.setText("已使用:"+used+"    未使用:"+cabinetInfos.size());
+            }
+        });
+
         editText = findViewById(R.id.infoId);
         if (Constants.CABINET_TYPE==Constants.REGULAR_CABINET) {
             publicTitleView.setFinsh(View.GONE);

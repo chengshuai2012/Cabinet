@@ -188,12 +188,20 @@
         android:id="@+id/passwordLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/h60"
-        android:visibility="gone"
+      android:layout_marginTop="@dimen/h10"
         android:gravity="center_horizontal"
+        android:visibility="gone"
         android:orientation="vertical">
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/back_time_20"
+            android:textSize="@dimen/w24"
+            android:gravity="center"
+            />
         <LinearLayout
+            android:layout_marginTop="@dimen/h10"
             android:layout_width="@dimen/w500"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

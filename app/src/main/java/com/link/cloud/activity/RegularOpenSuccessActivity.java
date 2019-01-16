@@ -69,7 +69,6 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
     private android.widget.Button deleteButton;
     private android.widget.Button backButton;
     private TextView inputNumAndPass;
-    private CabinetInfo cabinetInfo;
     private StringBuilder lockNumber;
     private StringBuilder password;
     private RegularOpenController regularOpenController;
@@ -96,7 +95,7 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
         regularOpenController = new RegularOpenController(this);
-        handler.sendEmptyMessageDelayed(1,10000);
+        handler.sendEmptyMessageDelayed(1,20000);
         cardNameText = (TextView) findViewById(R.id.cardNameText);
         nameText = (TextView) findViewById(R.id.nameText);
         phoneText = (TextView) findViewById(R.id.phoneText);
@@ -162,9 +161,8 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
 
         } else {
             openSuccessLayout.setVisibility(View.VISIBLE);
-            if (getIntent().getSerializableExtra(Constants.ActivityExtra.ENTITY) != null) {
-                cabinetInfo = (CabinetInfo) getIntent().getSerializableExtra(Constants.ActivityExtra.ENTITY);
-            }
+            String  uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
+            CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", uuid).findFirst();
             if (cabinetInfo != null) {
                 nameText.setText(cabinetInfo.getNickname() == null ? "" : getResources().getString(R.string.name) + cabinetInfo.getNickname());
                 phoneText.setText(cabinetInfo.getPhone() == null ? "" : getResources().getString(R.string.phone) + cabinetInfo.getPhone());
@@ -283,7 +281,7 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
 
                 String fisrt = Utils.getMD5(edit_pswText).toUpperCase();
                 final String second = Utils.getMD5(fisrt).toUpperCase();
-                 cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
+                CabinetInfo  cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", containerNo_text).findFirst();
                 if (cabinetInfo == null) {
                     speak(getResources().getString(R.string.please_input_right));
                 } else {

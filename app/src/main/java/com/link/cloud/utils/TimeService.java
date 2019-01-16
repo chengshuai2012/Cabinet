@@ -45,7 +45,6 @@ public class TimeService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log.e("onReceive: ","count"+count );
             if (intent.getAction().equals(Intent.ACTION_TIME_TICK)&&count==0) {
-
                 Intent intent1 = new Intent(context, SplashActivity.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent1);

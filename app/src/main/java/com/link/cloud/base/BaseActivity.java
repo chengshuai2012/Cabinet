@@ -25,6 +25,7 @@ import com.link.cloud.network.BaseObserver;
 import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.SingleUser;
 import com.link.cloud.utils.TTSUtils;
 import com.link.cloud.utils.Venueutils;
@@ -158,6 +159,26 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
                     Runtime.getRuntime().exec("su -c reboot");
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else if("CLEAR_USER_CABINET".equals(type)){
+                try {
+                    JSONObject data = object.getJSONObject("data");
+                    String cabinetNo = data.getString("cabinetNo");
+
+                    final CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetNo).findFirst();
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                               cabinetInfo.setUuid("");
+                               cabinetInfo.setLocked(false);
+                               cabinetInfo.setNickname("");
+                               cabinetInfo.setPhone("");
+                               cabinetInfo.setPasswd("");
+                            }
+                        });
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

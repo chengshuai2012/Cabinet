@@ -39,7 +39,6 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     private String uuid;
     private RegularOpenController regularOpenController;
     private TextView finsh;
-    private CabinetInfo cabinetInfo;
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler(){
         @Override
@@ -79,29 +78,31 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
         }
     }
-
+long start,end;
     @Override
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
-                if (cabinetInfo == null)
                         regularOpenController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
-                if (cabinetInfo == null) {
                     CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
                     Log.e("onClick: ",realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst()+"");
                     if (first != null) {
                         openLock(first);
                         Log.e("onClick: ",first.getUuid()+"000" );
                     } else {
+                        start =System.currentTimeMillis();
+                        Log.e("onClick: ", start+"");
+                        if(start-end>2000){
+                            Log.e("onClick: ", end+"");
+                            end =System.currentTimeMillis();
                             regularOpenController.temCabinet(uuid);
+                        }
+
                     }
-                } else {
-                    Log.e("onClick: ",cabinetInfo +"222");
-                    openLock(cabinetInfo);
-                }
+
                 break;
 
             case R.id.finsh:
@@ -132,19 +133,7 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
     private void openLock(CabinetInfo cabinetBean) {
         Bundle bundle = new Bundle();
-        CabinetInfo cabinetBean1 = new CabinetInfo();
-        cabinetBean1.setUuid(cabinetBean.getUuid());
-        cabinetBean1.setNickname(cabinetBean.getNickname() == null ? "" : cabinetBean.getNickname());
-        cabinetBean1.setPhone(cabinetBean.getPhone() == null ? "" : cabinetBean.getPhone());
-        cabinetBean1.setCabinetNo(cabinetBean.getCabinetNo());
-        if (type.equals(Constants.ActivityExtra.FINGER)) {
-            cabinetBean1.setOpenWay(getResources().getString(R.string.open_finger));
-        } else if (type.equals(Constants.ActivityExtra.XIAOCHENGXU)) {
-            cabinetBean1.setOpenWay(getResources().getString(R.string.open_xiaochengxu));
-        } else {
-            cabinetBean1.setOpenWay(getResources().getString(R.string.password_open));
-        }
-        bundle.putSerializable(Constants.ActivityExtra.ENTITY, cabinetBean1);
+        bundle.putString(Constants.ActivityExtra.UUID, cabinetBean.getCabinetNo());
         showActivity(RegularOpenSuccessActivity.class, bundle);
         speak(cabinetBean.getCabinetNo() + getResources().getString(R.string.aready_open_string));
 

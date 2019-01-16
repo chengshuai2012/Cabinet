@@ -191,7 +191,15 @@ android:visibility="gone"
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_FFD9B499"
+            android:textSize="@dimen/w24"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/number"
+            />
         <TextView
             android:id="@+id/passwordLayout"
             android:layout_width="@dimen/w226"

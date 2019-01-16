@@ -84,6 +84,7 @@
     <string name="open_door">门禁开启</string>
     <string name="save_success">保存成功</string>
     <string name="sorry_for_is_not_vip">抱歉，您非VIP柜子用户</string>
+    <string name="finish">操作完成后，请管理员点击“返回程序主页”</string>
 
     <string name="remove_leave">号已退柜，请您带走所有随身物品并关好柜门</string>
     <string name="close_lock">请您放入或带走随身物品并关好柜门</string>
@@ -114,4 +115,6 @@
     <string name="no_manager">抱歉您非管理员</string>
     <string name="error_net">网络异常</string>
     <string name="parse_error">解析异常</string>
+    <string name="back_time_20">请输入柜号和密码，未点击确认20秒后返回程序主页</string>
+    <string name="back_time_10">请输入柜号和密码，未点击确认10秒后返回程序主页</string>
 </resources>
