@@ -80,6 +80,8 @@
     <string name="restart">重启APP</string>
     <string name="back_app">返回程序主页</string>
     <string name="back_system">返回系统设置</string>
+    <string name="user_detail">柜子使用记录</string>
+    <string name="clear_user">清除使用记录</string>
     <string name="close_door">门禁关闭</string>
     <string name="open_door">门禁开启</string>
     <string name="save_success">保存成功</string>

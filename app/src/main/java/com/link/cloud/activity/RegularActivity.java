@@ -93,6 +93,8 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         number = (TextView) findViewById(R.id.number);
         allCabinet = realm.where(CabinetInfo.class).count();
         cabinetInfos = realm.where(CabinetInfo.class).equalTo("locked",false).findAll();
+         long use = allCabinet - cabinetInfos.size();
+        number.setText("已使用:"+use+"    未使用:"+cabinetInfos.size());
         cabinetInfos.addChangeListener(new RealmChangeListener<RealmResults<CabinetInfo>>() {
             @Override
             public void onChange(RealmResults<CabinetInfo> cabinetInfos) {

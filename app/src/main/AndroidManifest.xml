@@ -79,6 +79,9 @@
         <activity android:name=".activity.VipOpenActivity"
             android:launchMode="singleTop"
             />
+     <activity android:name=".UserCabinetDetails"
+            android:launchMode="singleTop"
+            />
 
         <service android:name=".veune.MdUsbService" />
         <receiver android:name=".utils.UpdateReceiver">

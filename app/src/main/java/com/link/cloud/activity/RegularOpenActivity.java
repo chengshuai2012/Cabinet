@@ -13,6 +13,7 @@ import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.bean.CabinetUserDatail;
 import com.link.cloud.controller.RegularOpenController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.APPVersionBean;
@@ -22,6 +23,8 @@ import com.link.cloud.utils.OpenDoorUtil;
 import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
+
+import java.text.SimpleDateFormat;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -92,6 +95,23 @@ long start,end;
                     if (first != null) {
                         openLock(first);
                         Log.e("onClick: ",first.getUuid()+"000" );
+                        final CabinetUserDatail cabinetUserDatail = new CabinetUserDatail();
+                        long createTime = System.currentTimeMillis()+8*60*60*1000;
+                        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Long time1=new Long(createTime);
+                        String d = format.format(time1);
+                        cabinetUserDatail.setCreatTime(createTime);
+                        cabinetUserDatail.setOpenOrClose("续存");
+                        cabinetUserDatail.setPhoneNum(first.getPhone());
+                        cabinetUserDatail.setUserName(first.getNickname());
+                        cabinetUserDatail.setUserTime(d);
+                        cabinetUserDatail.setCabinetNo(first.getCabinetNo());
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.copyToRealm(cabinetUserDatail);
+                            }
+                        });
                     } else {
                         start =System.currentTimeMillis();
                         Log.e("onClick: ", start+"");
@@ -175,6 +195,23 @@ long start,end;
             }
         });
         openLock(cabinetInfo);
+        final CabinetUserDatail cabinetUserDatail = new CabinetUserDatail();
+        long createTime = System.currentTimeMillis()+8*60*60*1000;
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long time1=new Long(createTime);
+        String d = format.format(time1);
+        cabinetUserDatail.setCreatTime(createTime);
+        cabinetUserDatail.setOpenOrClose("开柜");
+        cabinetUserDatail.setPhoneNum(cabinetInfo.getPhone());
+        cabinetUserDatail.setUserName(cabinetInfo.getNickname());
+        cabinetUserDatail.setUserTime(d);
+        cabinetUserDatail.setCabinetNo(cabinetInfo.getCabinetNo());
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(cabinetUserDatail);
+            }
+        });
         speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
     }
 
@@ -193,7 +230,23 @@ long start,end;
                 }
             });
         }
-
+        final CabinetUserDatail cabinetUserDatail = new CabinetUserDatail();
+        long createTime = System.currentTimeMillis()+8*60*60*1000;
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long time1=new Long(createTime);
+        String d = format.format(time1);
+        cabinetUserDatail.setCreatTime(createTime);
+        cabinetUserDatail.setOpenOrClose("退柜");
+        cabinetUserDatail.setPhoneNum(cabinetInfo.getPhone());
+        cabinetUserDatail.setUserName(cabinetInfo.getNickname());
+        cabinetUserDatail.setUserTime(d);
+        cabinetUserDatail.setCabinetNo(cabinetInfo.getCabinetNo());
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(cabinetUserDatail);
+            }
+        });
     }
 
     @Override

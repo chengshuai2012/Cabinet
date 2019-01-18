@@ -2,6 +2,8 @@ package com.link.cloud.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
@@ -16,7 +18,9 @@ import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.R;
+import com.link.cloud.UserCabinetDetails;
 import com.link.cloud.base.BaseActivity;
+import com.link.cloud.bean.CabinetUserDatail;
 import com.link.cloud.bean.DeviceInfo;
 import com.link.cloud.controller.MainController;
 import com.link.cloud.network.HttpConfig;
@@ -63,6 +67,8 @@ public class SettingActivity extends BaseActivity {
     private String mac;
     private TextView clean;
     private TextView openOne;
+    private TextView clear_user;
+    private TextView open_use_detail;
 
     @Override
     protected void initViews() {
@@ -83,7 +89,33 @@ public class SettingActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.back_app:
                 finish();
+   case R.id.clear_user:
+       AlertDialog.Builder builder = new AlertDialog.Builder(this);
+       builder.setMessage("确定清除使用记录？");
+       builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+           @Override
+           public void onClick(DialogInterface dialogInterface, int i) {
 
+           }
+       });
+       builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+           @Override
+           public void onClick(DialogInterface dialogInterface, int i) {
+               final RealmResults<CabinetUserDatail> all1 = realm.where(CabinetUserDatail.class).findAll();
+               realm.executeTransaction(new Realm.Transaction() {
+                   @Override
+                   public void execute(Realm realm) {
+                       all1.deleteAllFromRealm();
+                   }
+               });
+           }
+       });
+       builder.show();
+
+       break;
+   case R.id.open_use_detail:
+       startActivity(new Intent(this, UserCabinetDetails.class));
+       break;
             case R.id.member:
                 finish();
                 break;
@@ -92,7 +124,6 @@ public class SettingActivity extends BaseActivity {
                 String fisrt = Utils.getMD5(edit_pswText).toUpperCase();
                 final String second = Utils.getMD5(fisrt).toUpperCase();
                 final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
-
                 if (all.size() != 0) {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
@@ -239,6 +270,8 @@ public class SettingActivity extends BaseActivity {
         restartApp = (TextView) findViewById(R.id.restart_app);
         clean = (TextView) findViewById(R.id.clean);
         openOne = (TextView) findViewById(R.id.openOne);
+        clear_user = (TextView) findViewById(R.id.clear_user);
+        open_use_detail = (TextView) findViewById(R.id.open_use_detail);
 
 
         ViewUtils.setOnClickListener(save, this);
@@ -251,6 +284,8 @@ public class SettingActivity extends BaseActivity {
         ViewUtils.setOnClickListener(clean, this);
         ViewUtils.setOnClickListener(openOne, this);
         ViewUtils.setOnClickListener(backApp, this);
+        ViewUtils.setOnClickListener(clear_user,this);
+        ViewUtils.setOnClickListener(open_use_detail,this);
 
     }
 
