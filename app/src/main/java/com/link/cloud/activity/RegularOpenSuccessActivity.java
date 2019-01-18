@@ -165,7 +165,9 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
             CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", uuid).findFirst();
             if (cabinetInfo != null) {
                 nameText.setText(cabinetInfo.getNickname() == null ? "" : getResources().getString(R.string.name) + cabinetInfo.getNickname());
-                phoneText.setText(cabinetInfo.getPhone() == null ? "" : getResources().getString(R.string.phone) + cabinetInfo.getPhone());
+                String phone = cabinetInfo.getPhone();
+                StringBuffer replace = new StringBuffer(phone).replace(3, 7, "****");
+                phoneText.setText(replace);
                 lockId.setText(cabinetInfo.getCabinetNo() + getResources().getString(R.string.open_nun));
                 openWay.setText(cabinetInfo.getOpenWay());
                 openSuccessText.setBackground(getResources().getDrawable(R.drawable.border_gray_gradient));
@@ -389,7 +391,9 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
             inputNumAndPass.setVisibility(View.INVISIBLE);
             openSuccessLayout.setVisibility(View.VISIBLE);
             nameText.setText(info.getNickname() == null ? "" : getResources().getString(R.string.name) + info.getNickname());
-            phoneText.setText(info.getPhone() == null ? "" : getResources().getString(R.string.phone) + info.getPhone());
+            String phone = info.getPhone();
+            StringBuffer replace = new StringBuffer(phone).replace(3, 7, "****");
+            phoneText.setText(replace);
             lockId.setText(info.getCabinetNo() + getResources().getString(R.string.open_nun));
             openWay.setText(getResources().getString(R.string.password_open));
             openSuccessText.setBackground(getResources().getDrawable(R.drawable.border_gray_gradient));
