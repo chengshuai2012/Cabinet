@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.link.cloud.bean.CabinetUserDatail;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -26,6 +28,7 @@ import io.realm.Sort;
 public class UserCabinetDetails extends Activity{
 
     private RealmResults<CabinetUserDatail> cabinetUserDatails;
+    ArrayList<CabinetUserDatail> cabinetUserDatailArrayList = new ArrayList<>();
     private EditText no;
     private Realm realm;
     private MyBaseAdapter adapter;
@@ -50,7 +53,9 @@ public class UserCabinetDetails extends Activity{
                     Toast.makeText(UserCabinetDetails.this,"请输入柜号",Toast.LENGTH_LONG).show();
                     return;
                 };
-                cabinetUserDatails = realm.where(CabinetUserDatail.class).findAll().sort("creatTime", Sort.DESCENDING);
+                cabinetUserDatails = realm.where(CabinetUserDatail.class).equalTo("cabinetNo",text).findAll().sort("creatTime", Sort.DESCENDING);
+                cabinetUserDatailArrayList.clear();
+                cabinetUserDatailArrayList.addAll(realm.copyFromRealm(cabinetUserDatails));
                 adapter.notifyDataSetChanged();
             }
         });
@@ -63,7 +68,7 @@ public class UserCabinetDetails extends Activity{
     class MyBaseAdapter extends BaseAdapter{
         @Override
         public int getCount() {
-            return cabinetUserDatails.size();
+            return cabinetUserDatailArrayList.size();
         }
 
         @Override
@@ -88,11 +93,11 @@ public class UserCabinetDetails extends Activity{
             TextView phone = view1.findViewById(R.id.phone);
             TextView time = view1.findViewById(R.id.time);
             TextView open_o = view1.findViewById(R.id.open_o);
-            name.setText(cabinetUserDatails.get(i).getUserName());
-            phone.setText(cabinetUserDatails.get(i).getPhoneNum());
-            time.setText(cabinetUserDatails.get(i).getUserTime());
-            open_o.setText(cabinetUserDatails.get(i).getOpenOrClose());
-            return null;
+            name.setText(cabinetUserDatailArrayList.get(i).getUserName());
+            phone.setText(cabinetUserDatailArrayList.get(i).getPhoneNum());
+            time.setText(cabinetUserDatailArrayList.get(i).getUserTime());
+            open_o.setText(cabinetUserDatailArrayList.get(i).getOpenOrClose());
+            return view1;
         }
     }
 }

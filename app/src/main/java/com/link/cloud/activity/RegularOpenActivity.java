@@ -227,6 +227,9 @@ long start,end;
                 public void execute(Realm realm) {
                     Log.e("returnSuccess: ", cabinetInfos.getCabinetNo());
                     cabinetInfos.setUuid("");
+                    cabinetInfos.setPasswd("");
+                    cabinetInfos.setNickname("");
+                    cabinetInfos.setLocked(false);
                 }
             });
         }

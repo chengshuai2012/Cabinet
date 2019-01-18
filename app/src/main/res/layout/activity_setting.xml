@@ -144,19 +144,17 @@
                 android:text="@string/back_system"
                 android:textColor="@color/setting_text_black"
                 android:textSize="@dimen/text_size_32" />
-
             <TextView
-                android:id="@+id/back_app"
+                android:id="@+id/back_system_main"
                 android:layout_width="@dimen/setting_text_view_width"
                 android:layout_height="100px"
-                android:layout_below="@+id/back_system_setting"
-                android:layout_centerInParent="true"
                 android:background="@drawable/manager_text_bg"
                 android:gravity="center_horizontal"
                 android:paddingTop="10px"
-                android:text="@string/back_app"
+                android:text="@string/back_system_main"
                 android:textColor="@color/setting_text_black"
                 android:textSize="@dimen/text_size_32" />
+
 
 
         </LinearLayout>
@@ -247,15 +245,18 @@
                 android:textSize="@dimen/text_size_32" />
         </LinearLayout>
         <TextView
-            android:id="@+id/back_system_main"
+            android:id="@+id/back_app"
             android:layout_width="@dimen/setting_text_view_width"
             android:layout_height="100px"
+            android:layout_below="@+id/back_system_setting"
+            android:layout_centerInParent="true"
             android:background="@drawable/manager_text_bg"
             android:gravity="center_horizontal"
             android:paddingTop="10px"
-            android:text="@string/back_system_main"
+            android:text="@string/back_app"
             android:textColor="@color/setting_text_black"
             android:textSize="@dimen/text_size_32" />
+
 
         <TextView
             android:id="@+id/restart_app"

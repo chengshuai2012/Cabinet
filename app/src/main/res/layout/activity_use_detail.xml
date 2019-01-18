@@ -28,6 +28,7 @@
             android:layout_marginLeft="@dimen/margin_main"
             android:layout_toRightOf="@+id/open"
             android:hint="请输入柜号"
+            android:textColor="@color/white"
             android:textColorHint="@color/white" />
 
         <TextView

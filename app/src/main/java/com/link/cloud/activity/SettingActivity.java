@@ -3,6 +3,7 @@ package com.link.cloud.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +90,10 @@ public class SettingActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.back_app:
+                InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm2 != null) {
+                    imm2.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 finish();
    case R.id.clear_user:
        AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -118,6 +124,10 @@ public class SettingActivity extends BaseActivity {
        break;
             case R.id.member:
                 finish();
+                InputMethodManager imm1 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm1 != null) {
+                    imm1.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 break;
             case R.id.save:
                 String edit_pswText = editPsw.getText().toString();
@@ -148,7 +158,10 @@ public class SettingActivity extends BaseActivity {
                 }
                 Toast.makeText(this, getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
 
-
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 skipActivity(SplashActivity.class);
                 break;
             case R.id.back_system_main:
