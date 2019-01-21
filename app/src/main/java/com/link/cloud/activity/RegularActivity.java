@@ -131,6 +131,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 peoples.addAll(realm.copyFromRealm(users));
             }
         });
+
         peopleIn = realm.where(AllUser.class).equalTo("isIn", 1).findAll();
         peoplesIn = new ArrayList<>();
         peopleIn.addChangeListener(new RealmChangeListener<RealmResults<AllUser>>() {

@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
 import com.link.cloud.bean.DeviceInfo;
@@ -33,12 +34,14 @@ import com.link.cloud.widget.SimpleStyleDialog;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zitech.framework.utils.ViewUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import rx.functions.Action1;
 
@@ -162,25 +165,33 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                     e.printStackTrace();
                 }
             }else if("CLEAR_USER_CABINET".equals(type)){
-                try {
-                    JSONObject data = object.getJSONObject("data");
-                    String cabinetNo = data.getString("cabinetNo");
+                RetrofitFactory.getInstence().API().getCabinetInfo()
+                        .compose(IOMainThread.<BaseEntity<RealmList<CabinetInfo>>>composeIO2main())
+                        .subscribe(new BaseObserver<RealmList<CabinetInfo>>() {
+                                       @Override
+                                       protected void onSuccees(final BaseEntity<RealmList<CabinetInfo>> t)  {
+                                           final RealmResults<CabinetInfo> cabinetInfoRealmList = realm.where(CabinetInfo.class).findAll();
+                                           realm.executeTransaction(new Realm.Transaction() {
+                                               @Override
+                                               public void execute(Realm realm) {
+                                                   cabinetInfoRealmList.deleteAllFromRealm();
+                                                   realm.copyToRealm(t.getData());
+                                               }
+                                           });
 
-                    final CabinetInfo cabinetInfo = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetNo).findFirst();
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                               cabinetInfo.setUuid("");
-                               cabinetInfo.setLocked(false);
-                               cabinetInfo.setNickname("");
-                               cabinetInfo.setPhone("");
-                               cabinetInfo.setPasswd("");
-                            }
-                        });
+                                       }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                                       @Override
+                                       protected void onCodeError(String msg,String codeErrorr) {
+
+                                       }
+
+                                       @Override
+                                       protected void onFailure(Throwable e, boolean isNetWorkError) {
+
+                                       }
+                                   }
+                        );
             }
         }
 
