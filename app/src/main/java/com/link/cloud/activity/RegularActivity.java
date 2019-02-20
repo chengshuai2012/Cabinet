@@ -153,7 +153,8 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
                     String str=editText.getText().toString();
-                    if (str.contains("\n")) {
+                    Log.e("afterTextChanged: ",str );
+                    if (str.contains("}")) {
                         if(System.currentTimeMillis()-lastTime<1500){
                             editText.setText("");
                             return;
