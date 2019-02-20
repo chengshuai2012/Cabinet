@@ -116,7 +116,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 @Override
                 public void onChange(RealmResults<AllUser> allUsers) {
                     managers.clear();
-                    managers.addAll(realm.copyFromRealm(managersRealm));
+                    managers.addAll(realm.copyFromRealm(allUsers));
                 }
             });
         } else {
@@ -128,7 +128,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoples.clear();
-                peoples.addAll(realm.copyFromRealm(users));
+                peoples.addAll(realm.copyFromRealm(allUsers));
             }
         });
 
@@ -138,7 +138,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoplesIn.clear();
-                peoplesIn.addAll(realm.copyFromRealm(peopleIn));
+                peoplesIn.addAll(realm.copyFromRealm(allUsers));
             }
         });
         peoplesIn.addAll(realm.copyFromRealm(peopleIn));
@@ -173,6 +173,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
                     String str=editText.getText().toString();
+                    Log.e("afterTextChanged: ",str );
                     if (str.contains("\n")) {
                         if(System.currentTimeMillis()-lastTime<1500){
                             editText.setText("");

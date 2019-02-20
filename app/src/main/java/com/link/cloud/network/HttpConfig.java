@@ -6,7 +6,7 @@ package com.link.cloud.network;
  */
 
 public class HttpConfig {
-    public static int HTTP_TIME=30;
+    public static int HTTP_TIME=90;
     public static String BASE_URL="http://www.deviceplatform.linkgooo.com/app/";
     public static String TOKEN="";
 }

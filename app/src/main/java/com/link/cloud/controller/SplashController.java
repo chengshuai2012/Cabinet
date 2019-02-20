@@ -33,7 +33,7 @@ public class SplashController {
     public interface MainControllerListener {
         void onLoginSuccess(CabnetDeviceInfoBean cabnetDeviceInfoBean);
 
-        void onMainErrorCode(String msg);
+        void onMainErrorCode(String msg,String eeor);
 
         void onMainFail(Throwable e, boolean isNetWork);
 
@@ -64,7 +64,7 @@ public class SplashController {
 
                     @Override
                     protected void onCodeError(String msg,String codeErrorr) {
-                        listener.onMainErrorCode(codeErrorr);
+                        listener.onMainErrorCode(codeErrorr,msg);
                     }
 
                     @Override
@@ -87,7 +87,7 @@ public class SplashController {
 
             @Override
             protected void onCodeError(String msg,String codeErrorr)  {
-                listener.onMainErrorCode(codeErrorr);
+                listener.onMainErrorCode(codeErrorr,msg);
 
             }
 
@@ -137,7 +137,7 @@ public class SplashController {
 
                                @Override
                                protected void onCodeError(String msg,String codeErrorr) {
-                                   listener.onMainErrorCode(codeErrorr);
+                                   listener.onMainErrorCode(codeErrorr,msg);
                                }
 
                                @Override
@@ -157,7 +157,7 @@ public class SplashController {
 
             @Override
             protected void onCodeError(String msg, String codeErrorr) {
-                listener.onMainErrorCode(codeErrorr);
+                listener.onMainErrorCode(codeErrorr,msg);
             }
 
             @Override

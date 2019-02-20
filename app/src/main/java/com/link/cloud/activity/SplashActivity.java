@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
 
     @Override
     protected void initViews() {
-        pageNum = 100;
+        pageNum = 25;
         mainController = new SplashController(this);
         getDeviceInfo();
         showDate();
@@ -153,7 +153,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
     }
 
     @Override
-    public void onMainErrorCode(String msg) {
+    public void onMainErrorCode(String msg,String error) {
         if (msg.equals("400000100000") ) {
             skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
@@ -162,6 +162,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
             getToken();
         }else {
             showNext();
+            TTSUtils.getInstance().speak(error);
         }
 
 

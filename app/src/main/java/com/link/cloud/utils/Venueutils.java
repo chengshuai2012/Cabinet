@@ -120,6 +120,9 @@ public class Venueutils {
                     String[] uids = new String[1000];
                     int position = 0;
                     for (AllUser userBean : finalSubListPeople) {
+                        if(TextUtils.isEmpty(userBean.getFingerprint())||TextUtils.isEmpty(userBean.getUuid())){
+                            continue;
+                        }
                         sb.append(userBean.getFingerprint());
                         uids[position] = userBean.getUuid();
                         position++;
