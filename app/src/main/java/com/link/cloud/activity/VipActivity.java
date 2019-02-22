@@ -122,7 +122,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoples.clear();
-                peoples.addAll(realm.copyFromRealm(users));
+                peoples.addAll(realm.copyFromRealm(allUsers));
             }
         });
         peoples.addAll(realm.copyFromRealm(users));
@@ -133,7 +133,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoplesIn.clear();
-                peoplesIn.addAll(realm.copyFromRealm(peopleIn));
+                peoplesIn.addAll(realm.copyFromRealm(allUsers));
             }
         });
         peoplesIn.addAll(realm.copyFromRealm(peopleIn));
@@ -147,7 +147,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                 @Override
                 public void onChange(RealmResults<AllUser> allUsers) {
                     managers.clear();
-                    managers.addAll(realm.copyFromRealm(managersRealm));
+                    managers.addAll(realm.copyFromRealm(allUsers));
                 }
             });
             publicTitleView.hideBack();
