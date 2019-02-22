@@ -86,7 +86,7 @@ public class RegularController {
             }
         }); }
         public void findUserByQr(RequestBody qr) {
-        api.openCabinetByQr(qr).compose(IOMainThread.<BaseEntity<EdituserRequest>>composeIO2main()).subscribe(new BaseObserver<EdituserRequest>() {
+        api.openCabinetByQr(1,qr).compose(IOMainThread.<BaseEntity<EdituserRequest>>composeIO2main()).subscribe(new BaseObserver<EdituserRequest>() {
 
 
             @Override

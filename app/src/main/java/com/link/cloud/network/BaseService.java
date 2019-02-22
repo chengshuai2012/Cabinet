@@ -116,7 +116,7 @@ public interface BaseService {
      */
     @POST(ApiConstants.QROPEN)
     @Headers("Content-Type:application/json;charset=utf-8")
-    Observable<BaseEntity<EdituserRequest>> openCabinetByQr(@Body RequestBody qr);
+    Observable<BaseEntity<EdituserRequest>> openCabinetByQr(@Path("type") int type,@Body RequestBody qr);
 
     /**
      * APP版本
