@@ -97,7 +97,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                 @Override
                 public void onChange(RealmResults<AllUser> allUsers) {
                     managers.clear();
-                    managers.addAll(realm.copyFromRealm(managersRealm));
+                    managers.addAll(realm.copyFromRealm(allUsers));
                 }
             });
         } else {
@@ -109,7 +109,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoples.clear();
-                peoples.addAll(realm.copyFromRealm(users));
+                peoples.addAll(realm.copyFromRealm(allUsers));
             }
         });
         peopleIn = realm.where(AllUser.class).equalTo("isIn", 1).findAll();
@@ -118,7 +118,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             @Override
             public void onChange(RealmResults<AllUser> allUsers) {
                 peoplesIn.clear();
-                peoplesIn.addAll(realm.copyFromRealm(peopleIn));
+                peoplesIn.addAll(realm.copyFromRealm(allUsers));
             }
         });
         peoplesIn.addAll(realm.copyFromRealm(peopleIn));
