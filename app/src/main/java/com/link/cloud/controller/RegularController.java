@@ -9,10 +9,14 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.BindUser;
+import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
+import com.link.cloud.network.bean.RequestBindFinger;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
 
+import io.realm.RealmList;
 import okhttp3.RequestBody;
 
 /**
@@ -37,6 +41,13 @@ public class RegularController {
         void openByFingerPrints();
 
         void onPassWord(PasswordBean passwordBean);
+        void onMainErrorCode(String msg,String eeor);
+
+        void onMainFail(Throwable e, boolean isNetWork);
+
+        void getUserSuccess(BindUser data);
+        void getUserRestSuccess(BindUser data);
+
     }
 
     public void password(String pass){
@@ -64,6 +75,54 @@ public class RegularController {
         this.regularControllerListener = regularControllerListener;
     }
 
+    public void getUser(int pageNume, int Page) {
+        RequestBindFinger requestBindFinger = new RequestBindFinger();
+        requestBindFinger.setContent("CHINA00001");
+        requestBindFinger.setPageNo(Page);
+        requestBindFinger.setPageSize(pageNume);
+        api.getUser(requestBindFinger).compose(IOMainThread.<BaseEntity<BindUser>>composeIO2main()).subscribe(new BaseObserver<BindUser>() {
+            @Override
+            protected void onSuccees(BaseEntity<BindUser> t)  {
+                regularControllerListener.getUserSuccess(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg,String codeErrorr)  {
+                regularControllerListener.onMainErrorCode(codeErrorr,msg);
+
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                regularControllerListener.onMainFail(e, isNetWorkError);
+            }
+        });
+
+    }
+    public void getUserRest(int pageNume, int Page) {
+        RequestBindFinger requestBindFinger = new RequestBindFinger();
+        requestBindFinger.setContent("CHINA00001");
+        requestBindFinger.setPageNo(Page);
+        requestBindFinger.setPageSize(pageNume);
+        api.getUser(requestBindFinger).compose(IOMainThread.<BaseEntity<BindUser>>composeIO2main()).subscribe(new BaseObserver<BindUser>() {
+            @Override
+            protected void onSuccees(BaseEntity<BindUser> t)  {
+                regularControllerListener.getUserRestSuccess(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg,String codeErrorr)  {
+                regularControllerListener.onMainErrorCode(codeErrorr,msg);
+
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                regularControllerListener.onMainFail(e, isNetWorkError);
+            }
+        });
+
+    }
 
     public void findUser(String finger) {
         RetrunCabinetRequest request=new RetrunCabinetRequest();

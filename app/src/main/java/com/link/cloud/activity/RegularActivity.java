@@ -19,6 +19,7 @@ import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularController;
 import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
+import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PasswordBean;
@@ -234,13 +235,13 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                             if (uid != null) {
                                 unlocking(uid, Constants.ActivityExtra.FINGER);
                             } else {
-                                if (CabinetApplication.getVenueUtils().img != null) {
-                                    String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
-                                    regularController.findUser(finger);
-                                    IsNoPerson = true;
-                                    isDeleteAll = false;
-                                }
-
+//                                if (CabinetApplication.getVenueUtils().img != null) {
+//                                    String finger = HexUtil.bytesToHexString(CabinetApplication.getVenueUtils().img);
+//                                    regularController.findUser(finger);
+//                                    IsNoPerson = true;
+//                                    isDeleteAll = false;
+//                                }
+                                regularController .getUser(1, 1);
                             }
 
                         }
@@ -411,6 +412,105 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     @Override
     public void onPassWord(PasswordBean passwordBean) {
         showActivity(SettingActivity.class);
+    }
+
+    @Override
+    public void onMainErrorCode(String msg, String eeor) {
+
+    }
+
+    @Override
+    public void onMainFail(Throwable e, boolean isNetWork) {
+
+    }
+    int j = 0;
+    boolean isFirst = false;
+    @Override
+    public void getUserSuccess(BindUser data) {
+            if(peoples.size()<data.getTotal()){
+               int i = data.getTotal() - peoples.size();
+                j=0;
+
+                int i1 = peoples.size()/50+1;
+//                    int i2 = 0;
+//                    if(data.getTotal() %50==0){
+//                        i2=data.getTotal()/50;
+//                    }else {
+//                        i2 = data.getTotal() / 50+1;
+//                    }
+                    if(i1*50-peoples.size()>=i){
+                        j=1;
+                    }else {
+                        j=i1;
+                    }
+                regularController.getUserRest(50,i1);
+                isFirst =true;
+            }
+    }
+
+    @Override
+    public void getUserRestSuccess(final BindUser data) {
+            if(j==1){
+                if(data.getTotal()-peoples.size()==50){
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.copyToRealm(data.getData());
+                        }
+                    });
+                }else {
+                    for(int x = peoples.size();x<data.getTotal();x++){
+                        final int finalX = x;
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.copyToRealm(data.getData().get(finalX));
+                            }
+                        });
+                    }
+                }
+
+            }else {
+                if(isFirst){
+                    if(peoples.size()%50==0){
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.copyToRealm(data.getData());
+                            }
+                        });
+                    }else {
+                        for(int x = peoples.size();x<data.getTotal();x++){
+                            final int finalX = x;
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.copyToRealm(data.getData().get(finalX));
+                                }
+                            });
+                        }
+                    }
+                }else {
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.copyToRealm(data.getData());
+                        }
+                    });
+                }
+                    isFirst=false;
+                    j++;
+                    int i2 = 0;
+                    if(data.getTotal() %50==0){
+                        i2=data.getTotal()/50;
+                    }else {
+                        i2 = data.getTotal() / 50+1;
+                    }
+                    if(j<=i2){
+                        regularController.getUserRest(50,j);
+                    }
+
+            }
     }
 
     @Override
