@@ -88,7 +88,7 @@ public class RegularController {
 
             @Override
             protected void onCodeError(String msg,String codeErrorr)  {
-                regularControllerListener.onMainErrorCode(codeErrorr,msg);
+                regularControllerListener.onMainErrorCode(msg,codeErrorr);
 
             }
 
@@ -112,7 +112,7 @@ public class RegularController {
 
             @Override
             protected void onCodeError(String msg,String codeErrorr)  {
-                regularControllerListener.onMainErrorCode(codeErrorr,msg);
+                regularControllerListener.onMainErrorCode(msg,codeErrorr);
 
             }
 

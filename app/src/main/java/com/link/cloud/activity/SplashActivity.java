@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
 
     @Override
     protected void initViews() {
-        pageNum = 25;
+        pageNum = 50;
         mainController = new SplashController(this);
         getDeviceInfo();
         showDate();
@@ -133,7 +133,6 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
             @Override
             public void execute(Realm realm) {
                 DeviceInfo device = all.get(0);
-                device.setToken(cabnetDeviceInfoBean.getToken());
                 device.setDeviceTypeId(cabnetDeviceInfoBean.getDeviceInfo().getDeviceTypeId());
                 deviceInfo = device;
             }
