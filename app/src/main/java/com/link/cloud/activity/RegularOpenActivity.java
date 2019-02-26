@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -211,7 +212,6 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     public void openFaild(String message, String code) {
 
         if (code.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(code.equals("400000999102")) {
             HttpConfig.TOKEN = "";
@@ -224,13 +224,16 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         }else {
             speak(message);
         }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
+
     }
 
     @Override
     public void returnFail(String message, String code) {
         speak(message);
         if (code.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(code.equals("400000999102")) {
             HttpConfig.TOKEN = "";
@@ -239,12 +242,24 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
             startActivity(intent1);
             android.os.Process.killProcess(android.os.Process.myPid());
         }
-    }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
 
+    }
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
     @Override
     public void onFail(Throwable e, boolean isNetWork) {
         if(isNetWork){
             speak(getResources().getString(R.string.network_unavailable));
+        }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
         }
     }
 

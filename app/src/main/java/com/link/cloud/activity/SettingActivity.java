@@ -88,7 +88,7 @@ public class SettingActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.save:
-                String edit_pswText = editPsw.getText().toString();
+                final String edit_pswText = editPsw.getText().toString();
                 String fisrt = Utils.getMD5(edit_pswText).toUpperCase();
                 final String second = Utils.getMD5(fisrt).toUpperCase();
                 final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
@@ -98,7 +98,9 @@ public class SettingActivity extends BaseActivity {
                         @Override
                         public void execute(Realm realm) {
                             DeviceInfo deviceInfo = all.get(0);
-                            deviceInfo.setPsw(second);
+                            if(!TextUtils.isEmpty(edit_pswText)){
+                                deviceInfo.setPsw(second);
+                            }
                             deviceInfo.setToken("");
                             HttpConfig.TOKEN = null;
                             realm.copyToRealm(deviceInfo);
@@ -119,6 +121,7 @@ public class SettingActivity extends BaseActivity {
 
 
                 skipActivity(SplashActivity.class);
+                finish();
                 break;
             case R.id.back_system_main:
                 Intent intent1 = new Intent(Intent.ACTION_MAIN, null);
@@ -257,6 +260,7 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        finish();
     }
 
     public static final int REQUEST_SD_PERMISSION = 10111;

@@ -1,6 +1,7 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -19,6 +20,7 @@ import com.link.cloud.Constants;
 import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.VipController;
+import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.AllUser;
 import com.link.cloud.network.bean.BindUser;
 import com.link.cloud.network.bean.CabinetInfo;
@@ -423,14 +425,24 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
         } else {
             TTSUtils.getInstance().speak(getResources().getString(R.string.cheack_fail) + "," + msg);
         }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
 
     }
 
     @Override
     public void onVipFail(Throwable e, boolean isNetWork) {
-
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
     }
-
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

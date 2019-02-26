@@ -361,7 +361,6 @@ public class RegularActivity extends BaseActivity implements RegularController.R
     @Override
     public void failed(String message, String code) {
         if (code.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(code.equals("400000999102")) {
             HttpConfig.TOKEN = "";
@@ -374,6 +373,9 @@ public class RegularActivity extends BaseActivity implements RegularController.R
         }else {
             speak(message);
         }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
 
     }
 
@@ -381,8 +383,16 @@ public class RegularActivity extends BaseActivity implements RegularController.R
             if(isNetWork){
                 speak(getResources().getString(R.string.network_unavailable));
             }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+restartApp();
+        }
     }
-
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
     @Override
     public void openByFingerPrints() {
 

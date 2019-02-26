@@ -75,7 +75,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
                 if(!TextUtils.isEmpty(deviceInfo.getDeviceId())&&!TextUtils.isEmpty(deviceInfo.getPsw())){
                     getToken();
                 }else {
-                    skipActivity(SettingActivity.class);
+                  showNext();
                 }
             }else {
                 skipActivity(SettingActivity.class);
@@ -89,9 +89,6 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
         final RealmResults<DeviceInfo> all = realm.where(DeviceInfo.class).findAll();
         if (!all.isEmpty()) {
             deviceInfo = all.get(0);
-        }
-        if (null != deviceInfo){
-            HttpConfig.TOKEN = deviceInfo.getToken();
         }
     }
 
@@ -154,7 +151,6 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
     @Override
     public void onMainErrorCode(String msg) {
         if (msg.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(msg.equals("400000999102")){
             HttpConfig.TOKEN = "";
@@ -162,7 +158,9 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
         }else {
             showNext();
         }
-
+if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            showNext();
+}
 
     }
 
@@ -173,6 +171,9 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
             showNext();
         }else {
             TTSUtils.getInstance().speak(getString(R.string.parse_error));
+            showNext();
+        }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
             showNext();
         }
     }

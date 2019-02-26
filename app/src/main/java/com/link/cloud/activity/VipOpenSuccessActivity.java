@@ -1,6 +1,7 @@
 package com.link.cloud.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import com.link.cloud.R;
 import com.link.cloud.base.AppBarActivity;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.VipSuccessController;
+import com.link.cloud.network.HttpConfig;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.utils.OpenDoorUtil;
@@ -350,6 +352,9 @@ public class VipOpenSuccessActivity extends BaseActivity implements VipSuccessCo
     @Override
     public void onVipErrorCode(String msg) {
         speak(msg);
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
     }
 
     @Override
@@ -359,8 +364,16 @@ public class VipOpenSuccessActivity extends BaseActivity implements VipSuccessCo
         }else {
             speak(getString(R.string.parse_error));
         }
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
     }
-
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
     @Override
     public void OpenLockByPass(PassWordValidate appVersionBean) {
         String uuid = appVersionBean.getUuid();
