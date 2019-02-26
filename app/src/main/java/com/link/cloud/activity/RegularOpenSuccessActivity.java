@@ -323,7 +323,6 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
     @Override
     public void openFaild(String message, String code) {
         if (code.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(code.equals("400000999102")) {
             HttpConfig.TOKEN = "";
@@ -334,11 +333,16 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
         }else {
             speak(message);
         }
+        if (TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
     }
 
     @Override
     public void returnFail(String message, String code) {
-
+        if (TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
+        }
     }
 
     @Override
@@ -347,6 +351,9 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
             speak(getResources().getString(R.string.network_unavailable));
         }else {
             speak(getResources().getString(R.string.parse_error));
+        }
+        if (TextUtils.isEmpty(HttpConfig.TOKEN)){
+            restartApp();
         }
     }
 
@@ -404,4 +411,11 @@ public class RegularOpenSuccessActivity extends BaseActivity implements RegularO
         }
         handler.sendEmptyMessageDelayed(18,3000);
     }
+    public void restartApp() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());  //结束进程之前可以把你程序的注销或者退出代码放在这段代码之前
+    }
+
 }

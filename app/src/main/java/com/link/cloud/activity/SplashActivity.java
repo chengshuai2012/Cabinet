@@ -75,7 +75,7 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
                 if(!TextUtils.isEmpty(deviceInfo.getDeviceId())&&!TextUtils.isEmpty(deviceInfo.getPsw())){
                     getToken();
                 }else {
-                    skipActivity(SettingActivity.class);
+                 showNext();
                 }
             }else {
                 skipActivity(SettingActivity.class);
@@ -151,7 +151,6 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
     @Override
     public void onMainErrorCode(String msg,String error) {
         if (msg.equals("400000100000") ) {
-            skipActivity(SettingActivity.class);
             TTSUtils.getInstance().speak(getString(R.string.login_fail));
         }else if(msg.equals("400000999102")){
             HttpConfig.TOKEN = "";
@@ -160,7 +159,9 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
             showNext();
             TTSUtils.getInstance().speak(error);
         }
-
+        if(TextUtils.isEmpty(HttpConfig.TOKEN)){
+            showNext();
+        }
 
     }
 
