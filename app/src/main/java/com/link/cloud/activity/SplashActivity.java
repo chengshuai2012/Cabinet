@@ -90,9 +90,6 @@ public class SplashActivity extends BaseActivity implements SplashController.Mai
         if (!all.isEmpty()) {
             deviceInfo = all.get(0);
         }
-        if (null != deviceInfo){
-            HttpConfig.TOKEN = deviceInfo.getToken();
-        }
     }
 
 
