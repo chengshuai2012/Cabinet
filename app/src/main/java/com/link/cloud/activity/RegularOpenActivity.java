@@ -80,7 +80,7 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
         }
     }
-
+    long start ,end;
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -97,7 +97,14 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
                         openLock(first);
                         Log.e("onClick: ",first.getUuid()+"000" );
                     } else {
+                        start =System.currentTimeMillis();
+                        Log.e("onClick: ", start+"");
+                        if(start-end>2000){
+                            Log.e("onClick: ", end+"");
+                            end =System.currentTimeMillis();
                             regularOpenController.temCabinet(uuid);
+                        }
+
                     }
                 } else {
                     Log.e("onClick: ",cabinetInfo +"222");
