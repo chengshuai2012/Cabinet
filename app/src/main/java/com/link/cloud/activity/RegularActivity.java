@@ -241,6 +241,7 @@ public class RegularActivity extends BaseActivity implements RegularController.R
 //                                    IsNoPerson = true;
 //                                    isDeleteAll = false;
 //                                }
+                                speak(getResources().getString(R.string.verify_agin));
                                 regularController .getUser(1, 1);
                             }
 
