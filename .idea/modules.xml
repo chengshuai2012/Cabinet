@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Cabinet.iml" filepath="$PROJECT_DIR$/Cabinet.iml" />
+      <module fileurl="file://C:\Users\chengshuai\AndroidStudioProjects\Cabinet\Cabinet.iml" filepath="C:\Users\chengshuai\AndroidStudioProjects\Cabinet\Cabinet.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\chengshuai\AndroidStudioProjects\Cabinet\app\app.iml" filepath="C:\Users\chengshuai\AndroidStudioProjects\Cabinet\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/framework.iml" filepath="$PROJECT_DIR$/framework/framework.iml" />
+      <module fileurl="file://C:\Users\chengshuai\AndroidStudioProjects\Cabinet\framework\framework.iml" filepath="C:\Users\chengshuai\AndroidStudioProjects\Cabinet\framework\framework.iml" />
     </modules>
   </component>
 </project>
