@@ -381,7 +381,7 @@ public class VipActivity extends BaseActivity implements VipController.VipContro
                     return;
                 }
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
-                vipController.findUserByQr(requestBody);
+                //vipController.findUserByQr(requestBody);
                 code_mumber.setText("");
             }
         }

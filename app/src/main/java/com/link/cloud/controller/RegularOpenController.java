@@ -7,6 +7,7 @@ import com.link.cloud.network.IOMainThread;
 import com.link.cloud.network.RetrofitFactory;
 import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
+import com.link.cloud.network.bean.EdituserRequest;
 import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.network.bean.QrRequest;
 import com.link.cloud.network.bean.RetrunCabinetRequest;
@@ -119,5 +120,24 @@ public class RegularOpenController {
         });
 
     }
+    public void findUserByQr(int type,RequestBody qr) {
+        api.openCabinetByQr(type,qr).compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main()).subscribe(new BaseObserver<CabinetInfo>() {
+
+
+            @Override
+            protected void onSuccees(BaseEntity<CabinetInfo> t) {
+                listener.SuccessByQr(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg, String codeErrorr) {
+                listener.openFaild(msg,codeErrorr);
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                listener.onFail(e, isNetWorkError);
+            }
+        });}
 
 }

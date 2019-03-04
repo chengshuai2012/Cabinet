@@ -114,24 +114,5 @@ public class VipController {
 
                 });
     }
-    public void findUserByQr(RequestBody qr) {
-        api.openCabinetByQr(2,qr).compose(IOMainThread.<BaseEntity<EdituserRequest>>composeIO2main()).subscribe(new BaseObserver<EdituserRequest>() {
-
-
-            @Override
-            protected void onSuccees(BaseEntity<EdituserRequest> t) {
-                listener.qrSuccess(t.getData());
-            }
-
-            @Override
-            protected void onCodeError(String msg, String codeErrorr) {
-                listener.onVipErrorCode(msg);
-            }
-
-            @Override
-            protected void onFailure(Throwable e, boolean isNetWorkError) {
-                listener.onVipFail(e, isNetWorkError);
-            }
-        });}
 
 }

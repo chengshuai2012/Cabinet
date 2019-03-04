@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
@@ -24,8 +25,13 @@ import com.link.cloud.utils.TTSUtils;
 import com.orhanobut.logger.Logger;
 import com.zitech.framework.utils.ViewUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 作者：qianlu on 2018/11/1 15:14
@@ -71,7 +77,6 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     @Override
     protected void onResume() {
         super.onResume();
-
         type = getIntent().getExtras().getString(Constants.ActivityExtra.TYPE);
         if (!type.equals(Constants.ActivityExtra.PASSWORD)) {
             uuid = getIntent().getExtras().getString(Constants.ActivityExtra.UUID);
@@ -86,30 +91,61 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
-                if (cabinetInfo == null)
-                        regularOpenController.returnCabinet(uuid);
+                if (Constants.ActivityExtra.FINGER.equals(type)){
+                    regularOpenController.returnCabinet(uuid);
+                }else if(Constants.ActivityExtra.XIAOCHENGXU.equals(type)){
+                    Toast.makeText(this,"退柜",Toast.LENGTH_SHORT).show();
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(uuid);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (object == null) {
+                        return;
+                    }
+                    Toast.makeText(this,uuid,Toast.LENGTH_SHORT).show();
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
+                    regularOpenController.findUserByQr(2,requestBody);
+                }
+
                 break;
             case R.id.openLayout:
-                if (cabinetInfo == null) {
-                    CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
-                    Log.e("onClick: ",realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst()+"");
-                    if (first != null) {
-                        openLock(first);
-                        Log.e("onClick: ",first.getUuid()+"000" );
-                    } else {
-                        start =System.currentTimeMillis();
-                        Log.e("onClick: ", start+"");
-                        if(start-end>2000){
-                            Log.e("onClick: ", end+"");
-                            end =System.currentTimeMillis();
-                            regularOpenController.temCabinet(uuid);
-                        }
+                if (Constants.ActivityExtra.FINGER.equals(type)){
+                    if (cabinetInfo == null) {
+                        CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
+                        Log.e("onClick: ",realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst()+"");
+                        if (first != null) {
+                            openLock(first);
+                            Log.e("onClick: ",first.getUuid()+"000" );
+                        } else {
+                            start =System.currentTimeMillis();
+                            Log.e("onClick: ", start+"");
+                            if(start-end>2000){
+                                Log.e("onClick: ", end+"");
+                                end =System.currentTimeMillis();
+                                regularOpenController.temCabinet(uuid);
+                            }
 
+                        }
+                    } else {
+                        Log.e("onClick: ",cabinetInfo +"222");
+                        openLock(cabinetInfo);
                     }
-                } else {
-                    Log.e("onClick: ",cabinetInfo +"222");
-                    openLock(cabinetInfo);
+                }else if(Constants.ActivityExtra.XIAOCHENGXU.equals(type)){
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(uuid);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (object == null) {
+                        return;
+                    }
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
+                    regularOpenController.findUserByQr(1,requestBody);
                 }
+
                 break;
 
             case R.id.finsh:
@@ -264,6 +300,8 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
     public void onFail(Throwable e, boolean isNetWork) {
         if(isNetWork){
             speak(getResources().getString(R.string.network_unavailable));
+        }else {
+            speak("解析异常");
         }
         if(TextUtils.isEmpty(HttpConfig.TOKEN)){
             restartApp();
@@ -272,16 +310,13 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
     @Override
     public void SuccessByQr(final CabinetInfo cabinetInfo) {
-        final RealmResults<CabinetInfo> cabinetInfos = realm.where(CabinetInfo.class).equalTo("cabinetNo", cabinetInfo.getCabinetNo()).findAll();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                cabinetInfos.deleteAllFromRealm();
-                realm.copyToRealm(cabinetInfo);
-            }
-        });
         openLock(cabinetInfo);
-        speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
+        if(cabinetInfo.isLocked()==true){
+            speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
+        }else {
+            speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.remove_leave));
+        }
+
     }
 
     @Override
