@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.link.cloud.CabinetApplication;
 import com.link.cloud.Constants;
@@ -17,7 +16,6 @@ import com.link.cloud.R;
 import com.link.cloud.base.BaseActivity;
 import com.link.cloud.controller.RegularOpenController;
 import com.link.cloud.network.HttpConfig;
-import com.link.cloud.network.bean.APPVersionBean;
 import com.link.cloud.network.bean.CabinetInfo;
 import com.link.cloud.network.bean.PassWordValidate;
 import com.link.cloud.utils.OpenDoorUtil;
@@ -86,15 +84,16 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         }
     }
     long start ,end;
+    Boolean isReturn;
     @Override
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.returnLayout:
+                isReturn=true;
                 if (Constants.ActivityExtra.FINGER.equals(type)){
                     regularOpenController.returnCabinet(uuid);
                 }else if(Constants.ActivityExtra.XIAOCHENGXU.equals(type)){
-                    Toast.makeText(this,"退柜",Toast.LENGTH_SHORT).show();
                     JSONObject object = null;
                     try {
                         object = new JSONObject(uuid);
@@ -104,13 +103,13 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
                     if (object == null) {
                         return;
                     }
-                    Toast.makeText(this,uuid,Toast.LENGTH_SHORT).show();
                     RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
-                    regularOpenController.findUserByQr(2,requestBody);
+                    regularOpenController.findUserByQr(1,requestBody);
                 }
 
                 break;
             case R.id.openLayout:
+                isReturn=false;
                 if (Constants.ActivityExtra.FINGER.equals(type)){
                     if (cabinetInfo == null) {
                         CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
@@ -310,13 +309,20 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
 
     @Override
     public void SuccessByQr(final CabinetInfo cabinetInfo) {
-        openLock(cabinetInfo);
-        if(cabinetInfo.isLocked()==true){
-            speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
-        }else {
-            speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.remove_leave));
-        }
 
+        if(cabinetInfo.isLocked()==true){
+            openLock(cabinetInfo);
+            speak(cabinetInfo.getCabinetNo() + getResources().getString(R.string.aready_open_string));
+        }
+        if(isReturn){
+            if(cabinetInfo.isLocked()==true){
+                openLock(cabinetInfo);
+                regularOpenController.returnCabinet(cabinetInfo.getUuid());
+            }else {
+                speak("请先开柜");
+            }
+
+        }
     }
 
     @Override
