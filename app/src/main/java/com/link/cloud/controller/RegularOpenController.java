@@ -121,23 +121,25 @@ public class RegularOpenController {
 
     }
     public void findUserByQr(int type,RequestBody qr) {
-        api.openCabinetByQr(type,qr).compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main()).subscribe(new BaseObserver<CabinetInfo>() {
+//        api.openCabinetByQr(qr).compose(IOMainThread.<BaseEntity<CabinetInfo>>composeIO2main()).subscribe(new BaseObserver<CabinetInfo>() {
+//
+//
+//            @Override
+//            protected void onSuccees(BaseEntity<CabinetInfo> t) {
+//                listener.SuccessByQr(t.getData());
+//            }
+//
+//            @Override
+//            protected void onCodeError(String msg, String codeErrorr) {
+//                listener.openFaild(msg,codeErrorr);
+//            }
+//
+//            @Override
+//            protected void onFailure(Throwable e, boolean isNetWorkError) {
+//                listener.onFail(e, isNetWorkError);
+//            }
+//        });
 
-
-            @Override
-            protected void onSuccees(BaseEntity<CabinetInfo> t) {
-                listener.SuccessByQr(t.getData());
-            }
-
-            @Override
-            protected void onCodeError(String msg, String codeErrorr) {
-                listener.openFaild(msg,codeErrorr);
-            }
-
-            @Override
-            protected void onFailure(Throwable e, boolean isNetWorkError) {
-                listener.onFail(e, isNetWorkError);
-            }
-        });}
+    }
 
 }

@@ -91,26 +91,10 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
         switch (v.getId()) {
             case R.id.returnLayout:
                 isReturn=true;
-                if (Constants.ActivityExtra.FINGER.equals(type)){
-                    regularOpenController.returnCabinet(uuid);
-                }else if(Constants.ActivityExtra.XIAOCHENGXU.equals(type)){
-                    JSONObject object = null;
-                    try {
-                        object = new JSONObject(uuid);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (object == null) {
-                        return;
-                    }
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
-                    regularOpenController.findUserByQr(1,requestBody);
-                }
-
+                regularOpenController.returnCabinet(uuid);
                 break;
             case R.id.openLayout:
                 isReturn=false;
-                if (Constants.ActivityExtra.FINGER.equals(type)){
                     if (cabinetInfo == null) {
                         CabinetInfo first = realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst();
                         Log.e("onClick: ",realm.where(CabinetInfo.class).equalTo("uuid", uuid).findFirst()+"");
@@ -131,19 +115,7 @@ public class RegularOpenActivity extends BaseActivity implements RegularOpenCont
                         Log.e("onClick: ",cabinetInfo +"222");
                         openLock(cabinetInfo);
                     }
-                }else if(Constants.ActivityExtra.XIAOCHENGXU.equals(type)){
-                    JSONObject object = null;
-                    try {
-                        object = new JSONObject(uuid);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (object == null) {
-                        return;
-                    }
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
-                    regularOpenController.findUserByQr(1,requestBody);
-                }
+
 
                 break;
 

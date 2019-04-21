@@ -86,7 +86,27 @@ public class RegularController {
             }
         }); }
 
+    public void findUserByQr(RequestBody qr) {
+        api.openCabinetByQr(qr).compose(IOMainThread.<BaseEntity<EdituserRequest>>composeIO2main()).subscribe(new BaseObserver<EdituserRequest>() {
 
+
+            @Override
+            protected void onSuccees(BaseEntity<EdituserRequest> t) {
+                regularControllerListener.qrSuccess(t.getData());
+            }
+
+            @Override
+            protected void onCodeError(String msg, String codeErrorr) {
+                regularControllerListener.failed(msg,codeErrorr);
+            }
+
+            @Override
+            protected void onFailure(Throwable e, boolean isNetWorkError) {
+                regularControllerListener.onRegularFail(e, isNetWorkError);
+            }
+        });
+
+    }
 
 
 }

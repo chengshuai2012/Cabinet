@@ -160,9 +160,19 @@ public class RegularActivity extends BaseActivity implements RegularController.R
                             return;
                         }
                         lastTime=System.currentTimeMillis();
-                        unlocking(editText.getText().toString(), Constants.ActivityExtra.XIAOCHENGXU);
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(str);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (object == null) {
+                            return;
+                        }
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
+                        regularController.findUserByQr(requestBody);
                         editText.setText("");
-                    }
+                }
 
                 }
             }
